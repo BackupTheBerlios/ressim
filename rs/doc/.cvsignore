@@ -1,0 +1,12 @@
+*.aux
+*~
+.*~
+*.dvi
+*.ps
+*.log
+*.toc
+*.bbl
+*.blg
+*.mtc*
+*.pdf
+auto

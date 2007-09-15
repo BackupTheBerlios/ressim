@@ -1,0 +1,54 @@
+begin RunSpec
+
+	TimeUnit	Years
+
+	EndTime		100
+
+	ReportEvery	1
+
+	Thermal		yes
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	1e+7
+
+	begin Temperature
+		type	ConstantValue
+		value	350
+	end
+end
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Fixed
+		begin	Heater
+			Temperature	690
+		end
+	end
+
+	begin	Outlet
+		begin Roof
+			Mass	0
+			Energy	-1e+8
+		end
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/two
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+	end
+end
+

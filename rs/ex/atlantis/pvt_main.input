@@ -1,0 +1,11 @@
+Pressure	2e+6
+Temperature	1000
+begin Composition
+	H2O	1
+	C1	1
+	C2	1
+end
+
+verify	yes
+
+include eqs.input

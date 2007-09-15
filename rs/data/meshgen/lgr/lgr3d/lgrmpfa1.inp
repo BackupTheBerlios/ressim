@@ -1,0 +1,205 @@
+begin MeshDescription
+
+	type LGRMeshDescription
+
+	begin Transform 
+		type IdentityTransform
+	end
+
+	begin Coarse
+
+		begin CoarseGeometry
+
+			X0	0.0
+			Y0	0.0
+			Z0	0.0
+
+			array Nx
+				2
+			end
+
+			array Dx
+				1
+			end
+
+			array Ny
+				2
+			end
+			array Dy
+				1
+			end
+		
+			array Nz
+				1
+			end
+			array Dz
+				-1
+			end
+			
+		end
+		
+	end
+
+	begin Refinements
+	
+		begin LGR1
+		
+			array CoarseElementIJK
+				1 1 1
+			end
+			
+			begin FineGeometry
+				array Nx
+					1
+				end
+				array Dx
+					1
+				end
+				array Ny
+					1
+				end
+				array Dy
+					1
+				end
+				array Nz
+					1
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			
+			begin RockRegionMap
+				array LGR1
+		   			1   
+				end
+			end
+			
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+			
+		end
+		
+		begin LGR2
+		
+			array CoarseElementIJK
+				1 2 1
+			end
+			
+			begin FineGeometry
+				array Nx
+					1
+				end
+				array Dx
+					1.0
+				end
+				array Ny
+					1
+				end
+				array Dy
+					1
+				end
+				array Nz
+					2
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			
+			begin RockRegionMap
+				array LGR2
+		   			1   
+				end
+			end
+			
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+			
+		end
+	
+		begin LGR3
+		
+			array CoarseElementIJK
+				2 1 1
+			end
+			
+			begin FineGeometry
+				array Nx
+					1
+				end
+				array Dx
+					1.0
+				end
+				array Ny
+					1
+				end
+				array Dy
+					1
+				end
+				array Nz
+					2
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			
+			begin RockRegionMap
+				array LGR3
+		   			1   
+				end
+			end
+			
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+			
+		end
+	
+	end
+		
+end
+
+

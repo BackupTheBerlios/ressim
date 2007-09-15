@@ -1,0 +1,214 @@
+\subsection{Uniform mesh}
+\label{sec:uniform-mesh}
+
+The simplest mesh available, is the structured, uniform mesh. This is
+specified by the keyword \texttt{UniformMesh}.
+%
+\begin{verbatim}
+begin Mesh
+
+  type UniformMesh
+
+  ...
+
+end
+\end{verbatim}
+%
+
+In the following we describe the type--specific subsections of the
+uniform mesh.
+
+\subsubsection{Dimension}
+\label{sec:mesh-dimension}
+
+The dimension is specified with the keyword \texttt{dimension}
+followed by either \texttt{1}, \texttt{2} or \texttt{3} representing a
+1D, 2D or 3D mesh respectively:
+%
+\begin{verbatim}
+begin Mesh
+
+  ...
+
+  dimension 3
+
+  ...
+
+end
+\end{verbatim}
+%
+If the mesh is 2D, the domain is part of the $xy$-plane (before any
+transformations). If it is 1D, it extends in the $x$-direction. If the
+dimension is other than 3, the size-keywords are affected, see
+Section~\ref{sec:sizes} below.
+
+\subsubsection{Origin}
+\label{sec:origin}
+
+The mesh origin is given by the three keywords \texttt{X0},
+\texttt{Y0} and \texttt{Z0}. Each keyword is followed by the
+coordinate value of the respective direction:
+%
+\begin{verbatim}
+begin Mesh
+
+  ...
+
+  X0  0.0
+  Y0  1.0
+  Z0  0.0
+
+  ...
+
+end
+\end{verbatim}
+
+
+\subsubsection{Sizes}
+\label{sec:sizes}
+
+The actual mesh geometry is given by the number of elements and the
+element sizes in each direction. The keywords \texttt{Nx}, \texttt{Ny}
+and \texttt{Nz} specify the number of elements, while the sizes are
+defined by the keywords \texttt{Dx}, \texttt{Dy} and \texttt{Dz}:
+%
+\begin{verbatim}
+begin Mesh
+
+  ...
+
+  dimension 3
+
+  ...
+
+  Nx  16
+  Dx  0.0625
+
+  Ny  16
+  Dy  0.0625
+	
+  Nz  1
+  Dz  -1.0 
+
+  ...
+
+end
+\end{verbatim}
+%
+Observe that the $z$-direction element size must be negative. This is
+a consequence of the origin being at the top corner of the domain.
+
+Also, if the mesh dimension is less than 3, only the element sizes in
+the ``missing'' dimensions are specified and not the number of
+elements. The sizes must be given to ensure consistent volumes and
+areas. For a 1D domain, the sizes would be given as follows:
+%
+\begin{verbatim}
+begin Mesh
+
+  ...
+
+  dimension 1
+
+  ...
+
+  Nx  100
+  Dx  10.0
+
+  Dy  2.0
+
+  Dz  -0.1
+
+  ...
+
+end
+\end{verbatim}
+
+
+\subsubsection{Rock region}
+\label{sec:rock-region}
+
+Region specific rock parameters can be given. These may include
+relative permeability and capillary pressure properties on a regional
+basis. For the uniform mesh, only a single region can be defined
+covering the whole domain. The keyword \texttt{RockRegion} is followed
+by the rock region name:
+%
+\begin{verbatim}
+begin Mesh
+
+  ...
+
+  RockRegion  Stone
+
+  ...
+
+end
+\end{verbatim}
+%
+The rock region name, \texttt{Stone} in the example above, must be
+consistent rock region definitions given in the general part of the
+simulator input file.
+
+\subsubsection{Rock data}
+\label{sec:rock-data}
+
+Rock parameters such as porosity and permability is given in the
+\texttt{RockData} subsection. Currently, the only legal type is
+\texttt{Global}, which indicates that the parameters must be given for
+the whole domain. Then, the required arrays are \texttt{poro},
+\texttt{permx}, \texttt{permy}, and \texttt{permz}. The optional
+off-diagonal permeability tensor elements are given by
+\texttt{permxy}, \texttt{permxz} and \texttt{permyz}. If not
+specified, these default to 0.0. The permeability values should be
+given in $[\text{m}^2]$ ($1\: \text{m}^2 = 1.01325\cdot 10^{12}\:\text{Darcy}$).
+
+\begin{verbatim}
+begin Mesh
+
+  ... 
+
+  begin RockData
+
+    type Global
+
+    array poro
+      0.20  0.40  0.13  0.25  0.30  0.35
+    end
+
+    array permx
+      1.0
+    end
+
+    include y-and-z-perm.dat
+
+  end
+
+  ... 
+
+end
+\end{verbatim}
+%
+The arrays must each have either one value or as many values as there
+are mesh elements. If only one value is given, this is used for all
+the elements, see \texttt{permx} in the example above. 
+
+The rock data section is also a typical place to use the
+\texttt{include} keyword. This is illustrated above by including the
+file ``y-and-z-perm.dat'' which contains:
+%
+\begin{verbatim}
+  array permy
+    100.0  105.0  200.0  250.0  0.1  4.0
+  end
+
+  array permz
+    10.0  1.5  25.0  20.0  1.0  44.0
+  end
+\end{verbatim}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

@@ -1,0 +1,67 @@
+begin Mesh
+
+	type UniformMesh
+	
+	dimension 3
+	
+	%origin
+	X0	0.0 
+	Y0	0.0 
+	Z0	0.0
+	
+	Nx 2
+	Dx 1.0
+	
+	Ny 3
+	Dy 1.0
+	
+	Nz 4
+	Dz -1.0 
+		
+	RockRegion  Stone
+
+	begin RockData
+	
+		type Global
+
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		
+		array permy
+			1.0 
+		end
+		
+		array permz 
+			1.0 
+		end
+		
+	end
+	
+	begin Sources
+
+		begin Injector
+
+			% element indices
+			array Elements
+				1
+			end
+			
+		end
+		
+		begin Producer
+		
+			array Elements
+				24
+			end
+			
+		end
+	
+	end
+
+end
+
+

@@ -1,0 +1,159 @@
+begin MeshDescription
+
+	type StructuredMeshDescription
+	
+	Dimension 3
+	
+	begin Geometry
+
+		%origin
+		X0	0.0 
+		Y0	0.0
+		Z0	0.0 
+		
+		%X-parts specification	
+		array Nx
+			 50
+		end
+
+		array Dx
+			 50
+		end
+
+		%Y-parts specification	
+		array Ny
+			10
+		end
+
+		array Dy
+			50
+		end
+		
+		%Z-parts specification	
+		array Nz
+			5 3 2
+		end
+
+		array Dz
+			-25.0 -5.0 -10.0
+		end
+		
+		% Uniform or Layer
+		RegionMappingType Layer
+		
+		% Mesh transformation
+		begin StructuredTransform
+	
+			type TopBottomTransform
+		
+			begin TopSurface
+		
+				type EvenLookupTable
+				
+				Dimension 2
+		
+				xMin      0
+				xMax   2500
+				nx       23
+				
+				yMin      0
+				yMax     500
+				ny        2
+			
+				array data
+					  2.5000000e+02 2.5000000e+02  2.8000000e+02  3.2000000e+02   
+					  3.6000000e+02 3.7000000e+02  3.8000000e+02  3.8000000e+02 
+					  3.9000000e+02 3.9000000e+02  3.7000000e+02  3.4000000e+02 
+					  3.1000000e+02 2.6000000e+02  2.1000000e+02  1.8000000e+02
+					  1.9000000e+02 2.0000000e+02  2.3000000e+02  2.7000000e+02
+					  2.9000000e+02 3.0000000e+02  3.0000000e+02
+					
+					  2.5000000e+02 2.5000000e+02  2.8000000e+02  3.2000000e+02   
+					  3.6000000e+02 3.7000000e+02  3.8000000e+02  3.8000000e+02 
+					  3.9000000e+02 3.9000000e+02  3.7000000e+02  3.4000000e+02 
+					  3.1000000e+02 2.6000000e+02  2.1000000e+02  1.8000000e+02
+					  1.9000000e+02 2.0000000e+02  2.3000000e+02  2.7000000e+02
+					  2.9000000e+02 3.0000000e+02  3.0000000e+02
+				end
+				
+			end
+			
+			begin BottomSurface
+		
+				type EvenLookupTable
+				
+				Dimension 2
+		
+				xMin      0
+				xMax  	2500
+				nx       23
+				
+				yMin      0
+				yMax     500
+				ny        2
+			
+				array data
+					6.0000000e+02   6.0000000e+02   6.2000000e+02   6.3000000e+02
+					6.5000000e+02   6.7000000e+02   6.7000000e+02   6.6000000e+02
+					6.4000000e+02   6.2000000e+02   5.8000000e+02   5.5000000e+02
+					5.2000000e+02   4.8000000e+02   4.6000000e+02   4.5000000e+02
+					4.6000000e+02   4.7000000e+02   4.8000000e+02   4.9000000e+02
+					5.1000000e+02   5.2000000e+02   5.2000000e+02 
+					
+					6.0000000e+02   6.0000000e+02   6.2000000e+02   6.3000000e+02
+					6.5000000e+02   6.7000000e+02   6.7000000e+02   6.6000000e+02
+					6.4000000e+02   6.2000000e+02   5.8000000e+02   5.5000000e+02
+					5.2000000e+02   4.8000000e+02   4.6000000e+02   4.5000000e+02
+					4.6000000e+02   4.7000000e+02   4.8000000e+02   4.9000000e+02
+					5.1000000e+02   5.2000000e+02   5.2000000e+02 
+				end
+				
+			end
+	
+		end
+		
+	end
+	
+
+	begin RockRegionMap
+
+		% names must match RockRegion input data
+		array Shale
+			1     % indices must match those produced by RegionMappingType above
+		end
+		
+		array SandStone
+			2
+		end
+		
+		array FracturedShale
+			3
+		end
+			
+	end
+
+	begin RockData
+	
+		type Global
+
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		
+		array permy
+			1.0 
+		end
+		
+		array permz 
+			1.0 
+		end
+		
+	end
+	
+
+end
+
+

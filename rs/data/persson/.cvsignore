@@ -1,0 +1,9 @@
+mesh.*
+fig*.png
+mesh*.*
+nohup.out
+mesh
+run
+gridding
+simulation
+visualization

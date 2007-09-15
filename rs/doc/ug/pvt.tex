@@ -1,0 +1,40 @@
+\chapter{PVT calculations}
+\label{chapter:pvt}
+
+To verify the fluid properties, the simulator includes an auxiliary
+PVT calculations application. Given pressure, temperature and overall
+masses, it performs phase state and equilibrium calculations to
+determine the split composition, and may optionally print and verify
+phase composition/volume derivatives.
+
+The input file is named \texttt{pvt}, and it looks like this:
+\begin{verbatim}
+pressure    2e+7 % Pressure in Pascal
+temperature 450  % Temperature in Kelvin
+
+% Number of moles of each component. Missing entries are defaulted to zero
+H2O 1e+11
+C1  2e+10
+C4  1e+10
+
+Verify yes  % True to verify derivatives calculations. Default: no
+Delta  1e-6 % For determining numerical derivatives. Default: 1e-5
+
+begin Components
+  % The different chemical species
+  ...
+end
+
+begin EquationOfState
+  % The equation of state to use
+  ...
+end
+\end{verbatim}
+
+The \texttt{Components} and \texttt{EquationOfState} sections are
+identical to the fluid data the simulator uses.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "ug"
+%%% End: 

@@ -1,0 +1,21 @@
+begin RockData
+
+	type Global
+
+	array Poro
+		0.2
+	end
+
+	array PermX
+		1.0e-0
+	end
+
+	array PermY
+		1.0e-0
+	end
+
+	array PermZ
+		1.0e-0
+	end
+
+end

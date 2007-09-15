@@ -1,0 +1,63 @@
+begin MeshGenerator
+	type		TriangleMeshImporter
+
+	% stem of the file which will be read
+	ProbName	mesh
+
+	% number of iterations through Triangle program
+	Refinement	1
+
+	begin Fractures
+	      begin Sealing
+	      	    % color code used in CAD program to represent these fractures
+	      	    Color	purple
+
+		    % transmissibility multiplier for interfaces over fractures
+		    FracMult	0.6
+	      end
+	end
+end
+
+begin PartitionDescription
+      type TwoDimensionalPartitionDescription
+
+      % width of border region
+      Border 0.5
+      
+      % target coarse domains
+      begin Domains
+      	    X0		0.5
+	    Y0		0.5
+
+	    array Nx  7  end
+	    array Ny  5  end
+
+	    array Dx  5  end
+	    array Dy  5  end
+      end
+end
+
+begin Sources
+	begin Injector
+		% select element by giving coordinates in three and three values
+		type CenterPointCellPicker
+
+		X	1.5
+		Y	1.5
+		Z	0
+	end
+
+	begin Producer
+		% select element by giving coordinates in three and three values
+		type CenterPointCellPicker
+
+		% center-point picker uses the element whose center that is closest to the 
+		% coordinate specified; don't choose an element that is outside of the grid
+		% here, the code that picks the local index in partition won't be able to
+		% figure out where it is.
+		X	34.5
+		Y	24.5
+		Z	 0
+		end
+	end
+end

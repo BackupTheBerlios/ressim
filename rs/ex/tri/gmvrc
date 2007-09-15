@@ -1,0 +1,12 @@
+gmvrc
+	azim		0
+	elev		90
+	twist		-90
+	mag		1.2
+	celledges	on
+	axis		off
+	beepsound	off
+	interactivity	1	
+	linesize	1
+	linetype	regular
+end_gmvrc

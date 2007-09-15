@@ -1,0 +1,74 @@
+\documentclass[a4paper,twoside,openright]{report}
+
+\usepackage{amsmath}
+\usepackage{SIunits}
+\usepackage{a4wide}
+\usepackage{parskip}
+\usepackage{pslatex}
+\usepackage{graphicx}
+\usepackage{slashbox}
+\usepackage{chappg}
+\usepackage{minitoc}
+\usepackage[hypertexnames=false]{hyperref}
+
+\usepackage{listings}
+\lstset{language=java}
+\lstset{xleftmargin=1em,morekeywords=enum,texcl}
+
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{%
+  \clearpage
+  {\pagestyle{empty}\origdoublepage}%
+}
+\let\cleardoublepage\clearemptydoublepage
+
+\newcommand{\tensor}[1]{{\textbf #1}}
+\newcommand{\rand}{\ensuremath{\text{rand}}}
+\newcommand{\csection}[1]{\cleardoublepage\section{#1}}
+\newcommand{\csubsection}[1]{\cleardoublepage\subsection{#1}}
+\newcommand{\csubsubsection}[1]{\cleardoublepage\subsubsection{#1}}
+
+\begin{document}
+
+\dominitoc
+
+\title{The CIPR in-house reservoir flow simulation suite:\\
+Implementation Details}
+\author{\includegraphics[scale=2]{../figures/cipr-logo}}
+\date{\today}
+
+\maketitle
+
+\tableofcontents
+
+\input{../introduction}
+
+\input{overview}
+
+\input{geometry}
+
+\input{meshgen}
+
+\input{rock}
+
+\input{fluid}
+
+\input{field}
+
+\input{numerics}
+
+\input{upscale}
+
+\input{output}
+
+\input{../notation}
+
+\bibliographystyle{plain}
+\bibliography{../rs}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

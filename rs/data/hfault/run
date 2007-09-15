@@ -1,0 +1,60 @@
+% 
+
+begin RunSpec
+
+	TimeUnit 	Days
+	EndTime		150
+
+	ReportEvery	1e+0
+
+	TimeStepMaximum	1e-3
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	-15
+	DatumPressure	2e+6
+
+	begin Temperature
+		type	ConstantValue
+		value	320
+	end
+
+	begin C10
+		type	ConstantValue
+		value	1
+	end
+end
+
+%--------------------------------------------------------------------
+
+include ../../ex/pvt/two
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+	end
+end
+
+%----------------------------------------------------------------------
+
+begin Sources
+
+	begin Fixed 
+		begin Injector
+			Temperature	320
+			H2O	1.0
+		end
+	end
+
+	begin Outlet
+		begin Producer
+			Mass -1.0e-5
+		end
+	end
+
+end
+

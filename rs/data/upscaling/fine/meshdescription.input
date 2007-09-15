@@ -1,0 +1,110 @@
+begin MeshDescription
+
+	type StructuredMeshDescription
+	
+	dimension 2
+	
+	begin Geometry
+
+		%origin
+		X0	-2.0 
+		Y0	-2.0
+		
+		%X-parts specification	
+		array Nx
+			68
+		end
+
+		array Dx
+			1.0
+		end
+
+		%Y-parts specification	
+		array Ny
+			68
+		end
+
+		array Dy
+			1.0
+		end
+		
+		RegionMappingType Uniform
+			
+	end
+	
+	begin Boxes
+		array K1
+			1 34 1 68 1 1
+		end
+		
+		array K2
+			35 68 1 68 1 1
+		end
+	end
+	
+	begin RockRegionMap
+
+		array Shale
+		   1 
+		end
+		
+	end
+	
+	begin RockData
+	
+		type Global
+
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		
+		array permy
+			1.0 
+		end
+		
+		array permz 
+			1.0 
+		end
+		
+	end
+	
+	begin RockDataBoxed
+		begin K1
+			array Poro
+				0.2
+			end
+			
+			array PermX
+				1.0
+			end
+			
+			array PermY
+				1.0
+			end
+		end
+		
+		begin K2
+			array Poro
+				0.2
+			end
+			
+			array PermX
+				100.0
+			end		
+			
+			array PermY
+				100.0
+			end
+		end
+	end		
+		
+	begin AbsPermTransmissibilityMethod
+		type TPFA
+	end
+	
+end
+
+

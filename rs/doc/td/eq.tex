@@ -1,0 +1,231 @@
+\chapter{Conservation laws}
+
+\minitoc
+
+The fluid system consists of three phases indexed with the superscript
+$\ell$: water ($\ell=w$), oil ($\ell=o$) and gas ($\ell=g$). Fluid
+pressure and temperature varies, and the fluids consists of components
+indexed by the subscript $\nu$.
+
+%======================================================================
+
+\csection{Volume balance}
+
+Following \cite{watts1986}, a volume balance equation is used for
+determining the fluid pressure and velocities. At all times, the fluid
+fills the pore volumes, and consequently the residual volume
+\begin{equation}
+  R = V^p - V^f = \phi V - \sum_\ell V^\ell = 0,
+\end{equation}
+where $V^p=\phi V$ is the pore volume, $\phi$ is the porosity, $V$ is
+the bulk volume, $V^f=\sum_\ell V^\ell$ is the fluid volume, and
+$V^\ell$ is the phase volume. As the residual volume $R$ is zero at
+all times, its timederivative must also be zero.  Assuming that the
+residual volume is a function of the water pressure $p^w$, temperature
+$T$, and component masses $N_\nu$, the timederivative may be expanded
+into
+\begin{equation}
+  \frac{\partial R}{\partial t} =
+  \frac{\partial R}{\partial p^w} \frac{\partial p^w}{\partial t} +
+  \frac{\partial R}{\partial T} \frac{\partial T}{\partial t} +
+  \sum_\nu \frac{\partial R}{\partial N_\nu}
+  \frac{\partial N_\nu}{\partial t} = 0,
+\end{equation}
+in which
+\begin{eqnarray}
+  \frac{\partial R}{\partial p^w} & = &
+  \frac{\partial\phi}{\partial p} V
+  -\sum_\ell \frac{\partial V^\ell}{\partial p^w}, \\
+  \frac{\partial R}{\partial T} & = &
+  -\sum_\ell \frac{\partial V^\ell}{\partial T}, \\
+  \frac{\partial R}{\partial N_\nu} & = &
+  -\sum_\ell \frac{\partial V^\ell}{\partial N_\nu}.
+\end{eqnarray}
+The residual volume at the next time is then given by the Taylor
+expansion
+\begin{equation}
+  R^{n+1} \approx R^n + \frac{\partial R}{\partial t} \Delta t.
+\end{equation}
+Setting $R^{n+1}=0$, the equation is divided by $\Delta t$, yielding
+\begin{equation}
+  \frac{R^n}{\Delta t} + \frac{\partial R}{\partial t} = 0.
+\end{equation}
+
+%----------------------------------------------------------------------
+
+\subsection{Compaction}
+
+Porosity will in general depend on the fluid pressure, $p=p^w$, and
+this dependency is taken into account by the rock compressibility
+$c^r$:
+\begin{equation}
+  c^r = \frac{1}{\phi} \frac{\partial\phi}{\partial p},
+  \quad c^r\geq 0.
+\end{equation}
+Assuming a constant compressibility, this equation is integrated
+yielding
+\begin{eqnarray}
+  \phi(p) & = & \phi_0 \exp\left( c^r \Delta p \right), \\
+  & \approx & \phi_0 \left( 1 + c^r \Delta p +
+    \frac{1}{2} \left(c^r\right)^2 \Delta p^2 \right),
+  \quad \Delta p = p-p_0.
+\end{eqnarray}
+The reference porosity $\phi_0$ is given at the initial pressure
+$p_0$, which may be taken to the initial water phase pressure.
+
+%----------------------------------------------------------------------
+
+\subsection{Initialisation}
+
+The fluid system is initialised such that the residual volume is zero
+everywhere, and that the fluids are in a hydrostatic pressure
+distribution. Given a pressure at a datum depth, $p(z_D)=p_D$, a
+temperature as a function of depth, $T(z)$, and a overall composition
+also as a function of depth, $C_\nu(z)$, the initial pressures in all
+gridblocks is set to the datum pressure, and an initial amount of
+total moles in each gridblock is (arbitrarily) set. Then the iteration
+proceeds:
+\begin{enumerate}
+\item Solve the volume balance for the total amount of mass, $N$:
+  \[
+  \left(\sum_\nu \frac{\partial R}{\partial N_\nu} C_\nu\right)
+  \Delta N = -R.
+  \]
+\item Calculate new phase states by an equation of state.
+\item Set new gridblock pressure by a hydrostatic relation:
+  \[
+  p = p_D - g \sum_\ell \rho^\ell S^\ell \left(
+    z - z_D
+  \right).
+  \]
+\end{enumerate}
+The iteration terminates once $R=0$.
+
+%======================================================================
+
+\csection{Conservation of mass}
+
+The compositional mass conservation law states
+\cite{allen1988,peaceman1978}
+\begin{equation}
+  \frac{\partial N_\nu}{\partial t} + \int_{\partial\Omega}
+  \sum_\ell \xi^\ell C_\nu^\ell \vec u^\ell\cdot\vec n\, dS = q_\nu,
+\end{equation}
+where $N_\nu$ is the component mass, $\xi^\ell$ is the phase molar
+density, $C_\nu^\ell$ is the mole fraction of component $\nu$ in phase
+$\ell$, $q_\nu$ is the mass source, and $\vec u^\ell$ is the phase
+Darcy velocity:
+\begin{equation}
+  \vec u^\ell = -\lambda^\ell \tensor{K}\nabla\Psi^\ell.
+\end{equation}
+Herein, $\lambda^\ell=k_r^\ell/\mu^\ell$ is the phase mobility,
+$k_r^\ell$ is its relative permeability, $\mu^\ell$ is the phase
+viscosity, $\tensor K$ is the absolute permeability, and
+$\nabla\Psi^\ell$ is the phase potential gradient:
+\begin{equation}
+  \nabla\Psi^\ell = \nabla p^\ell + \rho^\ell \nabla b,
+\end{equation}
+in which $p^\ell$ is the phase pressure, $\rho^\ell$ the mass
+density, and $b$ is the body force, given by
+\begin{equation}
+  \nabla b = g \nabla z + \frac{\omega^2}{2}
+   \nabla\|\vec a_{x,y} - \vec (x,y,0)\|_2^2.
+\end{equation}
+$g$ is the gravitational acceleration
+constant, $z$ is the coordinate along the $z$-axis (pointing upwards),
+$\omega$ is the centrifuge rotational speed, $\vec a$ is the centrifuge
+center in the $(x,y)$-plane, and the norm is the Euclidian distance from
+the center to the current coordinate, projected into the $(x,y)$-plane.
+
+%----------------------------------------------------------------------
+
+\subsection{Capillary pressures and relative permeabilities}
+
+Phase saturations are defined by
+\begin{equation}
+  S^\ell = \frac{V^\ell}{\sum_\ell V^\ell}.
+\end{equation}
+Notice that $\sum_\ell S^\ell=1$, such that $S^g=1-S^o-S^w$. The phase
+pressures are related by the capillary pressures:
+\begin{eqnarray}
+  p^o & = & p^w + p_c^{ow}\left(S^w\right), \\
+  p^g & = & p^o + p_c^{go}\left(S^g\right) =
+  p^w + p_c^{ow}\left(S^w\right) + p_c^{go}\left(S^g\right).
+\end{eqnarray}
+Relative permeabilities are assumed to have the functional dependency
+\begin{equation}
+  k_r^\ell = k_r^\ell\left( S^w, S^g \right).
+\end{equation}
+
+%----------------------------------------------------------------------
+
+\subsection{Mass sources}
+
+The mass source, $q_\nu$, may either be given explicitly for each
+component, or a total sink, $q_T<0$, may be given. Then the individual
+$q_\nu$ are:
+\begin{eqnarray}
+  q_\nu & = & \sum_\ell C_\nu^\ell q^\ell, \\
+  q^\ell & = & f^\ell q_T, \\
+  f^\ell & = & \frac{\lambda^\ell}{\sum_\ell \lambda^\ell}.
+\end{eqnarray}
+
+%======================================================================
+
+\csection{Conservation of energy}
+
+The general energy conservation law states \cite{allen1988,welty1984}
+\begin{equation}
+  \frac{\partial}{\partial t}
+  \int_\Omega\left(
+    (1-\phi)\rho^r e^r +
+    \phi \sum_\ell S^\ell \rho^\ell e^\ell
+  \right)\, dV +
+  \int_{\partial\Omega} \left(
+    \sum_\ell \rho^\ell h^\ell \vec u^\ell -
+    \kappa\nabla T
+  \right)\cdot\vec n\, dS = q^e.
+\end{equation}
+It includes the energy stored in the rock phase and heat conduction in
+the bulk matrix, in addition to fluid energy and transport. $e^\ell$
+is the specific internal energy of phase $\ell$, $h^\ell$ is the
+enthalpy, and $\kappa$ is the rock heat conductivity tensor. The
+system temperature is $T$, and Fourier's law has been used to describe
+the conductive heat flow. $q^e$ is the energy source.
+
+The enthalpy contains both the internal energy and the compressive
+heating, and neglecting the latter, $h^\ell=e^\ell$. Furthermore,
+assuming that only the enthalpy density $\rho^\ell h^\ell$ exhibits
+material change as the temperature is varied, the energy conservation
+law becomes
+\begin{equation}
+  \int_\Omega\left(
+    (1-\phi) \frac{\partial\left(\rho^r h^r\right)}{\partial T} +
+    \phi\sum_\ell
+    S^\ell \frac{\partial\left(\rho^\ell h^\ell\right)}{\partial T}
+  \right)\frac{\partial T}{\partial t}\, dV +
+  \int_{\partial\Omega} \left(
+    \sum_\ell \rho^\ell h^\ell \vec u^\ell -
+    \kappa\nabla T
+  \right)\cdot\vec n\, dS = q^e.
+\end{equation}
+Assuming piecewise constant properties yields the final form of the
+energy conservation law:
+\begin{equation}
+  \underbrace{\left(
+      V^r \frac{\partial\left(\rho^r h^r\right)}{\partial T} +
+      \sum_\ell
+      V^\ell \frac{\partial\left(\rho^\ell h^\ell\right)}{\partial T}
+    \right)}_{\delta^T}\frac{\partial T}{\partial t} +
+  \int_{\partial\Omega} \left(
+    \sum_\ell \rho^\ell h^\ell \vec u^\ell -
+    \kappa\nabla T
+  \right)\cdot\vec n\, dS = q^e.
+\end{equation}
+The temperature derivative of $\rho^\ell h^\ell$ is referred to as the
+phase heat capacity, and it must be positive.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "td"
+%%% End: 

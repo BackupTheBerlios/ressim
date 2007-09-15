@@ -1,0 +1,249 @@
+\chapter{Fluid}
+
+\minitoc
+
+The fluid module calculates and stores PVT properties for a general
+compositional fluid.
+
+%======================================================================
+
+\csection{Static fluid data}
+
+The different fluid phases are enumerated:
+\begin{lstlisting}
+  enum Phase {
+    WATER, OIL, GAS;
+  }
+\end{lstlisting}
+Fluid components are instances of the Component class;
+\begin{lstlisting}
+  class Component {
+    String name; // Component name
+    int index;   // Component index $\nu$
+
+    double M; // Component molecular weight $M_\nu$
+
+    double Tc; // Critical temperature $T_\nu^c$
+    double pc; // Critical pressure $p_\nu^c$
+
+    double omega; // Pitzer's acentric factor $\omega_\nu$
+
+    double[] d; // Binary interaction coefficients $d_{ij}$
+  }
+\end{lstlisting}
+which are collected in a component database:
+\begin{lstlisting}
+  class Components {
+    Map<String, Component> mapComponent; // Name-based retrival
+    Component[] indexComponent;          // Index-based retrival
+  }
+\end{lstlisting}
+
+Generic data may be associated with each phase:
+
+\begin{lstlisting}
+  class PhaseData<T> {
+    T water; // Water property
+    T oil;   // Oil property
+    T gas;   // Gas property
+
+    T get(Phase phase);
+    void set(Phase phase, T value);
+  }
+\end{lstlisting}
+
+A composition is used for storing global mass compositions $N_\nu$ or
+phase compositions $N_\nu^\ell$:
+
+\begin{lstlisting}
+  class Composition {
+    double[] N;
+  }
+\end{lstlisting}
+
+%======================================================================
+
+\csection{Equation of state calculations}
+
+An equation of state represents the interface to a general PVT
+calculation (black-oil, compositional, etc):
+
+\begin{lstlisting}
+  interface EquationOfState {
+    PhaseData<EquationOfStateData> calculatePhaseState(
+      double p, Composition N, double T,
+      PhaseData<EquationOfStateData> data);
+  }
+\end{lstlisting}
+The global pressure (taken as the oil pressure), composition and
+temperature are used to calculate the phase compositions, stored in an
+auxiliary data class for each phase:
+
+\begin{lstlisting}
+  class EquationOfStateData {
+    boolean present; // Phase present?
+
+    double      V; // $V^\ell$
+    Composition N; // $N_\nu^\ell$
+    double     xi; // $\xi^\ell$
+
+    double     dVdp; // $\left.\partial V^\ell/\partial p\right|_{T,N_\nu^\ell,\forall\nu}$
+    double     dVdT; // $\left.\partial V^\ell/\partial T\right|_{p,N_\nu^\ell,\forall\nu}$
+    double[]   dVdN; // $\left.\partial V^\ell/\partial N_\nu^\ell\right|_{p,T,N_\mu^\ell,\forall\mu\neq\nu}$
+
+    double[]   dNdp; // $\left.\partial N_\nu^\ell/\partial p\right|_{p,T,N_\mu,\forall\mu}$
+    double[]   dNdT; // $\left.\partial N_\nu^\ell/\partial T\right|_{p,T,N_\mu,\forall\mu}$
+    double[][] dNdN; // $\left.\partial N_\mu^\ell/\partial N_\nu\right|_{p,T,N_\mu,\forall\mu\neq\nu}$
+
+    double h; // $\rho^\ell h^\ell$
+    double c; // $\left.\partial\left(\rho^\ell h^\ell\right)/\partial T\right|_{p,N_\nu,\forall\nu}$
+
+    double mu; // $\mu^\ell$
+  }
+\end{lstlisting}
+
+%======================================================================
+
+% \csection{PVT calculations}
+
+% The PVT calculations use a PVT class which stores the basic functions,
+% provided on an input-file as tables. Obviously, only a single instance
+% of the PVT class is needed.
+
+% \begin{lstlisting}
+%   class PVT {
+
+%     // Saturated solubilities
+%     PhaseData<Function2D> R;
+
+%     // Volume factors
+%     PhaseData<Function3D> B;
+
+%     // Enthalpies
+%     PhaseData<Function3D> h;
+
+%     // Viscosities
+%     PhaseData<Function3D> mu;
+
+%     // PVT calculations for saturated conditions (free oil and gas)
+%     PVTData calculateSaturated(
+%        PhaseData<Double> p, // Phase pressures
+%        double T,            // Temperature
+%        PVTData data         // PVT data storage
+%       );
+
+%     // PVT calculations for undersaturated oil (no gas phase)
+%     PVTData calculateUndersaturatedOil(
+%        PhaseData<Double> p, // Phase pressures
+%        double Ro,           // Solubility of the gas in the oil phase
+%        double T,            // Temperature
+%        PVTData data         // PVT data storage
+%       );
+
+%     // PVT calculations for undersaturated gas (no oil phase)
+%     PVTData calculateUndersaturatedGas(
+%        PhaseData<Double> p, // Phase pressures
+%        double Rg,           // Solubility of the oil in the gas phase
+%        double T,            // Temperature
+%        PVTData data         // PVT data storage
+%       );
+%   }
+% \end{lstlisting}
+
+% The current phase state dictates which PVT calculation function to
+% call.
+
+% %----------------------------------------------------------------------
+
+% \csubsection{PVT data}
+
+% PVTData is a storage class with the following content:
+
+% \begin{lstlisting}
+%   class PVTData {
+%     PhaseData<Solubility> solubility;
+%     PhaseData<Density>    density;
+%     PhaseData<Enthalpy>   enthalpy;
+%     PhaseData<Viscosity>  viscosity;
+%   }
+% \end{lstlisting}
+
+% It has four auxiliary classes which store phase specific
+% data. Saturated solubilities and derivatives are:
+
+% \begin{lstlisting}
+%   class Solubility {
+%     // Saturated solubility from table look-up, $R^\ell$
+%     double Rsat;
+
+%     // Derivatives of $R^\ell$
+%     double dRdp; // $\partial R^\ell/\partial p^\ell$
+%     double dRdT; // $\partial R^\ell/\partial T$
+%   }
+% \end{lstlisting}
+
+% Density data and needed derivatives are stored as:
+
+% \begin{lstlisting}
+%   class Density {
+%     // Volume factors $B^\ell$ and the inverse $b^\ell$
+%     double B, b;
+
+%     // Phase densities $\rho^\ell$
+%     double rho;
+
+%     // Partial derivatives of $B^\ell$
+%     double dBdp; // $\partial B^\ell/\partial p^\ell$
+%     double dBdR; // $\partial B^\ell/\partial R^\ell$
+%     double dBdT; // $\partial B^\ell/\partial T$
+
+%     // Derivatives of $b^\ell$
+%     double dbdp; // $db^\ell/d p^\ell$
+%     double dbdR; // $\partial b^\ell/\partial R^\ell$
+%     double dbdT; // $db^\ell/d T$
+
+%     // Density derivatives
+%     double drhodp; // $d\rho^\ell/d p^\ell$
+%     double drhodR; // $\partial\rho^\ell/\partial R^\ell$
+%     double drhodT; // $d\rho^\ell/d T$
+%   }
+% \end{lstlisting}
+
+% Enthalpy, internal energy, and their derivatives are:
+
+% \begin{lstlisting}
+%   class Enthalpy {
+%     // Enthalpy and internal energy
+%     double h, e;
+
+%     // Partial enthalpy derivatives
+%     double dhdp; // $\partial h^\ell/\partial p^\ell$
+%     double dhdR; // $\partial h^\ell/\partial R^\ell$
+%     double dhdT; // $\partial h^\ell/\partial T$
+
+%     // Internal energy derivatives
+%     double dedp; // $d e^\ell/d p^\ell$
+%     double dedR; // $\partial e^\ell/\partial R^\ell$
+%     double dedT; // $d e^\ell/d T$
+
+%   }
+% \end{lstlisting}
+
+% Viscosity and $v^\ell=b^\ell/\mu^\ell$ with derivatives are:
+
+% \begin{lstlisting}
+%   class Viscosity {
+%     // Viscosity and inverse volume factor over viscosity
+%     double mu, v;
+
+%     // Derivatives of $v^\ell$
+%     double dvdp; // $d v^\ell/d p^\ell$
+%     double dvdR; // $\partial v^\ell/\partial R^\ell$
+%     double dvdT; // $d v^\ell/d T$
+%   }
+% \end{lstlisting}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

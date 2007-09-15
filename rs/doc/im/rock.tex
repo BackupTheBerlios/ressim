@@ -1,0 +1,70 @@
+\chapter{Rock}
+\label{chap:rock}
+
+\minitoc
+
+Rock data can be classified into two types: static rock data and
+rock/fluid interaction data. The former is in general given on each
+gridblock, and includes porosity, permeability, compressibility, etc.
+The latter is given regionwise, and constitutes relative permeability
+and capillary pressures.
+
+All the rock data structures reside in the namespace
+\texttt{no.uib.cipr.rs.rock}.
+
+%======================================================================
+
+\csection{Rock data}
+
+The static rock data is stored in the Rock class:
+\begin{lstlisting}
+  class Rock {
+
+    // Initial porosity $\phi_0$
+    double getInitialPorosity();
+
+    // Rock compaction, $c^r$
+    double getRockCompaction();
+
+    // Conductivity tensors
+    Tensor3D getAbsolutePermeability(); // Absolute permeability, $\textbf K$
+    Tensor3D getRockHeatConductivity(); // Rock heat conductivity, $\kappa$
+
+    // Rock heat capacity, $\partial\left(\rho^r h^r\right)/\partial T$
+    double getRockHeatCapacity();
+
+    // Region name
+    String getRegion();
+  }
+\end{lstlisting}
+The region name may be used to determine the associated rock/fluid
+properties for the host gridcell.
+
+%======================================================================
+
+\csection{Rock/fluid data}
+
+Rock/fluid data is stored in the RockFluid class:
+\begin{lstlisting}
+  abstract class RockFluid {
+
+    // Calculates $k_r^\ell$
+    abstract void calculateRelativePermeability
+      (PhaseDataDouble S, Element el, PhaseDataDouble kr);
+
+    // Calculates $p_c^{ow}$
+    abstract double calculateOilWaterCapillaryPressure
+      (double Sw, Element el);
+
+    // Calculates $p_c^{go}$
+    abstract double calculateGasOilCapillaryPressure
+      (double Sg, Element el);
+  }
+\end{lstlisting}
+A reference to the actual element is included as some specific models
+need to know the surrounding geometry.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

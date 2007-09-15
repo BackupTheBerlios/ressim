@@ -1,0 +1,153 @@
+begin RunSpec
+	name dimensionreduced2d
+	directory .
+end
+
+begin Mesh
+	
+	% MPFA does not work for dimension reduced mesh
+	begin AbsPermTransmissibilities
+		type TPFA
+	end
+	
+	begin Points
+
+		NumberOfPoints		6			
+	
+		array Coordinates     
+			0.0 0.0 0.0
+			1.0 0.0 0.0
+			2.0 0.0 0.0
+			0.0 1.0 0.0
+			1.0 1.0 0.0
+			2.0 1.0 0.0
+		end
+	
+	end
+	
+	begin Interfaces
+	
+		NumberOfInterfaces	12
+	
+		array Points  
+			2 0 1
+			2 1 4
+			2 4 3
+			2 3 0
+			
+			2 1 2
+			2 2 5
+			2 5 4
+			2 4 1
+			
+			1 1
+			2 1 4
+			1 4
+			2 4 1			
+					end
+	
+		array Areas   % area(numInterfaces)
+			1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 0.1 0.1 1.0 1.0
+		end
+	
+		array Normals  % x,y,z (numInterfaces)
+			0.0 -1.0 0.0
+			1.0 0.0 0.0
+			0.0 1.0 0.0
+			-1.0 0.0 0.0
+			
+			0.0 -1.0 0.0
+			1.0 0.0 0.0
+			0.0 1.0 0.0
+			-1.0 0.0 0.0
+			
+			0.0 -1.0 0.0
+			1.0 0.0 0.0
+			0.0 1.0 0.0
+			-1.0 0.0 0.0
+		end
+	
+		array CenterPoints  % x,y,z (numInterfaces)
+			0.5 0.0 0.0
+			1.0 0.5 0.0
+			0.5 1.0 0.0
+			0.0 0.5 0.0
+			
+			1.5 0.0 0.0
+			2.0 0.5 0.0
+			1.5 1.0 0.0
+			1.0 0.5 0.0
+			
+			1.0 0.0 0.0
+			1.0 0.5 0.0
+			1.0 1.0 0.0
+			1.0 0.5 0.0
+		end
+	end
+	
+	begin Elements
+
+		NumberOfElements	3
+		
+		array Interfaces   
+		   	4 0 1 2 3 
+		   	4 4 5 6 7
+		   	4 8 9 10 11
+		end
+	
+		%optional data for elements
+		array Volumes  % volume(numElements)
+			1.0 1.0 0.01
+		end
+	
+		array Centers  % x, y, z (numElements)
+			0.5 0.5 0.0
+			1.5 0.5 0.0
+			1.0 0.5 0.0
+		end
+	
+	end
+
+	begin Connections
+	
+		NumberOfConnections		2 %only internal
+	
+		array Connections % 2*numConnections numbers
+			1 11
+			7 9
+		end
+		
+	end	
+		
+	
+	begin RockRegionMap
+	
+		array Stone
+			0 1 2
+		end
+	
+	end
+	
+	begin RockData
+	
+		% a single value is duplicated for all cells
+		array poro
+			0.2 0.2 0.9
+        end
+
+		array permx
+			1.0 1.0 100.0
+		end
+
+		%a specific value for all cells
+		array permy
+			10.0  8.0  100.0
+		end
+
+		array permz
+			1.0  2.0  1.0 
+		end
+
+	end
+
+end

@@ -1,0 +1,99 @@
+begin MeshGenerator
+
+	type StructuredMeshGenerator
+
+	dimension 3
+
+	begin Geometry
+
+		X0	0.0 
+		Y0	0.0 
+		Z0	0.0 
+
+		array Nx
+			28
+		end
+
+		array Dx
+			0.5
+		end
+
+		array Ny
+			1
+		end
+
+		array Dy
+			1.0
+		end
+
+		array Nz
+			36
+		end
+
+		array Dz
+			-0.5
+		end
+
+		RegionMappingType uniform
+
+		begin StructuredTransform
+			type RotateYTransZTransform
+			
+			Theta  0.5236
+			
+			Dz     0.0
+		end
+	end
+
+	begin RockRegionMap
+		array Rock
+			1
+		end
+	end
+
+	begin RockData
+
+		type Global
+
+		array poro
+			0.2
+		end
+
+		array permx 
+			1e-15
+		end
+
+		array permy
+			1e-15
+		end
+
+		array permz 
+			1e-16
+		end
+
+	end
+end
+
+%----------------------------------------------------------------------
+
+begin Sources
+
+	% coordinates: x=9.2320655, y=0.5, z=-11.99037
+	begin Injector
+		type CenterPointCellPicker
+
+		X	9.2320655
+		Y	0.5
+		Z	-15.5884
+	end
+
+	% coordinates: x=12.1243474, y=0.5, z=7.0000
+	begin Producer
+		type CenterPointCellPicker
+		
+		X	12.143474
+		Y 	0.5
+		Z	7.0
+	end
+
+end

@@ -1,0 +1,282 @@
+\chapter{Using the simulation suite}
+
+\minitoc
+
+The simulator is written in the Java programming language \cite{java},
+and hence should be usable on most platforms. It requires at least
+version 1.5 of the Java development environment.
+
+%======================================================================
+
+\csection{Retrieving and building the code}
+
+The simulator code is stored in a CVS (concurrent version system)
+repository on the host \texttt{rs.cipr.uib.no} (an alias for the
+web-hotel \texttt{hilton.uib.no}). You can get an account on that
+machine by inquiring on \texttt{bs.uib.no}.
+
+The CVS repository root is \texttt{/home/www/rs.cipr.uib.no/cvsroot},
+and the project name is just \texttt{rs}. Once checked out, the
+directory structure is as follows:
+
+\begin{tabular}[c]{ll}
+  \texttt{bin}    & Binaries (\texttt{.class} files) \\
+  \texttt{dist}   & The packaged simulator code \\
+  \texttt{data}   & Data for simulator testing \\
+  \texttt{doc}    & \LaTeX\ documentation \\
+  \texttt{ex}     & Examples \\
+  \texttt{lib}    & Libraries used by the simulator \\
+  \texttt{libsrc} & Source code of the libraries \\
+  \texttt{src}    & Source code (\texttt{.java} files)
+\end{tabular}
+
+Once it has been checked out, it can be built by running the included
+Ant-script\footnote{\texttt{http://ant.apache.org}}
+\texttt{build.xml}. Several targets are supported, including:
+
+\begin{tabular}[c]{ll}
+  \texttt{build} & Compiles the simulator \\
+  \texttt{clean} & Cleans out the binaries \\
+  \texttt{jar} & Build \texttt{rs/dist/rs.jar} \\
+  \texttt{javadoc} & Creates Javadoc in \texttt{rs/dist/doc}
+\end{tabular}
+
+For visualization, GMV\footnote{\texttt{http://laws.lanl.gov/XCM/gmv}}
+has been used. It is freely available for numerous platforms.
+
+The code has been developed using the
+Eclipse\footnote{\texttt{http://www.eclipse.org}} development
+environment.
+
+%======================================================================
+
+\csection{Running a simulation}
+
+First, build the \texttt{rs.jar} file by issuing \texttt{ant jar}.
+Then copy the resulting \texttt{rs/dist/rs.jar} file to somewhere
+permanent. For convenience, make an alias like the following:
+\begin{verbatim}
+> alias rs="java -jar /absolute/path/to/rs.jar"
+\end{verbatim}
+Then typing just \texttt{rs} will start the simulator:
+\begin{verbatim}
+> rs
+
+        CIPR in-house reservoir simulation suite
+
+Usage:
+
+        mesh     - Generate a mesh
+        mesh_gmv - Visualize a mesh using GMV
+        run      - Run a simulation
+        pvt      - Calculate PVT properties
+        upscale  - Perform upscaling
+        run_gmv  - Visualize simulation results using GMV
+\end{verbatim}
+
+%----------------------------------------------------------------------
+
+\csubsection{Generating a mesh}
+
+Typing \texttt{rs mesh} will start the mesh generator. It reads the
+input file \texttt{mesh}, whose contents are described in
+Chapter~\ref{mesh-generators}:
+\begin{verbatim}
+> rs mesh
+
+        CIPR in-house reservoir simulation suite
+
+        Mesh generator
+
+MeshGenerator: 3D Structured mesh generator
+15006 points
+72000 interfaces
+33100 neighbour connections
+0 non-neighbour connections
+33100 connections
+12000 elements
+TransmissibilityMethod: Using multi-point flux approximation with continuity=1.0
+\end{verbatim}
+The resulting mesh may be inspected by first issuing \texttt{rs
+  mesh\_gmv}:
+\begin{verbatim}
+> rs mesh_gmv
+
+        CIPR in-house reservoir simulation suite
+
+        GMV mesh export
+
+15006 points
+72000 interfaces
+33100 neighbour connections
+0 non-neighbour connections
+33100 connections
+12000 elements
+\end{verbatim}
+Then GMV may be started:
+\begin{verbatim}
+> cd visualization
+> gmv -i mesh &
+\end{verbatim}
+
+%----------------------------------------------------------------------
+
+\csubsection{Performing a simulation}
+
+Once you're satisfied with the mesh, a simulation may be started by
+typing \texttt{rs run}. The simulator then reads the \texttt{run}
+file, described in Chapter~\ref{chapter:input}. For example:
+\begin{verbatim}
+> rs run
+
+        CIPR in-house reservoir simulation suite
+
+        Reservoir flow simulator
+
+RunSpec: Simulating from 0.0 to 1.0 million years
+RockFluid:Rock: Two phase properties
+Components: (14) H2O C1 C10 C2 C3 C4 C5 C6 C7 C8 C9 CO2 H2S N2
+EquationOfState: Using Peng-Robinson cubic equation of state
+Sources:Fixed: outlet
+Sources:Regular: source
+Sources:Outlet:
+Subdomains: 1
+[1] 12000 elements
+
+ ...
+
+\end{verbatim}
+Some information on the run is first listed, then the mesh size.
+Messages starting with \texttt{[\#]}, where \# is a number, indicate
+subdomain specific messages. Here, the number of connections and
+elements on subdomain 1 is given. During the simulation, these
+messages are printed at every timestep:
+\begin{verbatim}
+t = 1.300000e-01 (13%), dt = 8.294701e-03
+  1 2.214939e-06
+  2 5.029365e-08
+R = 2.997585, NR = 1.666667, T = 2.999976. Limit: Pressure iterations
+\end{verbatim}
+Here, the current time is given, the percentage completed, and the
+current timestep size. The next two lines given the pressure
+iterations, with the iteration count and the maximum relative pressure
+change that iteration. The last gives information on how the timestep
+will be subsequently modified. \texttt{R} refers to residual volume,
+\texttt{NR} to the number of Newton-Raphson pressure iterations, and
+\texttt{T} to the throughput.  Numbers larger than one indicates that
+the timestep should increase, while below indicates a decrease. The
+most conservative is always chosen.
+
+It is possible to restart a simulation from a saved state. The stored
+states are located in the \texttt{simulation} directory:
+\begin{verbatim}
+> ls simulation
+0.000000  0.130000  0.260000  0.390000  0.520000  0.650000  0.770000 ...
+\end{verbatim}
+You may then restart by issuing for instance
+\begin{verbatim}
+> rs run 0.770000
+
+        CIPR in-house reservoir simulation suite
+
+        Reservoir flow simulator
+
+RunSpec: Simulating from 0.77 to 1.0 million years
+...
+\end{verbatim}
+which continues from the given time.
+
+After, or even during, a simulation, the results may be inspected. To
+do this, simply issue \texttt{rs run\_gmv}:
+\begin{verbatim}
+> rs run_gmv
+
+        CIPR in-house reservoir simulation suite
+
+        GMV field export
+
+15006 points
+72000 interfaces
+33100 neighbour connections
+0 non-neighbour connections
+33100 connections
+12000 elements
+Reading 10 fields .......... done
+Removing 10 files .......... done
+Writing output files .......... done
+\end{verbatim}
+Then start the GMV application:
+\begin{verbatim}
+> cd visualization
+> gmv -i 0000 &
+\end{verbatim}
+
+%----------------------------------------------------------------------
+
+\csubsection{Upscaling and PVT calculations}
+
+Upscaling is done by issuing \texttt{rs upscale}. It reads the file
+\texttt{upscale}, and requires that a mesh has been generated. Outputs
+upscaled permeabilities and porosities.
+
+\begin{verbatim}
+> rs upscale
+
+        CIPR in-house reservoir simulation suite
+
+        Absolute permeability upscaling
+
+symmetry: k12 = 1.7081674899790647E-10, k21 = 1.7153376620723159E-10
+symmetry: using kxy = kyx = k12
+eigenvalues: 8.732770628490563 50.50000000170697
+\end{verbatim}
+
+PVT properties can be investigated by \texttt{rs pvt}, which reads the
+file \texttt{pvt}. The content of this file is described in
+Chapter~\ref{chapter:pvt}. Example:
+
+\begin{verbatim}
+> rs pvt
+
+        CIPR in-house reservoir simulation suite
+
+        PVT property calculation
+
+Components: (14) H2O C1 C10 C2 C3 C4 C5 C6 C7 C8 C9 CO2 H2S N2
+EquationOfState: Using Peng-Robinson cubic equation of state
+
+---------------------------------------
+        PVT properties
+---------------------------------------
+
+Phase                     WATER
+...
+
+Phase                       OIL
+...
+
+Phase                       GAS
+...
+\end{verbatim}
+
+%======================================================================
+
+\csection{Examples}
+
+The \texttt{ex} directory contains several examples. These include:
+
+\begin{tabular}[c]{ll}
+  \texttt{bl} & Buckley-Leverett \\
+  \texttt{migbench} & Hydrocarbon migration \\
+  \texttt{mpfa} & Skew grid test \\
+  \texttt{qfive} & Quarter-of-a-fivespot, several variants \\
+  \texttt{qfivefrac} & Quarter-of-a-fivespot on a fractured medium \\
+  \texttt{tri} & Triangular grids
+\end{tabular}
+
+The \texttt{ex/pvt} directory contains case-independent PVT files.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "ug"
+%%% End: 

@@ -1,0 +1,22 @@
+\chapter{Mesh generators}
+\label{chap:meshgen}
+
+\minitoc
+
+The mesh generator entry point is \texttt{meshgen.Main}. When run, it
+does the following:
+\begin{enumerate}
+\item Generates a fine mesh.
+\item Optionally creates a dual continuum.
+\item Splits the fine mesh into submeshes for parallelization and
+  upscaling.
+\item Calculates transmissibilities for each submesh.
+\end{enumerate}
+The end result is stored in the \texttt{gridding} directory, where the
+fine mesh is stored as \texttt{gridding/mesh}, and the submeshes in
+the files \texttt{gridding/mesh.\#}.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

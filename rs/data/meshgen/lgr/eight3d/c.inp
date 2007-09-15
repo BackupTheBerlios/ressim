@@ -1,0 +1,49 @@
+		begin C
+			array CoarseElementIJK
+				1 1 2
+			end
+			begin FineGeometry
+				array Nx
+					4
+				end
+				array Dx
+					1
+				end
+				array Ny
+					4
+				end
+				array Dy
+					1
+				end
+				array Nz
+					3
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			
+			begin RockRegionMap
+				array C
+		   			1   
+				end
+			end
+			
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+			
+		end

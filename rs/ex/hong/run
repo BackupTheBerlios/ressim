@@ -1,0 +1,61 @@
+% Qfive setup where light hydrocarbons displace heavier ones.
+% Supercritical, so there's really only one phase (oil/gas).
+
+begin RunSpec
+
+	TimeUnit	Days
+
+	EndTime		3000
+
+	ReportEvery	50
+
+	TimeStepMaximum	50
+	%TimeStepMinimum	2
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	1.5e+7
+
+	Temperature	350
+
+	C1			0.5
+	C3			0.2
+	C6			0.3
+end
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Fixed
+		begin Injector
+			Temperature	350
+			C1		0.8
+			C3		0.15
+			C6		0.05
+		end
+	end
+
+	begin Outlet
+		begin Producer
+			Mass	-1e-2
+		end
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/cubic
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+	end
+end
+

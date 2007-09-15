@@ -1,0 +1,93 @@
+begin MeshGenerator
+
+	type StructuredMeshGenerator
+
+	dimension 3
+
+	begin Geometry
+
+		% Origin
+		X0	0.0 
+		Y0	0.0 
+		Z0	0.0 
+
+		% X-domains specification	
+		array Nx
+			40
+		end
+
+		array Dx
+			7.62
+		end
+
+		% Y-domains specification	
+		array Ny
+			40
+		end
+
+		array Dy
+			7.62
+		end
+
+		array Nz
+			1
+		end
+
+		array Dz
+			-1
+		end
+
+		RegionMappingType uniform
+
+	end
+
+	begin RockRegionMap
+
+		% Names must match RockRegion input data
+		array Rock
+		   1     % indices must match those produced by RegionMappingType above
+		end
+
+	end
+
+	begin RockData
+
+		type Global
+
+		array poro
+			0.1
+		end
+
+		array permx 
+			6.0795e-14
+		end
+
+		array permy
+			6.0795e-14
+		end
+
+		array permz 
+			6.0795e-14
+		end
+
+	end
+end
+
+%-------------------------------------------------------------------------------
+
+begin Sources
+
+	begin Producer
+		array elements
+			1
+		end
+	end
+
+	begin Injector
+		array elements
+			1600
+		end
+	end
+
+end
+

@@ -1,0 +1,90 @@
+begin Mesh
+
+	type StructuredMesh
+	
+	dimension 2
+	
+	begin Domains
+
+		%origin
+		X0	0.0 
+		Y0	0.0 
+		
+		%X-domains specification	
+		array Nx
+			1 2 3
+		end
+
+		array Dx
+			1.0 2.0 3.0
+		end
+		
+		%Y-domains specification	
+		array Ny
+			1 2 
+		end
+
+		array Dy
+			1.0 2.0
+		end
+		
+		%uniform, layer or domain
+		RegionMappingType uniform
+		
+	end
+
+
+	begin RockRegionMap
+
+		%names must match RockRegion input data
+		array Stone
+		   1     % indices must match those produced by RegionMappingType above
+		end
+			
+	end
+
+	begin RockData
+	
+		type Global
+
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		
+		array permy
+			1.0 
+		end
+		
+		array permz 
+			1.0 
+		end
+		
+	end
+	
+	begin Sources
+
+		begin Injector
+
+			% element indices
+			array Elements
+				1
+			end
+			
+		end
+		
+		begin Producer
+		
+			array Elements
+				18
+			end
+			
+		end
+	
+	end
+
+end
+
+

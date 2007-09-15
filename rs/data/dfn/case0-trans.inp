@@ -1,0 +1,685 @@
+begin transmissibility
+	begin 29
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			21 22 
+		end
+
+	end
+
+	begin 0
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			0 1 
+		end
+
+	end
+
+	begin 49
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			35 43 
+		end
+
+	end
+
+	begin 39
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			28 29 
+		end
+
+	end
+
+	begin 24
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			17 25 
+		end
+
+	end
+
+	begin 61
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			46 47 
+		end
+
+	end
+
+	begin 50
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			36 37 
+		end
+
+	end
+
+	begin 23
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			17 18 
+		end
+
+	end
+
+	begin 34
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			24 32 
+		end
+
+	end
+
+	begin 52
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			37 45 
+		end
+
+	end
+
+	begin 30
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			21 29 
+		end
+
+	end
+
+	begin 18
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			12 20 
+		end
+
+	end
+
+	begin 20
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			14 15 
+		end
+
+	end
+
+	begin 42
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			30 31 
+		end
+
+	end
+
+	begin 25
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			18 19 
+		end
+
+	end
+
+	begin 57
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			42 43 
+		end
+
+	end
+
+	begin 32
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			23 31 
+		end
+
+	end
+
+	begin 43
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			30 38 
+		end
+
+	end
+
+	begin 35
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			25 26 
+		end
+
+	end
+
+	begin 13
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			9 10 
+		end
+
+	end
+
+	begin 26
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			19 20 
+		end
+
+	end
+
+	begin 44
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			32 33 
+		end
+
+	end
+
+	begin 9
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			6 7 
+		end
+
+	end
+
+	begin 19
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			13 14 
+		end
+
+	end
+
+	begin 51
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			37 38 
+		end
+
+	end
+
+	begin 28
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			20 21 
+		end
+
+	end
+
+	begin 3
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			2 3 
+		end
+
+	end
+
+	begin 41
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			29 30 
+		end
+
+	end
+
+	begin 27
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			19 27 
+		end
+
+	end
+
+	begin 58
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			43 44 
+		end
+
+	end
+
+	begin 60
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			45 46 
+		end
+
+	end
+
+	begin 17
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			12 13 
+		end
+
+	end
+
+	begin 14
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			10 11 
+		end
+
+	end
+
+	begin 1
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			1 2 
+		end
+
+	end
+
+	begin 6
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			4 5 
+		end
+
+	end
+
+	begin 36
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			26 27 
+		end
+
+	end
+
+	begin 59
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			44 45 
+		end
+
+	end
+
+	begin 5
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			3 11 
+		end
+
+	end
+
+	begin 16
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			11 12 
+		end
+
+	end
+
+	begin 46
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			33 41 
+		end
+
+	end
+
+	begin 37
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			26 34 
+		end
+
+	end
+
+	begin 56
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			41 42 
+		end
+
+	end
+
+	begin 55
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			40 41 
+		end
+
+	end
+
+	begin 33
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			24 25 
+		end
+
+	end
+
+	begin 15
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			10 18 
+		end
+
+	end
+
+	begin 11
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			8 9 
+		end
+
+	end
+
+	begin 4
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			3 4 
+		end
+
+	end
+
+	begin 40
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			28 36 
+		end
+
+	end
+
+	begin 12
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			8 16 
+		end
+
+	end
+
+	begin 45
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			33 34 
+		end
+
+	end
+
+	begin 7
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			5 6 
+		end
+
+	end
+
+	begin 2
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			1 9 
+		end
+
+	end
+
+	begin 38
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			27 28 
+		end
+
+	end
+
+	begin 53
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			38 39 
+		end
+
+	end
+
+	begin 31
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			22 23 
+		end
+
+	end
+
+	begin 47
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			34 35 
+		end
+
+	end
+
+	begin 54
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			39 47 
+		end
+
+	end
+
+	begin 21
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			14 22 
+		end
+
+	end
+
+	begin 48
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			35 36 
+		end
+
+	end
+
+	begin 10
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			7 15 
+		end
+
+	end
+
+	begin 22
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			16 17 
+		end
+
+	end
+
+	begin 8
+		array transmissibilities
+			1.73205080756888 -1.73205080756888 
+		end
+
+		array elements
+			5 13 
+		end
+
+	end
+
+end
+

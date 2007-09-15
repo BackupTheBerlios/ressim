@@ -1,0 +1,81 @@
+begin MeshGenerator
+
+	type StructuredMeshGenerator
+
+	dimension 1
+
+	begin Geometry
+
+		% Origin
+		X0	0.0 
+
+		% X-domains specification	
+		array Nx
+			100
+		end
+
+		array Dx
+			1
+		end
+
+		%uniform, layer or domain
+		RegionMappingType uniform
+
+	end
+
+	begin RockRegionMap
+
+		% Names must match RockRegion input data
+		array Rock
+		   1     % indices must match those produced by RegionMappingType above
+		end
+
+	end
+
+	begin RockData
+
+		type Global
+
+		array poro
+			1
+		end
+
+		array permx 
+			1
+		end
+
+		array permy
+			1
+		end
+
+		array permz 
+			1
+		end
+
+	end
+end
+
+%----------------------------------------------------------------------
+
+% Need to use a two-point method for a 1D mesh
+begin TransmissibilityMethod
+	type TPFA
+end
+
+%----------------------------------------------------------------------
+
+begin Sources
+
+	begin Injector
+		array Elements
+			1
+		end
+	end
+
+	begin Producer
+		array Elements
+			100
+		end
+	end
+
+end

@@ -1,0 +1,76 @@
+% Oil-migration benchmark.
+% Gravity driven oil/gas flow upwards. Gas, being lighter, is on top and
+% ahead of the oil.
+
+begin RunSpec
+
+	EndTime		1
+	TimeUnit	MillionYears
+
+	ReportEvery	1e-2
+
+	TimeStepMaximum	1e-3
+
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	-2000
+	DatumPressure	5e+6
+
+	begin Temperature
+		type            EvenLookupTable
+		dimension       1
+
+		xMin    -2600   xMax    -2000   nx      2 % Depth, z
+
+		% Temperature in Kelvin
+		array data
+			460 450
+		end
+	end
+end
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Regular
+		begin Source
+			N2	.40300e-3 % mol/s
+			CO2	.01000e-3 % mol/s
+			C1	.45396e-3 % mol/s
+			C2	.04202e-3 % mol/s
+			C3	.00887e-3 % mol/s
+			C4	.00561e-3 % mol/s
+			C5	.00567e-3 % mol/s
+			C6	.01011e-3 % mol/s
+			C7	.02878e-3 % mol/s
+			C8	.04114e-3 % mol/s
+			C9	.03220e-3 % mol/s
+			C10	.34767e-3 % mol/s
+		end
+	end
+
+	begin Fixed
+		begin Outlet
+			Temperature	450
+			H2O		1
+		end
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/cubic
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+	end
+end
+

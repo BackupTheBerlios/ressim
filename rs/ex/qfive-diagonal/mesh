@@ -1,0 +1,94 @@
+% Diagonal qfive problem (conventional)
+
+begin MeshGenerator
+
+	type StructuredMeshGenerator
+
+	dimension 2
+
+	begin Geometry
+
+		X0	0.0 
+		Y0	0.0 
+
+		array Nx
+			20
+		end
+
+		array Dx
+			0.0353553
+		end
+
+		array Ny
+			20
+		end
+
+		array Dy
+			0.0353553
+		end
+
+		RegionMappingType uniform
+
+	end
+
+	begin RockRegionMap
+
+		array Rock
+			1
+		end
+
+	end
+
+	begin RockData
+
+		type Global
+
+		array poro
+			0.2
+		end
+
+		array permx 
+			1e-12
+		end
+
+		array permy
+			1e-12
+		end
+
+		array permz 
+			1e-12
+		end
+
+	end
+end
+
+%-------------------------------------------------------------------------------
+
+begin TransmissibilityMethod
+	type O_MPFA
+
+	continuity 0.5
+end
+
+%-------------------------------------------------------------------------------
+
+begin Sources
+
+	begin Injector
+		type CenterPointCellPicker
+
+		X	0
+		Y	0
+		Z	0
+	end
+
+	begin Producer
+		type CenterPointCellPicker
+
+		X	1
+		Y	1
+		Z	0
+	end
+
+end
+

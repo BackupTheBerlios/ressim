@@ -1,0 +1,47 @@
+begin LGR2
+	array CoarseElementIJK
+		1 1 2
+	end
+	begin FineGeometry
+		array Nx
+			9 1 9 1 2 10
+		end
+		array Dx
+			0.1 0.05 0.1 0.05 0.05 0.1
+		end
+		array Ny
+			1
+		end
+		array Dy
+			1
+		end
+		array Nz
+			9 2 20 2 9
+		end
+		array Dz
+			-0.1 -0.05 -0.1 -0.05 -0.1
+		end
+			
+		RegionMappingType Uniform
+	end
+	begin RockRegionMap
+		array LGR2
+   			1
+		end
+	end
+	begin RockData
+		type Global
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		array permy
+			1.0 
+		end
+		array permz 
+			1.0 
+		end
+	end
+end % end LGR

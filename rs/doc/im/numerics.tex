@@ -1,0 +1,92 @@
+\chapter{Numerics}
+\label{chap:numerics}
+
+\minitoc
+
+The flow simulator starts with \texttt{numerics.Main}. It reads in the
+run specification, and creates one \texttt{SimulatorThread} for each
+subdomain created by the mesh generator. The threads are then all
+started and run concurrently for the duration of the simulation.
+
+A simulator thread, when started, carries out these steps:
+\begin{enumerate}
+\item Reads in the subdomain mesh.
+\item Creates a \texttt{field.Field}, which stores the primary
+  variables and calculates the secondary variables.
+\item Creates a \texttt{numerics.Discretisation} for flux
+  discretisation, and a \texttt{numerics.TimeStepper} for reporting
+  and administration.
+\item Passes control to the timestepper, which uses the discretisation
+  to update the field state.
+\end{enumerate}
+
+%======================================================================
+
+\csection{Flowcharts}
+
+The timestepper advances an initial field state forward to the desired
+endtime, and outputs the state at the given report times. When
+started, with its \texttt{doTimeStepping} method, it proceeds as
+follows:
+\begin{enumerate}
+\item Report production statistics for all outlets.
+\item Output field state, if desired.
+\item Possible reduce the timestep $\Delta t$ to meet the next report
+  time.
+\item Advance the field state forward by $\Delta t$ using the
+  \texttt{Discretisation} object:
+  \begin{itemize}
+  \item If a failure is detected, reduce the timestep, retract the
+    field state, and retry.
+  \end{itemize}
+\item Get an adjusted timestep from the \texttt{Discretisation}.
+\end{enumerate}
+
+Similarly, \texttt{Discretisation} has a \texttt{solve} method for
+determining the state at a new timestep:
+\begin{enumerate}
+\item Store the field state, for use by the timestepper in case of
+  failures.
+\item Solve the volume balance equation for the pressure
+  (\texttt{PressureNewtonRaphson}):
+  \begin{enumerate}
+  \item\label{disc:1} Assemble the Darcy and Fourier flux contributions.
+  \item Assemble the compressibility and source contributions.
+  \item Solve the resulting linear system using \texttt{LinearSolver}.
+  \item Update the pressure, and check for non-positive pressures.
+  \item Calculate new secondary variables in the field.
+  \item Check for convergence, and if not, continue from step
+    \ref{disc:1}.
+  \end{enumerate}
+\item If a thermal run, solve the energy conservation law for the
+  temperature (\texttt{TemperatureNewtonRaphson}):
+  \begin{itemize}
+  \item Assemble the advective Darcy fluxes explicitly.
+  \item Assemble the conductive Fourier fluxes implicitly.
+  \item Assemble in the capacity and source terms.
+  \item Solve the resulting system by the \texttt{LinearSolver}.
+  \item Update the temperature, and ensure that the temperature stays
+    positive.
+  \end{itemize}
+\item Solve explicitly for the molar masses
+  (\texttt{MolarMassExplicit}):
+  \begin{itemize}
+  \item Calculate flux contributions.
+  \item Calculate contributions from mass sources.
+  \item Update, and ensure that the mole numbers stay non-negative.
+  \end{itemize}
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\csection{Linear solver}
+
+A parallel linear solver is used for the solution of the linear
+systems for pressure and temperature. It uses the
+MTJ\footnote{\texttt{http://rs.cipr.uib.no/mtj}} library, and in
+particular its distributed memory matrices and solvers.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

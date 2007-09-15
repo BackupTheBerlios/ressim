@@ -1,0 +1,314 @@
+-- SUP simulation of lab experiment
+
+--------------------------------------------------
+
+RUNSPEC
+
+TITLE
+	SUP-simulation
+
+DIMENS
+	38	1	16 /
+
+
+-- ACTIVE PHASES: OIL/WATER/GAS/VAPOIL/DISGAS
+OIL
+WATER
+
+
+-- UNITS: FIELD/METRIC/LAB 
+LAB
+
+START
+	1 'FEB' 2005 /
+
+
+----  NTSFUN NTPVT NSSFUN NPPVT NTFIP NRPVT NTENDP
+TABDIMS
+  3	1	30	30	1	20	1	1 /
+
+NSTACK
+      100 /
+
+-- multipoint discretizations can be enabled here (not with MPFA in GRID section)
+--NINEPOIN
+
+FMTOUT
+
+--------------------------------------------------
+
+GRID
+
+--grid dimensions are nx=38, ny=1, nz=16
+INCLUDE
+sup-fine-wells.grdecl /
+
+
+--MDarcy for metric
+BOX
+1 18 1 1 1 16 /
+--288 cells
+
+PERMX 288*772 /
+PERMY 288*772 /
+PERMZ 288*772 /
+PORO 288*0.2116 /
+
+
+ENDBOX
+
+BOX
+19 24 1 1 1 16 /
+--96 CELLS
+
+PERMX 96*1.0 /
+PERMY 96*1.0 /
+PERMZ 96*1.0 /
+PORO 96*0.10 /
+
+
+ENDBOX
+
+BOX
+25 38 1 1 1 16 /
+--224 cells
+
+PERMX 224*1053 /
+PERMY 224*1053 /
+PERMZ 224*1053 /
+PORO 224*0.2415 /
+
+
+ENDBOX
+
+RPTGRID
+DX DY DZ PERMX PERMY PERMZ PORO /
+
+
+--INIT
+/
+
+--------------------------------------------------
+
+PROPS 
+
+ECHO
+
+-- Water Saturation Functions	(Two Tables)
+--Swat   krw    Pco
+SWFN  
+0.160 0.00000 6.256
+0.171 0.00002 3.290
+0.181 0.00014 2.346
+0.203 0.00079 1.910
+0.245 0.00448 1.450
+0.277 0.00993 1.173
+0.309 0.01815 0.920
+0.364 0.04002 0.530
+0.404 0.06277 0.391
+0.458 0.10265 0.280
+0.532 0.17932 0.110
+0.606 0.28286 0.000
+0.617 0.30000 -5.000 /
+
+0.160 0.00000 6.256
+0.171 0.00002 3.290
+0.181 0.00014 2.346
+0.203 0.00079 1.910
+0.245 0.00448 1.450
+0.277 0.00993 1.173
+0.309 0.01815 0.920
+0.364 0.04002 0.530
+0.404 0.06277 0.391
+0.458 0.10265 0.280
+0.532 0.17932 0.110
+0.606 0.28286 0.000
+0.617 0.30000 -5.000 /
+
+0.160 0.00000 6.256
+0.171 0.00002 3.290
+0.181 0.00014 2.346
+0.203 0.00079 1.910
+0.245 0.00448 1.450
+0.277 0.00993 1.173
+0.309 0.01815 0.920
+0.364 0.04002 0.530
+0.404 0.06277 0.391
+0.458 0.10265 0.280
+0.532 0.17932 0.110
+0.606 0.28286 0.000
+0.617 0.30000 -5.000 /
+
+-- Saturation Functions Oil
+--Soil   kro
+SOF2
+0.383 0.0
+0.394 0.004
+0.468 0.080
+0.542 0.206
+0.596 0.317
+0.636 0.412
+0.691 0.554
+0.723 0.642
+0.755 0.734
+0.797 0.864
+0.819 0.931
+0.829 0.965
+0.840 1.0 /
+
+0.383 0.0
+0.394 0.004
+0.468 0.080
+0.542 0.206
+0.596 0.317
+0.636 0.412
+0.691 0.554
+0.723 0.642
+0.755 0.734
+0.797 0.864
+0.819 0.931
+0.829 0.965
+0.840 1.0 /
+
+0.383 0.0
+0.394 0.004
+0.468 0.080
+0.542 0.206
+0.596 0.317
+0.636 0.412
+0.691 0.554
+0.723 0.642
+0.755 0.734
+0.797 0.864
+0.819 0.931
+0.829 0.965
+0.840 1.0 /
+
+
+
+-- OIL/WATER/GAS densities at surface condition
+DENSITY 
+--0.73	1.03	.02
+1.0 1.0 0.02
+/
+
+-- Water PVT Properties
+-- Pref	Bw	Cw	ViscW
+PVTW 
+1.0	1.	1e-99	1	0
+/
+
+-- Dead Oil PVT Properties
+PVCDO
+1       1.   1e-99     .92       0
+/
+
+-- Rock Properties
+--Pref    Cr
+ROCK
+1     1e-99
+/
+
+--------------------------------------------------
+
+REGIONS
+
+BOX
+1 18 1 1 1 16 /
+
+EQUALS
+SATNUM 1 /
+/
+
+ENDBOX
+
+BOX
+19 24 1 1 1 16 /
+
+EQUALS
+SATNUM 2 /
+/
+
+ENDBOX
+
+BOX
+25 38 1 1 1 16 /
+
+EQUALS
+SATNUM 3 /
+/
+
+ENDBOX
+
+--------------------------------------------------
+
+SOLUTION
+
+RPTSOL
+PRES SOIL SWAT KRO KRW PCOW 'RESTART=2' /
+
+-- Initial water saturations 
+SWAT 
+608*0.230 /
+
+-- Initial pressure (Atm)
+PRESSURE 
+608*1.01 /
+
+
+--------------------------------------------------
+
+SUMMARY
+
+--water cut
+WWCT /
+
+--water injection total
+WWIT
+I /
+
+--oil production total
+WOPT
+P /
+
+--water production total
+WWPT 
+P /
+
+--bottom hole pressure
+WBHP
+I P /
+
+--------------------------------------------------
+
+SCHEDULE
+
+RPTSCHED
+PRES SOIL SWAT WELLS=2 WELSPECS 'RESTART=2'/
+
+WELSPECS
+'I' 'I' 1  1 -1 WATER 1* STD SHUT YES 1* SEG 1* /
+'P' 'P' 38 1 -1 LIQ   1* STD SHUT YES 1* SEG 1* /
+/
+
+COMPDAT
+'I' 0 0 1 16 OPEN 2* 0.02 3* Z 1* /
+'P' 0 0 1 16 OPEN 2* 0.02 3* Z 1* /
+/
+
+-- choice of max bhp = 12.0 atm (from COREDATA.xls)
+WCONINJE
+'I' WATER OPEN RATE 0.5 1* 12.0/
+/
+
+WCONPROD
+'P' OPEN BHP 5* 1.0 /
+/
+
+--IMPLICIT
+
+TSTEP
+80*0.1 /
+
+
+END

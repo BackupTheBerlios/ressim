@@ -1,0 +1,53 @@
+% Diagonal qfive problem (conventional)
+
+begin RunSpec
+
+	TimeUnit	Days
+
+	EndTime		6e-1
+
+	ReportEvery	3e-2
+
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	1e+5
+
+	Temperature	450
+	C10		1
+end
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Regular
+		begin Injector
+			H2O	1e-5	% mol/s
+		end
+	end
+
+	begin Fixed
+		begin Producer
+			Temperature	450
+			C10		1
+		end
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+include pvt
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+	end
+end
+

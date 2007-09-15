@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="jar" name="Reservoir Simulator">
+
+    <property name="src.dir" location="src" />
+    <property name="lib.dir" location="lib" />
+    <property name="bin.dir" location="bin" />
+    <property name="dist.dir" location="dist" />
+    <property name="doc.dir" location="dist/doc" />
+    <property name="main.class" value="no.uib.cipr.rs.Main" />
+
+    <path id="project.classpath">
+        <pathelement location="${bin.dir}" />
+        <fileset dir="${lib.dir}">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${bin.dir}" />
+        <mkdir dir="${dist.dir}" />
+        <mkdir dir="${doc.dir}" />
+    </target>
+
+    <target name="clean">
+        <delete dir="${bin.dir}" />
+        <delete dir="${doc.dir}" />
+        <delete dir="${dist.dir}" />
+    </target>
+
+    <target name="build" depends="init">
+        <javac destdir="${bin.dir}" srcdir="${src.dir}" source="1.5" target="1.5" classpathref="project.classpath" debug="on">
+            <compilerarg value="-Xlint:unchecked" />
+        </javac>
+    </target>
+
+    <target name="test" depends="build">
+        <junit printsummary="on">
+            <classpath refid="project.classpath" />
+            <formatter type="brief" usefile="false" />
+            <batchtest>
+                <fileset dir="${bin.dir}" includes="**/*Test.class" />
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="jar" depends="build">
+        <jar destfile="${dist.dir}/rs.jar" basedir="${bin.dir}" excludes="**/test, **/test/*">
+            <zipgroupfileset dir="${lib.dir}" includes="mtj.jar" />
+            <manifest>
+                <attribute name="Main-class" value="no.uib.cipr.rs.Main" />
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- We prefer Eclipse for development, but its profiler doesn't support -->
+    <!-- Java 1.5 yet, so we have to use NetBeans for that. For details, see -->
+    <!-- http://profiler.netbeans.org/docs/help/antTasksForProfiling.html -->
+    <!-- Unfortunately, NetBeans doesn't support custom configurations for -->
+    <!-- freeform (i.e. bring your own Ant script) projects. In order to -->
+    <!-- use this, you must set the dir= attribute to the working directory -->
+    <!-- containing the case, the arg element to the simulator command, and -->
+    <!-- perhaps adjust the memory settings to fit the case -->
+    <target name="profile" depends="build">
+        <fail unless="netbeans.home">This target can only run inside NetBeans</fail>
+        <nbprofiledirect>
+            <classpath refid="project.classpath" />
+        </nbprofiledirect>
+        <java classname="${main.class}" fork="true" dir="data/complex" jvm="${profiler.info.jvm}">
+            <classpath refid="project.classpath" />
+
+            <!-- use command line arguments for custom configuration, if set -->
+            <!-- dir="${profiler.session.working.dir}" -->
+            <!--jvmarg line="${profiler.session.jvm.args}" /-->
+            <arg value="mesh" />
+            <jvmarg line="-Xmx256m" />
+
+            <!-- argument added to let NetBeans load its profiler shared object -->
+            <jvmarg value="${profiler.info.jvmargs.agent}" />
+        </java>
+    </target>
+
+    <target name="source" depends="init">
+        <zip destfile="${dist.dir}/rssrc.zip" basedir="${src.dir}">
+            <zipgroupfileset dir="${lib.dir}" includes="mtjsrc.zip" />
+        </zip>
+    </target>
+
+    <target name="javadoc" depends="init">
+        <javadoc sourcepath="${src.dir}" destdir="${doc.dir}"
+            classpathref="project.classpath" windowtitle="${ant.project.name}"
+            doctitle="${ant.project.name}" header="${ant.project.name}"
+            source="1.5" access="private" packagenames="no.uib.cipr.rs.*">
+            <group title="Main" packages="no.uib.cipr.rs" />
+            <group title="Mesh" packages="
+			no.uib.cipr.rs.geometry,
+			no.uib.cipr.rs.geometry.flux,
+			no.uib.cipr.rs.rock" />
+            <group title="Mesh generators" packages="
+			no.uib.cipr.rs.meshgen,
+			no.uib.cipr.rs.meshgen.bsp,
+			no.uib.cipr.rs.meshgen.dfn,
+			no.uib.cipr.rs.meshgen.eclipse,
+			no.uib.cipr.rs.meshgen.eclipse.bsp,
+			no.uib.cipr.rs.meshgen.eclipse.geometry,
+			no.uib.cipr.rs.meshgen.eclipse.keyword,
+			no.uib.cipr.rs.meshgen.eclipse.parse,
+			no.uib.cipr.rs.meshgen.eclipse.topology,
+			no.uib.cipr.rs.meshgen.eclipse.triangulation,
+			no.uib.cipr.rs.meshgen.honeycomb,
+			no.uib.cipr.rs.meshgen.lgr,
+			no.uib.cipr.rs.meshgen.partition,
+			no.uib.cipr.rs.meshgen.structured,
+			no.uib.cipr.rs.meshgen.transform,
+			no.uib.cipr.rs.meshgen.triangle,
+			no.uib.cipr.rs.meshgen.util" />
+            <group title="Simulator" packages="no.uib.cipr.rs.field,
+			no.uib.cipr.rs.fluid,
+			no.uib.cipr.rs.numerics,
+   			no.uib.cipr.rs.upscale" />
+            <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+            <link href="http://rs.cipr.uib.no/mtj/doc/"/>
+            <link href="http://www.junit.org/junit/javadoc/3.8/"/>
+        </javadoc>
+    </target>
+
+    <target name="all" depends="test,jar,source,javadoc" />
+</project>

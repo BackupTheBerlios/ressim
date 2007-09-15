@@ -1,0 +1,12 @@
+gmvrc
+*.gmv
+*.gz
+*.rgb
+*.png
+*.ps
+*.attr
+*.cells
+*.materials
+*.mesh
+*.nodes
+*.surfaces

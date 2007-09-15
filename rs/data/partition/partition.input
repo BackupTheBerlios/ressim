@@ -1,0 +1,191 @@
+begin partition
+	begin 3
+		array innerconnectionsright
+			89 96 
+		end
+
+		array innerconnectionsback
+			44 45 
+		end
+
+		array innerconnectionsleft
+			87 94 
+		end
+
+		array innerconnectionsfront
+			28 29 
+		end
+
+		array boundaryelementsleft
+			35 43 
+		end
+
+		array boundaryelementsfront
+			27 28 29 30 
+		end
+
+		array domainconnections
+			27 28 29 30 35 36 37 38 43 44 45 46 80 81 82 87 88 89 94 95 96 101 102 103 
+		end
+
+		array innerelements
+			36 37 44 45 
+		end
+
+		array boundaryelementsright
+			38 46 54 
+		end
+
+		array boundaryelementsback
+			51 52 53 
+		end
+
+		array borderelements
+			27 28 29 30 35 38 43 46 51 52 53 54 
+		end
+
+	end
+
+	begin 2
+		array innerconnectionsright
+			87 94 
+		end
+
+		array innerconnectionsback
+			42 43 
+		end
+
+		array innerconnectionsleft
+			85 92 
+		end
+
+		array innerconnectionsfront
+			26 27 
+		end
+
+		array boundaryelementsleft
+			33 41 
+		end
+
+		array boundaryelementsfront
+			25 26 27 28 
+		end
+
+		array domainconnections
+			25 26 27 28 33 34 35 36 41 42 43 44 78 79 80 85 86 87 92 93 94 99 100 101 
+		end
+
+		array innerelements
+			34 35 42 43 
+		end
+
+		array boundaryelementsright
+			36 44 52 
+		end
+
+		array boundaryelementsback
+			49 50 51 
+		end
+
+		array borderelements
+			25 26 27 28 33 36 41 44 49 50 51 52 
+		end
+
+	end
+
+	begin 0
+		array innerconnectionsright
+			73 80 
+		end
+
+		array innerconnectionsback
+			26 27 
+		end
+
+		array innerconnectionsleft
+			71 78 
+		end
+
+		array innerconnectionsfront
+			10 11 
+		end
+
+		array boundaryelementsleft
+			17 25 
+		end
+
+		array boundaryelementsfront
+			9 10 11 12 
+		end
+
+		array domainconnections
+			9 10 11 12 17 18 19 20 25 26 27 28 64 65 66 71 72 73 78 79 80 85 86 87 
+		end
+
+		array innerelements
+			18 19 26 27 
+		end
+
+		array boundaryelementsright
+			20 28 36 
+		end
+
+		array boundaryelementsback
+			33 34 35 
+		end
+
+		array borderelements
+			9 10 11 12 17 20 25 28 33 34 35 36 
+		end
+
+	end
+
+	begin 1
+		array innerconnectionsright
+			75 82 
+		end
+
+		array innerconnectionsback
+			28 29 
+		end
+
+		array innerconnectionsleft
+			73 80 
+		end
+
+		array innerconnectionsfront
+			12 13 
+		end
+
+		array boundaryelementsleft
+			19 27 
+		end
+
+		array boundaryelementsfront
+			11 12 13 14 
+		end
+
+		array domainconnections
+			11 12 13 14 19 20 21 22 27 28 29 30 66 67 68 73 74 75 80 81 82 87 88 89 
+		end
+
+		array innerelements
+			20 21 28 29 
+		end
+
+		array boundaryelementsright
+			22 30 38 
+		end
+
+		array boundaryelementsback
+			35 36 37 
+		end
+
+		array borderelements
+			11 12 13 14 19 22 27 30 35 36 37 38 
+		end
+
+	end
+
+end
+

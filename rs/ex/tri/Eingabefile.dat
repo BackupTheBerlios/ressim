@@ -1,0 +1,250 @@
+##############################################################################
+#                                                                            #
+# inputfile for FRAC3D                                                       #
+#                                                                            #
+#  ATTENTION!!!!!                                                            #
+#  Do not change the name or the type of a variable.                         #
+#  Only the values are allowed to change!	                                   #
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+#Step 01 Generation of fractures                                             #
+# frac_gen_type  (type: integer)                                             #
+#   = 1: statistic generating approach                                       #
+#   = 2: deterministic approach     (known 2D elements in 3D space)          #
+#                           --> name an input file ('name_Point_file')       #
+#   = 3: deterministic + statistics (known 2D elements + statistic elements) #
+#                           --> name an input file ('name_Point_file')       #
+#   = 4: deterministic approach     (known 1D elements in 3D space)          #
+#                           --> name an input file ('name_Point_file')       #
+##############################################################################
+integer	frac_gen_type	1
+
+#Name des Files mit den Punktwerten, das eingelesen werden soll  (type: char)	
+#char name_Point_file   3d_Kluefte.dat
+#char	name_Point_file 	1D3D-Point_file.dat
+#char	name_Point_file 	2D3D-Point_file.dat
+
+
+##############################################################################
+#Step 02 startvalue rseed [0 < rseed <= 2147483647]    (type: double)        #
+##############################################################################
+double  rseed   496015253 
+
+	
+##############################################################################
+#Step 03 Fracture density								     #
+# frac_dens_type  (type: integer)                                            #
+#   = 1: total fracture areas per unit volume of domain   			     #		
+#		[m^2 / m^3] > 0    							     #
+#   = 2: total number of fractures per unit volume of domain  		     #
+#		[fractures / m^3] > 0                                            #
+# frac_dens_3d    (type: double)                                             #
+##############################################################################
+integer	frac_dens_type	1
+double 	frac_dens_3d	0.2
+
+             
+##############################################################################
+#Step 04 Minimum und Maximum Domain-Point   (Unit: [m])                	     #
+##############################################################################
+double min.x     -0.2
+double min.y     -0.2
+double min.z     -0.2
+double max.x     52.2
+double max.y     10.2
+double max.z     32.2
+
+
+
+##############################################################################
+#Step 05 Generation of normal vectors "norm"                    		     #
+#   Normal vector calculated from Azimuth alpha and Dip angle 		     #
+#   (follow Fisher et al. (1993), p.19-21)          				     #
+#       orientation_type = 1 : No variation					     #
+#                              Function: kluftor_norm_nonvariat              #
+#                                                                            #
+#       orientation_type = 2 : with spherical distribution			     #
+#                              Function: kluftor_sphere_fisher_AH            #
+#                                                                            #
+##############################################################################
+integer orientation_type   2
+integer	norient         2         # no. of main orientaiton	    Typ: int
+
+double  percentage_orient[0] 0.30     # Percents	 (in total = 1.0)
+double  percentage_orient[1] 0.70
+#double  percentage_orient[2] 0.10
+
+double  alpha[0]        0.0         # Azimuth in degree
+double  alpha[1]        70.0
+#double  alpha[2]        46.0
+
+double  Phi[0]           90.0         # Dip angle in degree
+double  Phi[1]           50.0        #orientering    omvendt?
+#double  Phi[2]           180.0
+
+double  kappa[0]          10.0        # Concentrations parameter in case of
+double  kappa[1]          1.0  	  # spherical distribution
+#double  kappa[2]          2.1  
+
+##############################################################################
+#Step 06 Fracture length                 frac_length[nfrac]  (type: integer) #
+# length_dist_type    = 1 : Erlang-2 distribution                            #
+#                     = 2 : neg. exponent. distribution F(x)=1-exp(lambda*x) #
+#                     = 3 : Constant value 					     #
+#                                                                            #
+#        double lambda_h_1     : lambda Erlang-2 dist.                       #
+#        double lambda_v_1     : lambda Erlang-2 dist.                       #
+#        double X0_h           : Start value for Newton-Iteration 	     #
+#        double X0_v           : Start value for Newton-Iteration 	     #
+#        double epsilon_Erlang : stop criteria                               #
+#                                                                            #
+#        double lambda_h_2     : lambda neg. exponent. dist.: lambda < 0     #
+#        double lambda_v_2     : lambda neg. exponent. dist.: lambda < 0     #
+#                                                                            #
+#        double const_length   : case 3                                      #
+#                                                                            #
+##############################################################################
+integer length_dist_type	1
+
+#-----Erlang-2 distribution----------------------------------------------
+double 	lambda_h_1		-0.1
+double	lambda_v_1 		-0.05
+
+double	X0_h			0.05
+double	X0_v			0.05
+double	epsilon_Erlang	0.001
+
+#-----Exponential distribution-------------------------------------------
+double	lambda_h_2	-0.01
+double	lambda_v_2	-3.993
+
+
+#-----constant length ---------------------------------------------------
+double  const_length   0.1
+
+
+##############################################################################
+#Step 07 Fracture aperture 					                       #
+#   aperture_dist_type = 1 : with constant 		                       #
+#                      = 2 : with logarithmic distribution                   #
+##############################################################################
+integer	aperture_dist_type	1
+	
+#-----Constant value ----------------------------------------------------
+double	aperture	10e-4       # [m] constant value 
+	
+#-----log Normal distributed --------------------------------------------
+double	mue		-9.2        # mean value 
+double 	sigma		 1.0        # standard deviation
+
+
+##############################################################################
+#Step 08 Minimum distance between two parallel fractures			     #
+#	The parallel fractures should not overlap or lie near to each other    #	
+#     than a total minimum distance. The min. distance is the sum of the     #
+#	half aperture of each fracture and the frac_dist.                      #
+##############################################################################
+double	frac_dist	0.005        # [m]
+
+
+##############################################################################
+#Step 09a Optimization 1                                                     #
+##############################################################################
+integer nclass_length		50
+integer nclass_aperture		50
+
+##############################################################################
+#Step 09b Optimization 2                                                     #
+##############################################################################
+integer do_SA_MCMC              0         # 1: do it                           
+                                          # 0: don't do it 
+
+integer ninvest_plane           30        # number of investigation planes    
+integer nscl_perplane           6         # number of scanlines per plane 
+
+integer nclass_distance         30        # number of classes of the property 
+double  min_frac_distance       0.00      # min value [m] fracture distance
+double  max_frac_distance       1.50      # max value [m] fracture distance
+
+integer cdf_distance_type       1         # 1: neg. exponential distribution 
+double  lambda_dist             -4.565    # function parameter
+
+# fuer Simulated Annealing
+double  Temp0                   30.000    # start Temperatur for annealing
+double  cool_down               0.92      # cool down factor: 0.9<=cool_down<1.0
+                                          # cool_down = 0.8 is to fast!
+integer fix_temp_step           40        # number of loops with const. Temp0
+integer temp_step               70        # number of Temp0 - loops
+
+# fuer Markov chain Monte Carlo 
+integer n_iteration_mcmc        3000      # number of iteration steps       
+
+##############################################################################
+#Step 10 Subplane                                                            #
+##############################################################################
+integer sum_subplane3D     6
+char	  name_Subplane_file   2D_slices.dat
+
+
+##############################################################################
+#Step 11 data for subdomain_3D                                               #
+#   subvolume_type  : =1: prism defined in a circle                          #
+#                   : =2: right prism (cuboid) defined directly with points  #  
+##############################################################################
+integer	subvolume_type     2
+
+integer	sum_subvol_edges	 4          # number of edges points
+double 	subvol_side_length	 30.0       # length of the side (in z direction)
+
+#-PRISMA----------------------------------------------------------------------
+double 	subvol_radius_bot   0.7            # Kreis um die Grundflaeche mit Radius
+double	subvol_bot_midpt.x	0.1         # Koordianten des Mittelpunktes
+double	subvol_bot_midpt.y	0.1         # um die Grundflaeche
+double	subvol_bot_midpt.z	0.0
+#-----------------------------------------------------------------------------
+
+#-QUADER----------------------------------------------------------------------
+# there must be (sum_subvol_edges) * points !!!
+##--------------------------------
+double subvol_bot_pt[0].x    0.0
+double subvol_bot_pt[0].y    0.0
+double subvol_bot_pt[0].z    0.0
+#--------------------------------
+double subvol_bot_pt[1].x    50.0
+double subvol_bot_pt[1].y    0.0
+double subvol_bot_pt[1].z    0.0
+#--------------------------------
+double subvol_bot_pt[2].x    50.0
+double subvol_bot_pt[2].y    10.0
+double subvol_bot_pt[2].z    0.0
+#--------------------------------
+double subvol_bot_pt[3].x    0.0
+double subvol_bot_pt[3].y    10.0
+double subvol_bot_pt[3].z    0.0
+#--------------------------------
+
+##############################################################################
+#Step 13 Minimum trace length for Netgenerator ART.                          #
+#        Too small 1D elements cause a problem in ART                        #
+##############################################################################
+double   epsilon_length		0.05 
+
+
+##############################################################################
+#Step 14 File Name for the Output files                                      #
+##############################################################################
+char	log_file	 3Dtest_log          	 # .log File
+# total domain (Step 04) 
+char	tec_file	 3Dtest_dom.dat      	 #  Tecplot 
+# intersection line of fractures in total domain 
+char	intersect_file   3Dtest_inter.dat    #  Tecplot
+# output of a generated fracture network in subdomain (Step 11)
+char  art_file         3Dtest_ART.art      # .art File (Input for Netgenerator)
+char  arttec_file      3Dtest_ART.dat      # .tec File 
+char  artdx_file       3Dtest_ART.dx       # .dx File  
+# output of a subdomain (Step 11)
+char	prisma3d_file    Prisma_3D.tec  	 # Name of the 3D prisma_outputfile
+char	quader3d_file    Quader_3D.tec	 # Name of the 3D quader_outputfile

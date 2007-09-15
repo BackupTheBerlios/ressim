@@ -1,0 +1,541 @@
+<html>
+<head>
+<title>Fracture Triangulation</title>
+</head>
+<body>
+<h1>Fracture Triangulation</h1>
+
+<h2>Installation</h2>
+<p>
+The package assumes to be placed in a directory two levels down from
+the root, e.g. in <code>$RS/misc/persson</code>. The utility programs
+should be placed in <code>$RS/lib</code> relative to this. It is
+written in Matlab 7, service pack 3.
+</p>
+
+<h2>Commands</h2>
+<p>
+Entry point of the program is the main command. It takes a list of
+arguments which is treated in pairs as name and value of tunable
+options. The return value of a run is the statistics for the mesh 
+that is generated.
+</p>
+<dl>
+<p>
+<dt>stats = main (key1, val1, key2, val2, ...)</dt>
+<dd>
+Runs the program with key1 and key2 as parameters, having values val1
+and val2 respectively, and put the statistics in the structure named stats.
+</dd>
+</p>
+
+<p>
+<dt>display_statistics (stats)</dt>
+<dd>
+Write a brief summary of the statistics in the structure stats to the console.
+</dd>
+</p>
+</dl>
+
+<p>
+The program may be called from a shell wrapper
+called <code>persson.sh</code>. When run in this manner, it accepts
+the same parameters as the main program but they must be specified in
+"GNU" style (see the example section).
+</p>
+
+<h2>Output</h2>
+<p>
+For each quality measure the mean of the sample, the standard
+deviation and the tenth percentile is given. (The percentile is chosen
+instead of the minimum value because there is bound to be at least
+some element that is notoriously bad in a large sample, but it does
+not necessarily say something about the overall quality).
+</p>
+
+<dl>
+<p>
+<dt>Angle quality</dt>
+<dd>
+The angle quality is the ratio between the smallest circle that could
+enclose the triangle and the largest circle that could fit inside it,
+adjusted so that a triangle with all equal sides give a quality of 1.0. 
+</dd>
+</p>
+
+<p>
+<dt>Size quality</dt>
+<dd>
+The size quality is the ratio between the squared mean and the squared
+deviance from the mean, adjusted so that an element that is exactly
+the size of the mean has a quality of 1.0, and an element that is
+infinitely smaller or larger has a quality of 0.0.
+</dd>
+</p>
+
+<p>
+<dt>Time benchmark</dt>
+<dd>
+Three phases are timed: building a background mesh and introducing the
+fractures into it, running the Triangle program, and adjusting the
+vertices for refinement.
+</dd>
+</p>
+</dl>
+
+<h2>Files</h2>
+<dl>
+<p>
+<dt>*.orig</dt>
+<dd>
+Template input files to the fracture generator. A new set of inputs
+based on these files in conjunction with the parameters will be
+written (and subsequently deleted). Keep these files in your source
+repository together with the program files.
+</dd>
+</p>
+
+<p>
+<dt>mesh*.poly</dt>
+<dt>mesh*.ele</dt>
+<dt>mesh*.node</dt>
+<dd>
+Output files from the last triangulation performed. These files can be
+used as input files to the mesh generator.
+</dd>
+</p>
+
+<p>
+<dt>*.csv</dt>
+<dd>
+Data files on comma-separated value format. The first row
+of the file contains the names of each column, with each column
+separated by commas. Each subsequent row of the file contains the same
+number of columns and represents one tuple entry.
+</dd>
+</p>
+
+<p>
+<dt>*.m</dt>
+<dd>
+Program files.
+</dd>
+</p>
+
+<p>
+<dt>*.sh</dt>
+<dd>
+Shell wrapper.
+</dd>
+</p>
+
+<p>
+<dt>*.xsl</dt>
+<dd>
+Stylesheets used to extract information about deterministic fractures
+from specified files.
+</dd>
+</p>
+
+<p>
+<dt>*.odp</dt>
+<dt>*.sxi</dt>
+<dt>*.svg</dt>
+<dd>
+Example files for deterministic fractures, in OpenOffice 1.1/2.0
+Presentation or Scalable Vector Graphics format.
+</dd>
+</p>
+
+<p>
+<dt>fig*.png</dt>
+<dd>
+Saved images of the triangulation as the algorithm progresses.
+</dd>
+</p>
+</dl>
+
+<h2>Parameters</h2>
+
+<dl>
+<p>
+<dt>input</dt>
+<dd>
+Run program in batch mode. The file referred to by this value will be
+read, and the program will be run for each entry in the file, using
+the columns as named parameters for that run. If you specify the input 
+parameter, you must also specify the output parameter. Other
+parameters may also be specified as arguments to the program and these
+will be used in addition to those read from the file.
+</dd>
+</p>
+
+<p>
+<dt>output</dt>
+<dd>
+When running in batch mode, results are not returned in a variable but
+rather written to file using the same format as the input files. In
+addition to the statistics for the case, the input data that was used
+to generated it is also written. Thus, the output file may also be
+used as an input file for the next iteration.
+</dd>
+</p>
+
+<p>
+<dt>active</dt>
+<dd>
+If this flag is zero, then the case will be skipped as if its line
+wasn't there in the file. Use this to avoid cutting and pasting lines
+in the input file to change cases. Only available in batch mode.
+</dd>
+</p>
+
+<p>
+<dt>aperture</dt>
+<dd>
+Interactive design programs may or may not coalesce close vertices
+into the same point. This parameter determines the relative width of
+the grid to which points should be snapped. Set this value to zero if
+you want to keep the input points exactly where they were put in the
+input file.
+</dd>
+</p>
+
+<p>
+<dt>art</dt>
+<dd>
+Generate output that is compatible with that which is written by the
+ART (Almost Regular Triangulation) program. The resulting file can
+then be used by the MUFTE-UG simulator.
+</dd>
+</p>
+
+<p>
+<dt>bnd</dt>
+<dd>
+Also generate a boundary file (with the extension .bnd) in addition to
+ART-compatible networks (.net). Only available if the setting "art" is
+also enabled.
+</dd>
+</p>
+
+<p>
+<dt>persson</dt>
+<dd>
+Use Persson's algorithm for triangle refinement. The area is initially
+populated with equilateral triangles and then the fractures are
+introduced. Vertices close to the fractures are removed and the rest
+is moved to an equilibrium.
+</dd>
+</p>
+
+<p>
+<dt>smoothing</dt>
+<dd>
+Scheme to use when smoothing particle location throughout the mesh.
+Specify <code>truss</code> to use the truncated error potential used
+in the article by Persson and Strang, or <code>bossen</code> to use
+the modified Lennard-Jones molecular potential by Frank Bossen. The
+default is the latter.
+</dd>
+</p>
+
+<p>
+<dt>fractures</dt>
+<dd>
+If specified, this parameter contains the name of a file from which
+the fractures should be read instead of generating a stochastic
+network. The format of the file is determined by the extension of the
+filename. Currently supported formats are: OpenOffice 1.1 Presentations
+(*.sxi), OpenOffice 2.0 Presentations (*.odp) and Scalable Vector Graphics
+(*.svg).
+</dd>
+</p>
+
+<p>
+<dt>steiner</dt>
+<dd>
+Allow the Triangle program to introduce extra vertices in the area to
+refine the mesh. This option should only be used if you are not using
+Persson's algorithm.
+</dd>
+</p>
+
+<p>
+<dt>refine</dt>
+<dd>
+Levels of refinement that is desirable. The number specified is the
+number of iterations that will be run through the Triangle program. If
+you are using Persson's algorithm, leave this at one. This number is
+also specified in the Triangle mesh description in order for the
+simulator to know which files to import.
+</dd>
+</p>
+
+<p>
+<dt>minangle</dt>
+<dd>
+Minimum angle that is allowed in a triangle; elements with steeper
+angles between sides than this will be refined. The algorithm is
+guaranteed to produce a result with a minimum angle as high as 28.6 degrees.
+</dd>
+</p>
+
+<p>
+<dt>maxarea</dt>
+<dd>
+Maximum area that is allowed in a triangle; elements that are larger
+than this will be refined. The value is a measure relative to the
+ideal size given the desired number of elements in the problem.
+Unfortunately, there is no option to specify the minimum area allowed, 
+which means that a lot of small triangles may be generated when using 
+refinement.
+</dd>
+</p>
+
+<p>
+<dt>minarea</dt>
+<dd>
+If specified, this option will inhibit refinement of any triangles
+smaller than the specified size (relative to the ideal size of an
+element). You may still get smaller triangles however, since the 
+fractures may make it impossible to fit triangles into the mesh otherwise.
+</dd>
+</p>
+
+<p>
+<dt>retriangulate</dt>
+<dd>
+Relative movement (to ideal length) necessary for retriangulation to
+occur after some vertices have been moved. This parameter is called
+ttol in Persson's article. Set it to inf to prevent retriangulation
+from ever occurring.
+</dd>
+</p>
+
+<p>
+<dt>proximity</dt>
+<dd>
+Distance from the fractures that spans out a zone in which all
+vertices are removed. This is done to prevent congestion around the
+fractures (the triangles will be anchored to the fractures as well as
+the vertices around). The value is relative to the ideal length
+calculated.
+</dd>
+</p>
+
+<p>
+<dt>border</dt>
+<dd>
+If this flag is set, keep extra interior points near the border even
+if they are close to the edges. This may be necessary if the fracture
+network has lines that are parallel and very close to the border.
+</dd>
+</p>
+
+<p>
+<dt>scale</dt>
+<dd>
+Factor with which the ideal length will be multiplied before comparing
+the current length to it to find out if the vertex wants to repulse
+any of its neighbors. If this value is greater than 1.0, then the
+truss will act as if it has stronger springs.
+</dd>
+</p>
+
+<p>
+<dt>timestep</dt>
+<dd>
+Portion of the force between vertices that are applied before
+reevaluating the positions. The smaller this value is, the slower the
+algorithm works, the larger it is, the more divergent it becomes.
+</dd>
+</p>
+
+<p>
+<dt>maxiter</dt>
+<dd>
+Maximum number of iterations. Only applicable when running Persson's algorithm.
+</dd>
+</p>
+
+<p>
+<dt>tolerance</dt>
+<dd>
+When the largest movement inside the mesh (the boundary doesn't count
+because their movement is limited) is smaller relative to the ideal
+length than this value, the iteration stops and the mesh is considered
+good enough.
+</dd>
+</p>
+
+<p>
+<dt>seed</dt>
+<dd>
+Seed between 0.0 and 1.0 that is used as an input to the random
+fracture generation. If you use the same value for the seed, then the
+same fractures will be generated. Alter this value to get variations
+in the fracture pattern that is created.
+</dd>
+</p>
+
+<p>
+<dt>density</dt>
+<dd>
+Number of square meters of dimensionally-reduced fracture area that will
+be generated per cube meter (i.e. fully-dimensioned) of volume. Use
+this option to generate a more fractured area.
+</dd>
+</p>
+
+<p>
+<dt>elements</dt>
+<dd>
+Number of elements that is desired for the mesh. This number is only
+advisory; more or less elements will be generated in practice.
+</dd>
+</p>
+
+<p>
+<dt>keep</dt>
+<dd>
+Flag that determines if the triangulation files will remain on disk
+after the program has finished or if they'll be cleaned up. Set this
+option to 1 to instruct the program to let the files remain so they
+can be imported in the simulator mesh generator.
+</dd>
+</p>
+
+<p>
+<dt>visual</dt>
+<dd>
+Flag that determines whether a figure is shown for each iteration
+through the triangulation, visualizing the movement or additions of vertices.
+</dd>
+</p>
+
+<p>
+<dt>id</dt>
+<dd>
+Positive number that will be used to generate unique filenames for
+each case (if you want to save the results for further processing).
+</dd>
+</p>
+
+<p>
+<dt>save</dt>
+<dd>
+If set, visualizations will be saved to files matching a pattern
+combining the case number and the iteration number, in addition to 
+being shown. These files can then be used to create a movie/slideshow 
+of the progress afterwards.
+</dd>
+</p>
+
+<p>
+<dt>color</dt>
+<dd>
+Color of the constraining fractures in a plot. Use a single letter to
+indicate the color code. 'r' is for red, 'b' is for blue and 'k' is
+for black.
+</dd>
+</p>
+
+<p>
+<dt>line</dt>
+<dd>
+Line thickness of the constraining fractures in a plot. Specify 2 to
+visually distinguish these from the other edges.
+</dd>
+</p>
+
+<p>
+<dt>libdir</dt>
+<dd>
+Location of the helper programs Frac3D and Triangle. Use this option
+if you want to move the programs out of the standard directory structure.
+</dd>
+</p>
+</dl>
+
+<h2>Examples</h2>
+<p>
+If you want to run Persson's algorithm interactively, use this
+command:
+<blockquote><code><pre>
+main ('persson', 1, 'visual', 1);
+</pre></code></blockquote>
+</p>
+
+<p>
+To run first Persson's algorithm and then Triangle on the same case,
+displaying only statistics, use these commands:
+</p>
+<p>
+<blockquote><code><pre>
+display_statistics (main ('fractures', 'myfile.odp', 'persson', 1));
+display_statistics (main ('fractures', 'myfile.odp', 'persson', 0));
+</pre></code></blockquote>
+</p>
+
+<p>
+If you want to test the algorithm with two different timesteps, for
+two different tolerances, you could write the
+following <code>inp.csv</code> file:
+<p>
+<blockquote><code><pre>
+timestep, scale
+0.1,      1.0
+0.2,      1.0
+0.1,      1.2
+0.2,      1.2
+</pre></code></blockquote>
+</p>
+<p>
+Then execute the program in batch:
+</p>
+<p>
+<blockquote><code><pre>
+main ('input', 'inp.csv', 'output', 'outp.csv');
+</pre></code></blockquote>
+</p>
+<p>
+You will now receive an output file containing statistics for the four
+different cases, marked with the input data that was used to generate them.
+</p>
+<p>
+A case may also be ran directly from the command-line. The wrapper
+script will launch Matlab and run the correct command. You do not have
+to run the script from the program directory; we recommend that you
+run it from a directory containing the data files only.
+<blockquote><code><pre>
+./persson.sh --input=inp.csv --output=outp.csv --timestep=0.2
+</pre></code></blockquote>
+</p>
+<p>
+If you are running a bash shell, you can define the following alias to
+run the program in the background using standard Unix job control:
+<blockquote><code><pre>
+persson() { /usr/bin/time -f "Seconds: %U" nice -n 5 ./persson.sh $@ 1>>nohup.out 2>&1 & disown -h %%; }
+</pre></code></blockquote>
+</p>
+<p>
+If you are unfortunate enough to use the C shell, you can attempt the 
+following alias definition instead:
+<blockquote><code><pre>
+alias persson 'nohup /usr/bin/time -f "Seconds: %U" nice -n 5 ./persson.sh \!:* >>& nohup.out &'
+</pre></code></blockquote>
+</p>
+
+<p>
+To generate thumbnails of the mesh that will be used for a simulation,
+use the special option <code>mesh-only</code> to the simulation
+wrapper and pass additional arguments to customize the figures like this:
+<blockquote><code><pre>
+./simulate.sh --input=cases.csv --mesh-only --save=1 --color=k --line=2
+</pre></code></blockquote>
+Note that all cases should have an identifier set.
+</p>
+
+</body>
+</html>

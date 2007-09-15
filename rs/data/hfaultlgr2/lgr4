@@ -1,0 +1,70 @@
+begin LGR4
+	array CoarseElementIJK
+		2 1 1
+	end
+	begin FineGeometry
+		array Nx
+			2 2 2 2 2
+		end
+		array Dx
+			0.45 0.05 0.45 0.05 0.5
+		end
+		array Ny
+			1
+		end
+		array Dy
+			1
+		end
+		array Nz
+			8 2 4 2 2
+		end
+		array Dz
+			-0.5 -0.05 -0.475 -0.05 -0.45
+		end
+			
+		RegionMappingType Uniform
+	end
+	
+	begin RockRegionMap
+		array Outer       % not the background
+   			1
+		end
+	end
+	
+	begin Boxes
+		array F1Box   % fracture
+			3 4 1 1 1 18
+		end
+		
+		array F2Box
+			7 8 1 1 5 18
+		end
+
+		array F3Box
+			1 10 1 1 15 16
+		end
+	end
+	
+	begin RockRegionBoxed
+		F1Box	Fracture
+		F2Box	Fracture
+		F3Box	Fracture
+	end
+	
+
+	begin RockData
+		type Global
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		array permy
+			1.0 
+		end
+		array permz 
+			1.0 
+		end
+	end
+end % end LGR

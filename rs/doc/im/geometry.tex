@@ -1,0 +1,206 @@
+\chapter{Geometry}
+\label{chap:geometry}
+
+\minitoc
+
+The geometry package contains the general mesh structure for an
+arbitrary unstructured mesh, and some transmissibility calculation
+methods. Its namespace is \texttt{no.uib.cipr.rs.geometry}.
+
+%======================================================================
+
+\csection{Mesh structure}
+
+The mesh by the class \texttt{Mesh}, and its interface is as follows:
+
+\begin{lstlisting}
+  class Mesh {
+
+    // Mesh constructor
+    Mesh(Geometry, Topology, Rock[]);
+
+    // Corner points
+    List<Point> points();
+
+    // Interfaces
+    List<Interface> interfaces();
+
+    // Elements
+    List<Element> elements();
+
+    // Neighbour (geometrically) connections
+    List<NeighbourConnection> neighbourConnections();
+
+    // Non-neighbour connections
+    List<Connection> nonNeighbourConnections();
+
+    // All the connections (neighbours and non-neighbours)
+    List<Connection> connections();
+  }
+\end{lstlisting}
+
+A mesh is constructed from a \texttt{Geometry} and a
+\texttt{Topology}, along with petrophysical rock data for each
+element. The mesh generators are responsible for creating these
+objects.
+
+%----------------------------------------------------------------------
+
+\csubsection{Geometrical constructs}
+
+An \texttt{Element} is a general polyhedral entiety, with references
+to its cornerpoints and interfaces:
+\begin{lstlisting}
+  class Element {
+
+    // Linear index
+    int getIndex();
+
+    // Petrophysical data
+    Rock getRock();
+
+    // Volume in cubic meters
+    double getVolume();
+
+    // Coordinate of the center
+    Point3D getCenter();
+
+    // Corner points of this element
+    List<Point> points();
+
+    // Interfaces of this element
+    List<Interface> interfaces();
+
+    // Associated non-neighbour connections
+    List<Connection> nonNeighbourConnections();
+  }
+\end{lstlisting}
+
+Next, an interface is a planar side of an element.
+\begin{lstlisting}
+  class Interface {
+
+    // Linear index
+    int getIndex();
+
+    // Surface area, in square meters
+    double getArea();
+
+    // Center point
+    Point3D getCenter();
+
+    // Outward normal vector
+    Vector3D getNormal();
+
+    // Associated corner points
+    List<Point> points();
+
+    // The single associated element
+    Element element();
+
+    // Boundary interfaces do not have a connection
+    boolean isBoundary();
+
+    // Internal interfaces have neighbour connections
+    NeighbourConnection connection();
+  }
+\end{lstlisting}
+Note that neighbouring interfaces are stored distinctly, as they have
+different outward normal directions.
+
+The last geometrical construct is the \texttt{Point}:
+\begin{lstlisting}
+  class Point {
+
+    // Linear index
+    int getIndex();
+
+    // Geometrical coordinate
+    Point3D getCoordinate();
+
+    // Interfaces refering to this point
+    List<Interface> interfaces();
+
+    // Elements refering to this point
+    List<Element> elements();
+  }
+\end{lstlisting}
+
+%----------------------------------------------------------------------
+
+\csubsection{Topological constructs}
+
+A \texttt{Connection} connects two elements for mass and heat
+flow. The connected elements need not be geometrical neighbours.
+\begin{lstlisting}
+  class Connection {
+
+    // Linear index
+    int getIndex();
+
+    // Element on the here side
+    Element hereElement();
+
+    // Element on the there side
+    Element thereElement();
+
+    // Transmissibility multiplier for Darcy flow
+    double getMultiplier();
+
+    // Darcy transmissibilities for mass flow
+    Transmissibility[] getDarcyTransmissibilities();
+
+    // Fourier transmissibilities for heat flow
+    Transmissibility[] getFourierTransmissibilities();
+  }
+\end{lstlisting}
+Note that the multiplier will be factored into the Darcy
+transmissibilities automatically by the class constructor.
+
+A neighbouring connection is a subclass, which also links adjacent
+interfaces:
+\begin{lstlisting}
+  class NeighbourConnection extends Connection {
+
+    // Interface on the here side
+    Interface hereInterface();
+
+    // Interface on the there side
+    Interface thereInterface();
+  }
+\end{lstlisting}
+
+%======================================================================
+
+\csection{Transmissibility calculations}
+
+Transmissibilities are found for both the absolute permeability (Darcy
+flow) and the rock heat conductivity (Fourier flow). Since the method
+of calculation is the same, the tensors are abstracted away with the
+following interface:
+\begin{lstlisting}
+  interface Conductivity {
+    Tensor3D getConductivity(Element el);
+  }
+\end{lstlisting}
+
+A \texttt{TransmissibilityComputer} uses this interface to calculate
+transmissibilities for each neighbouring grid connection.
+Transmissibilities for non-neighbouring connections must be set
+externally, as they cannot be found automatically. A transmissibility
+is then simply
+\begin{lstlisting}
+  class Transmissibility {
+
+    // Transmissibility factor
+    double getTransmissibility();
+
+    // Associated element
+    Element getElement();
+  }
+\end{lstlisting}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

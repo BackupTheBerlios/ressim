@@ -1,0 +1,108 @@
+begin RunSpec
+	name transform2d
+end
+
+begin RockRegions
+	begin Stone
+	end
+end
+
+begin Mesh
+
+	type StructuredMesh
+	
+	dimension 2
+	
+	begin Domains
+
+		%origin
+		X0	0.0 
+		Y0	0.0 
+		
+		%X-domains specification	
+		array Nx
+			10
+		end
+
+		array Dx
+			0.1
+		end
+
+		%Y-domains specification	
+		array Ny
+			10
+		end
+
+		array Dy
+			0.1
+		end
+				
+		%uniform, layer or domain
+		RegionMappingType uniform
+		
+		% Mesh transformation
+		begin StructuredTransform
+	
+			type PerturbationTransform
+			
+			alpha 0.3
+			
+		end
+		
+	end
+	
+
+	begin RockRegionMap
+
+		%names must match RockRegion input data
+		array Stone
+		   1     % indices must match those produced by RegionMappingType above
+		end
+			
+	end
+
+	begin RockData
+	
+		type Global
+
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		
+		array permy
+			1.0 
+		end
+		
+		array permz 
+			1.0 
+		end
+		
+	end
+
+	begin Sources
+
+		begin Injector
+
+			% element indices
+			array Elements
+				1
+			end
+
+		end
+		
+		begin Producer
+		
+			array Elements
+				100
+			end
+			
+		end
+	
+	end
+
+end
+
+

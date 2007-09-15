@@ -1,0 +1,61 @@
+\chapter{Black-oil}
+
+\minitoc
+
+%======================================================================
+
+\csection{Field data}
+
+The black-oil field data ties together fluid and rock data, along with
+solution data and state:
+
+\begin{lstlisting}
+  class BlackOilField implements Field {
+
+    // Associated mesh
+    final Mesh mesh;
+
+    // PVT functions and calculations
+    final PVT pvt;
+
+    // Current time
+    double t;
+
+    // Phase state in each gridblock
+    PhaseState[] state;
+
+    // PVT data for each gridblock
+    PVTData[] pvtdata;
+
+    // Rock data for each gridblock
+    RockData[] rockdata;
+
+    // Phase pressures
+    List<PhaseData<Double>> p;
+
+    // Phase saturations
+    List<PhaseData<Double>> S;
+
+    // Solubilities
+    List<PhaseData<Double>> R;
+
+    // Gridblock temperatures
+    double[] T;
+  }
+\end{lstlisting}
+
+This field provides access to all the data needed by the
+discretisation, and handles secondary variable computation as the
+primary variables are updated. Initialization of the reservoir is also
+done by the field.
+
+%======================================================================
+
+\csection{Discretisation}
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

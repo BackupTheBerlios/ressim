@@ -1,0 +1,103 @@
+begin Mesh
+
+	type StructuredMesh
+	
+	dimension 2
+	
+	begin Domains
+
+		%origin
+		X0	0.0 
+		Y0	0.0 
+		
+		%X-domains specification	
+		array Nx
+			10
+		end
+
+		array Dx
+			0.1
+		end
+
+		%Y-domains specification	
+		array Ny
+			4 5 7
+		end
+
+		array Dy
+			0.025 0.05 0.1
+		end
+				
+		%uniform, layer or domain
+		RegionMappingType uniform
+		
+		% Mesh transformation
+		begin StructuredTransform
+	
+			type AnnulusTransform
+			
+			r0   	0.05	% 0 <= r0 < r1
+			r1   	1.0		% r0 < r1
+			
+			theta0 	0.0   	% 0 <= theta0 < theta1
+			theta1 	1.57   	% theta0 < theta1 <= 2*pi
+			
+		end
+		
+	end
+	
+
+	begin RockRegionMap
+
+		%names must match RockRegion input data
+		array Stone
+		   1     % indices must match those produced by RegionMappingType above
+		end
+			
+	end
+
+	begin RockData
+	
+		type Global
+
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		
+		array permy
+			1.0 
+		end
+		
+		array permz 
+			1.0 
+		end
+		
+	end
+	
+	begin Sources
+
+		begin Injector
+
+			% element indices
+			array Elements
+				1
+			end
+			
+		end
+		
+		begin Producer
+		
+			array Elements
+				100
+			end
+			
+		end
+	
+	end
+
+end
+
+

@@ -1,0 +1,191 @@
+begin MeshGenerator
+
+	type LGRMeshGenerator
+
+	begin Transform
+	      type ParallelogramTransform
+	      a1 1
+
+	      b1 1
+	end
+
+	
+	begin CoarseGeometry
+		X0 0.0
+		Y0 0.0
+		Z0 0.0
+		
+		array Nx
+			2 
+		end
+		
+		array Dx
+			1.0
+		end
+		
+		array Ny
+			1
+		end
+		
+		array Dy
+			1.0
+		end
+		
+		array Nz
+			1
+		end
+		
+		array Dz
+			-1.0
+		end
+	end
+	
+	begin Refinements
+	
+		begin Omega1
+		
+			array CoarseElementIJK
+				1 1 1
+			end
+		
+			begin FineGeometry
+				array Nx
+					7 % Nx1
+				end
+				
+				array Dx
+					.14285714285714285714 % Dx1
+				end
+				
+				array Ny
+					7 % Ny1
+				end
+				
+				array Dy
+					.14285714285714285714 % Dy1
+				end
+				
+				array Nz
+					7 % Ny1
+				end
+				
+				array Dz
+					-.14285714285714285714 % Dz1
+				end
+				
+				RegionMappingType Uniform
+				
+			end
+			
+			begin RockRegionMap
+				array Rock
+					1
+				end
+			end
+			
+			begin RockData
+				
+				type Global
+				
+				array Poro
+					0.2
+				end
+				
+				array PermX
+					1.0e-0
+				end
+				
+				array PermY
+					1.0e-0
+				end
+				
+				array PermZ
+					1.0e-0
+				end
+				
+			end
+			
+		end
+
+		begin Omega2
+		
+			array CoarseElementIJK
+				2 1 1
+			end
+		
+			begin FineGeometry
+				array Nx
+					5 % Nx2
+				end
+				
+				array Dx
+					.20000000000000000000 % Dx2
+				end
+				
+				array Ny
+					5 % Ny2
+				end
+				
+				array Dy
+					.20000000000000000000 % Dy2
+				end
+				
+				array Nz
+					5 % Ny2
+				end
+				
+				array Dz
+					-.20000000000000000000 % Dz2
+				end
+				
+				RegionMappingType Uniform
+				
+			end
+			
+			begin RockRegionMap
+				array Rock
+					1
+				end
+			end
+			
+			begin RockData
+			
+				type Global
+				
+				array Poro
+					0.2
+				end
+				
+				array PermX
+					1.0e-0
+				end
+				
+				array PermY
+					1.0e-0
+				end
+				
+				array PermZ
+					1.0e-0
+				end
+				
+			end
+			
+		end
+
+	end
+		
+end
+
+% -------------------------------------------------
+
+begin TransmissibilityMethod
+	type L_MPFA
+end
+
+% -------------------------------------------------
+
+begin Sources
+	begin Boundary
+		type BoundaryCellPicker
+	end
+end

@@ -1,0 +1,29 @@
+begin MeshDescription
+	type PartitionMeshDescription
+
+	Border 1.0
+
+	begin Domains
+		X0	1.0
+		Y0	1.0
+		
+		array Nx
+			5
+		end
+		
+		array Dx
+			10.0
+		end
+		
+		array Ny
+			3
+		end
+		
+		array Dy
+			10.0
+		end
+	end
+	
+	% dump partitions for visualization (Global) or upscaling (Local)
+	PartitionIndices  Global
+end

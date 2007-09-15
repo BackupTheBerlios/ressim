@@ -1,0 +1,74 @@
+begin LGR7
+	array CoarseElementIJK
+		3 1 1
+	end
+	begin FineGeometry
+		array Nx
+			4
+		end
+		array Dx
+			0.5
+		end
+		array Ny
+			1
+		end
+		array Dy
+			1
+		end
+		array Nz
+			2 4 1 2 1 1
+		end
+		array Dz
+			-1.0 -0.5 -0.1 -0.95 -0.1 -0.9
+		end
+			
+		RegionMappingType Uniform
+	end
+	
+	begin RockRegionMap
+		array Core
+   			1
+		end
+	end
+	
+	begin Boxes
+		array L1Box   % lense
+			2 4 1 1 1 2
+		end
+		
+		array L2Box
+			4 4 1 1 3 4
+		end
+		
+		array L3Box
+			2 2 1 1 4 11
+		end
+		
+		array L4Box
+			3 3 1 1 8 11
+		end
+	end
+	
+	begin RockRegionBoxed
+		L1Box	Lense
+		L2Box	Lense
+		L3Box	Lense
+		L4Box	Lense
+	end
+
+	begin RockData
+		type Global
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		array permy
+			1.0 
+		end
+		array permz 
+			1.0 
+		end
+	end
+end % end LGR

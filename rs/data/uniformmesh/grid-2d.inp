@@ -1,0 +1,63 @@
+% Simple grid file for testing purposes
+
+begin Mesh
+
+	type StructuredMesh
+	
+	dimension 2
+
+	begin Domains
+
+		%origin
+		X0	0.0 
+		Y0	0.0 
+		
+		%X-domains specification	
+		array Nx
+			1 1
+		end
+
+		array Dx
+			1.0 2.0
+		end
+
+		%Y-domains specification	
+		array Ny
+			1 2
+		end
+
+		array Dy
+			3.0 0.5
+		end
+		
+		%uniform, layer or domain
+		RegionMappingType uniform
+		
+	end
+
+
+	begin RockRegionMap
+
+		%names must match RockRegion input data
+		array Stone
+		   1     %indices must match those produced by RegionMappingType above
+		end
+			
+	end
+
+	begin RockData
+	
+		type Region
+
+		begin 1
+		      poro 0.2
+
+		      permx 100.0
+		      permy  10.0 
+		      permz   8.0 
+		end
+
+
+	end
+		
+end

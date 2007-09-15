@@ -1,0 +1,9 @@
+*.aux
+*~
+.*~
+*.dvi
+*.ps
+*.log
+*.toc
+*.bbl
+*.blg

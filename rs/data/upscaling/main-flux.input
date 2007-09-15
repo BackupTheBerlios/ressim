@@ -1,0 +1,10 @@
+begin UpscalingMethod
+	
+	type LocalFlowRateAverage
+	
+	% specify the number of domains to read:
+	% mesh.input.1, ..., mesh.input.NumberOfDomains
+	% partition.input.1, ..., partition.input.NumberOfDomains
+	NumberOfDomains	1
+	
+end

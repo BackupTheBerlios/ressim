@@ -1,0 +1,47 @@
+begin LGR8
+	array CoarseElementIJK
+		3 1 2
+	end
+	begin FineGeometry
+		array Nx
+			4
+		end
+		array Dx
+			0.5
+		end
+		array Ny
+			1
+		end
+		array Dy
+			1
+		end
+		array Nz
+			1 1 4 1 1
+		end
+		array Dz
+			-0.9 -0.1 -0.5 -0.1 -0.9
+		end
+			
+		RegionMappingType Uniform
+	end
+	begin RockRegionMap
+		array LGR8
+   			1
+		end
+	end
+	begin RockData
+		type Global
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		array permy
+			1.0 
+		end
+		array permz 
+			1.0 
+		end
+	end
+end % end LGR

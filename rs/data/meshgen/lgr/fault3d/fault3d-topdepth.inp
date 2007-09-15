@@ -1,0 +1,30 @@
+	% Mesh transformation
+	begin Transform
+		type TopDepthTransform
+		begin TopDepth
+			type EvenLookupTable
+			Dimension 2
+			xMin      0
+			xMax    200
+			nx       23
+			yMin      0
+			yMax     200
+			ny        2
+			array data
+				  2.50e+01 2.50e+01  2.80e+01  3.20e+01   
+				  3.60e+01 3.70e+01  3.80e+01  3.80e+01 
+				  3.90e+01 3.90e+01  3.70e+01  3.40e+01 
+				  3.10e+01 2.60e+01  2.10e+01  1.80e+01
+				  1.90e+01 2.00e+01  2.30e+01  2.70e+01
+				  2.90e+01 3.00e+01  3.00e+01
+				
+				  2.50e+01 2.50e+01  2.80e+01  3.20e+01   
+				  3.60e+01 3.70e+01  3.80e+01  3.80e+01 
+				  3.90e+01 3.90e+01  3.70e+01  3.40e+01 
+				  3.10e+01 2.60e+01  2.10e+01  1.80e+01
+				  1.90e+01 2.00e+01  2.30e+01  2.70e+01
+				  2.90e+01 3.00e+01  3.00e+01
+			end
+		end
+	end
+	

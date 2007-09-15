@@ -1,0 +1,190 @@
+% Black-oil PVT data
+
+begin Components
+
+	begin H2O
+	end
+
+	begin C1
+	end
+
+	begin C10
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+begin EquationOfState
+
+	type	BlackOilEquationOfState
+
+	array gas
+		C1
+	end
+
+	array oil
+		C10
+	end
+
+	begin WaterMolarDensity
+		type		EvenLookupTable
+		dimension	2
+
+		xMin 1e7 xMax 6.1e7 nx 2 % Pressure
+		yMin 400 yMax 510   ny 2 % Temperature
+
+		array data
+			55000.0 55555.0
+			54500.0 55000.0
+  		end
+	end
+
+	begin WaterViscosity
+		type		EvenLookupTable
+		dimension	2
+
+		xMin 1e7 xMax 6e7 nx 2 % Pressure
+		yMin 400 yMax 510 ny 2 % Temperature
+
+		array data
+			32.1e-5  33.1e-5 
+			31.8e-5  32.1e-5
+  		end
+	end
+
+	begin WaterMolarEnthalpy
+		type		EvenLookupTable
+		dimension	2
+
+		xMin 1e7 xMax 6.1e7 nx 2 % Pressure
+		yMin 400 yMax 510   ny 2 % Temperature
+
+		array data
+			3.06e4  3.06e4
+			3.85e4  3.85e4
+  		end
+	end
+
+	begin OilMolarDensity
+		type		EvenLookupTable
+		dimension	3
+
+		xMin 1e7 xMax 6.1e7 nx 3 % Pressure
+		yMin 0   yMax 0.8   ny 3 % Mole fraction gas in oil phase
+		zMin 400 zMax 510   nz 2 % Temperature
+
+		array data
+			% T = 400.0 K
+			  8200.0 8400.0 8600.0
+			  8200.0 8400.0 8600.0
+			  8200.0 8400.0 8600.0
+
+			% T = 510.0 K
+			  8100.0 8300.0 8500.0
+			  8100.0 8300.0 8500.0
+			  8100.0 8300.0 8500.0
+  		end
+	end
+
+	begin GasMolarDensity
+		type		EvenLookupTable
+		dimension	3
+
+		xMin 1e7 xMax 6.1e7 nx 3 % Pressure
+		yMin 0   yMax 0.8   ny 3 % Mole fraction oil in gas phase
+		zMin 400 zMax 510   nz 2 % Temperature
+
+		array data
+			% T = 400.0 K
+			  4000.0 19000.0 25000.0
+			  5000.0 20000.0 30000.0
+			  5000.0 20000.0 30000.0
+
+			% T = 510.0 K
+			  4000.0 19000.0 25000.0
+			  4500.0 19000.0 30000.0
+			  4500.0 19000.0 30000.0
+		end
+	end
+
+	begin OilViscosity
+		type		EvenLookupTable
+		dimension	3
+
+		xMin 1e7 xMax 6e7 nx 2 % Pressure
+		yMin 0   yMax 0.8 ny 2 % Mole fraction of gas in oil phase
+		zMin 400 zMax 510 nz 2 % Temperature
+
+		array data
+			% T = 400.0 K
+			  80.2e-5 80.3e-5 
+			  80.0e-5 80.1e-5 
+
+			% T = 510.0 K
+			  78.0e-5 78.2e-5 
+			  77.9e-5 78.1e-5 
+		end
+	end
+
+	begin GasViscosity
+		type		EvenLookupTable
+		dimension	3
+
+		xMin 1e7 xMax 6e7 nx 2 % Pressure
+		yMin 0   yMax 0.8 ny 2 % Mole fraction of oil in gas phase
+		zMin 400 zMax 510 nz 2 % Temperature
+
+		array data
+			% T = 400.0 K
+			  5.0e-5 5.4e-5 
+			  5.0e-5 5.5e-5 
+
+			% T = 510.0 K
+			  5.5e-5 6.0e-5 
+			  5.7e-5 6.2e-5
+		end
+	end
+
+	begin OilMolarEnthalpy
+		type		EvenLookupTable
+		dimension	3
+
+		xMin 1e7 xMax 6.1e7 nx 3 % Pressure
+		yMin 0   yMax 0.8   ny 3 % Mole fraction oil in gas phase
+		zMin 400 zMax 510   nz 2 % Temperature
+
+		array data
+			% T = 400.0 K
+			  6.1e4 6.1e4 6.1e4
+			  6.1e4 6.1e4 6.1e4
+			  6.1e4 6.1e4 6.1e4
+
+			% T = 510.0 K
+			  7.4e4 7.4e4 7.4e4
+			  7.4e4 7.4e4 7.4e4
+			  7.4e4 7.4e4 7.4e4
+		end
+	end
+
+	begin GasMolarEnthalpy
+		type		EvenLookupTable
+		dimension	3
+
+		xMin 1e7 xMax 6.1e7 nx 3 % Pressure
+		yMin 0   yMax 0.8   ny 3 % Mole fraction oil in gas phase
+		zMin 400 zMax 510   nz 2 % Temperature
+
+		array data
+			% T = 400.0 K
+			  2.5e4 2.5e4 2.5e4
+			  2.5e4 2.5e4 2.5e4
+			  2.5e4 2.5e4 2.5e4
+
+			% T = 510.0 K
+			  3.5e4 3.5e4 3.5e4
+			  3.5e4 3.5e4 3.5e4
+			  3.5e4 3.5e4 3.5e4
+		end
+	end
+end

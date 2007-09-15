@@ -1,0 +1,58 @@
+begin RunSpec
+	Name	simple0
+	
+	EndTime	1.0
+	
+	array ReportTimes
+		1.0
+	end
+	
+	TimeStep	1.0
+end
+
+begin CouplingCoefficients
+	
+	type TPFA
+			
+	%type ExternalTransmissibilities
+			
+	%include trans.inp
+	
+end
+
+begin LinearSolvers
+	
+	Solver CG
+			
+	Preconditioner ILU
+			
+end
+
+begin FluidState
+	
+	PhaseDensity 1.0
+	
+	PhaseViscosity 1.0
+	
+	ReferencePressure 1.0
+
+end
+begin RockRegions
+	begin Rock
+	end
+	
+end
+
+include simple0-grid.inp
+
+begin Wells
+
+ 	begin Injector
+		VolumetricFlow	1.0	% m^3/s
+	end
+
+	begin Producer
+		VolumetricFlow	-1.0	% m^3/s
+	end
+
+end

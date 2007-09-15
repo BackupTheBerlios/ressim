@@ -1,0 +1,62 @@
+% Core-flooding test-case
+
+begin RunSpec
+
+	EndTime			1
+
+	ReportEvery		1e-2
+
+	TimeStepMaximum	1e-3
+
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth		0
+	DatumPressure	2e+6
+
+	Temperature	400
+	C10			1
+
+end
+
+%--------------------------------------------------------------------
+
+begin BodyForces
+
+	omega	10000
+	ax		0
+	ay		0
+
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/two
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+	end
+end
+
+%----------------------------------------------------------------------
+
+begin Sources
+
+	begin Fixed
+		begin Inlet
+			Temperature	400
+			H2O			1
+		end
+
+		begin Outlet
+			Temperature	400
+			C10			1
+		end
+	end
+
+end

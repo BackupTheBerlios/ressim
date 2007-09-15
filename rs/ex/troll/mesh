@@ -1,0 +1,461 @@
+begin TransmissibilityMethod
+	type L_MPFA
+	%test true
+	
+	%type TPFA
+end
+
+begin MeshGenerator
+
+	type LGRMeshGenerator
+	
+	include topbottom.inp
+	
+	%include topdepth.inp
+	
+	%begin Transform
+	%	type IdentityTransform
+	%end
+	
+	begin CoarseGeometry
+
+		%origin
+		X0	0.0 
+		Y0	0.0
+		Z0	0.0 
+		
+		%X-parts specification	% 8 coarse domains
+		array Nx
+			 1 1 1 1 1 1 1 1
+		end
+
+		array Dx
+			 300 300 500 300 300 200 300 300 
+		end
+
+		%Y-parts specification	
+		array Ny
+			1
+		end
+
+		array Dy
+			500
+		end
+		
+		%Z-parts specification	
+		array Nz
+			1
+		end
+
+		array Dz
+			-160.0
+		end
+	end % end CoarseGeometry
+	
+	begin Refinements
+	
+		begin LGR1
+			array CoarseElementIJK
+				1 1 1
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					30
+				end
+				array Ny
+					10
+				end
+				array Dy
+					50
+				end
+				%Z-parts specification	
+				array Nz
+					5 3 2
+				end
+				array Dz
+					-25.0 -5.0 -10.0
+				end
+				
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array LGR1
+		   			1
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx
+					1.0e-12
+				end
+				array permy
+					1.0e-12
+				end
+				array permz
+					1.0e-12
+				end
+			end
+		end % end LGR
+	
+		begin LGR2
+			array CoarseElementIJK
+				2 1 1
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					30
+				end
+				array Ny
+					10
+				end
+				array Dy
+					50
+				end
+				%Z-parts specification	
+				array Nz
+					5 3 2
+				end
+				array Dz
+					-25.0 -5.0 -10.0
+				end
+				
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array LGR2
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx
+					1.0e-12
+				end
+				array permy
+					1.0e-12
+				end
+				array permz
+					1.0e-12
+				end
+			end
+		end % end LGR
+	
+		begin LGR3
+			array CoarseElementIJK
+				3 1 1
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					50
+				end
+				array Ny
+					10
+				end
+				array Dy
+					50
+				end
+				array Nz
+					5 3 2
+				end
+				array Dz
+					-25.0 -5.0 -10.0
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array LGR3
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx
+					1.0e-12
+				end
+				array permy
+					1.0e-12
+				end
+				array permz
+					1.0e-12
+				end
+			end
+		end % end LGR
+	
+		begin LGR4
+			array CoarseElementIJK
+				4 1 1
+			end
+			begin FineGeometry
+				array Nx
+					5 6  6
+				end
+				array Dx
+					30 15 10.0
+				end
+				array Ny
+					10
+				end
+				array Dy
+					50
+				end
+				array Nz
+					5 3 2
+				end
+				array Dz
+					-25.0 -5.0 -10.0
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array LGR4
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx
+					1.0e-12
+				end
+				array permy
+					1.0e-12
+				end
+				array permz
+					1.0e-12
+				end
+			end
+		end % end LGR
+	
+		begin LGR5
+			array CoarseElementIJK
+				5 1 1
+			end
+			begin FineGeometry
+				array Nx
+					6 6  5
+				end
+				array Dx
+					10 15 30.0
+				end
+				array Ny
+					10
+				end
+				array Dy
+					50
+				end
+				array Nz
+					2 2 4 2 2 
+				end
+				array Dz
+					-25.0 -10.0 -5.0 -10.0 -25.0 
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array LGR5
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx
+					1.0e-12
+				end
+				array permy
+					1.0e-12
+				end
+				array permz
+					1.0e-12
+				end
+			end
+		end % end LGR
+	
+		begin LGR6
+			array CoarseElementIJK
+				6 1 1
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					20
+				end
+				array Ny
+					10
+				end
+				array Dy
+					50
+				end
+				array Nz
+					2 2 4 2 2
+				end
+				array Dz
+					-25.0 -10.0 -5.0 -10.0 -25.0 
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array LGR6
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx
+					1.0e-12
+				end
+				array permy
+					1.0e-12
+				end
+				array permz
+					1.0e-12
+				end
+			end
+		end % end LGR
+	
+		begin LGR7
+			array CoarseElementIJK
+				7 1 1
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					30
+				end
+				array Ny
+					10
+				end
+				array Dy
+					50
+				end
+				array Nz
+					2 2 4 2 2
+				end
+				array Dz
+					-25.0 -10.0 -5.0 -10.0 -25.0 
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array LGR7
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx
+					1.0e-12
+				end
+				array permy
+					1.0e-12
+				end
+				array permz
+					1.0e-12
+				end
+			end
+		end % end LGR
+	
+		begin LGR8
+			array CoarseElementIJK
+				8 1 1
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					30
+				end
+				array Ny
+					10
+				end
+				array Dy
+					50
+				end
+				array Nz
+					2 2 4 2 2
+				end
+				array Dz
+					-25.0 -10.0 -5.0 -10.0 -25.0 
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array LGR8
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx
+					1.0e-12
+				end
+				array permy
+					1.0e-12
+				end
+				array permz
+					1.0e-12
+				end
+			end
+		end % end LGR
+	
+	end
+	
+		
+end
+
+%-------------------------------------------------------------------------------
+
+begin Sources
+
+	begin Injector
+		type CenterPointCellPicker
+
+		X	0
+		Y	250
+		Z	-700
+	end
+
+	begin Producer
+		type CenterPointCellPicker
+
+		X	2500
+		Y	250
+		Z	0
+	end
+end

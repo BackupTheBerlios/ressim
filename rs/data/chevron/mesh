@@ -1,0 +1,74 @@
+begin MeshGenerator
+	%-----------------------------------------------------------------------
+%	type StructuredMeshGenerator
+%	dimension 3
+%
+%	begin Geometry
+%		% Origin
+%		X0	-649160.0
+%		Y0	 289000.0
+%		Z0	  -1500.0
+%
+%		array Nx 20 end
+%		array Ny 20 end
+%		array Nz 20 end
+%
+%		array Dx 130 end
+%		array Dy 130 end
+%		array Dz -16 end
+%
+%		RegionMappingType uniform
+%	end
+%
+%	begin RockRegionMap
+%		% Names must match RockRegion input data
+%		% indices must match those produced by RegionMappingType above
+%		array Rock 1 end
+%	end
+%
+%	begin RockData
+%		type Global
+%
+%		array poro 0.2 end
+%
+%		array permx 1e-12 end
+%		array permy 1e-12 end
+%		array permz 1e-12 end
+%	end
+	%-----------------------------------------------------------------------
+
+        Type		ChevronMeshImporter
+
+	% converted data file from Matlab into serialized Java object
+	% (see corresponding converter program)
+	Name		mesh.dat.gz
+
+	% subset to be extracted; as one-based inclusive indices; specify
+	% three coordinate points for upper-front-left and lower-back-right
+	array Subset
+	      16 56 38
+	      24 64 46
+	end
+
+	% porosity is not set in mesh, and considered constant
+	Porosity 0.2
+	%-----------------------------------------------------------------------
+end
+
+%-------------------------------------------------------------------------------
+begin TransmissibilityMethod
+%	type L4_MPFA	
+	type TPFA
+end
+
+%-------------------------------------------------------------------------------
+begin Sources
+	begin Producer
+		array elements 1 end
+	end
+
+	begin Injector      %  8^3
+		array elements 512 end
+	end
+end
+

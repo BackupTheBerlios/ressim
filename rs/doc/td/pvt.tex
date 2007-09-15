@@ -1,0 +1,1122 @@
+\chapter{PVT properties}
+\label{chap:pvt}
+
+\minitoc
+
+The PVT properties of the system are fluid properties which are
+dependent on the pressure, temperature and masses. These are volumes,
+densities, phase compositions, enthalpies and viscosities. Phase
+volume derivatives will also be calculated, since these are required
+for the volume balance equation.
+
+Throughout this chapter, the pressure is always the water pressure,
+that is $p=p^w$.
+
+Total and phase mole fractions are defined by
+\begin{eqnarray}
+  C_\nu & = & \frac{N_\nu}{\sum_\nu N_\nu}, \\
+  C_\nu^\ell & = & \frac{N_\nu^\ell}{\sum_\nu N_\nu^\ell}.
+\end{eqnarray}
+The phase molar and mass densities are
+\begin{eqnarray}
+  \xi^\ell & = & \frac{\sum_\nu N_\nu^\ell}{V^\ell}, \\
+  \rho^\ell & = & \frac{\sum_\nu M_\nu N_\nu^\ell}{V^\ell},
+\end{eqnarray}
+where $M_\nu$ is the molecular weight of the component $\nu$.
+
+%======================================================================
+
+\csection{Black-oil}
+
+The black-oil model has three components: water ($\nu=w$), oil
+($\nu=o$), and gas ($\nu=g$). The water component is restricted to the
+water phase, while the oil and gas components may exists in both the
+water and oil phases. If the fluid system has more components, they
+must be grouped into these component sets. Let $\nu\in\mathcal{G}$ be
+gas components and $\nu\in\mathcal{O}$ be oil components, such that
+these two sets are disjoint. The reduction is now:
+\begin{eqnarray}
+  N_g & = & \sum_{\nu\in\mathcal{G}} N_\nu, \\
+  N_o & = & \sum_{\nu\in\mathcal{O}} N_\nu, \\
+  N_\text{HC} & = & N_g + N_o.
+\end{eqnarray}
+
+%----------------------------------------------------------------------
+
+\subsection{Phase split}
+
+Let the liquid and vapor hydrocarbon fractions be
+\begin{equation}
+  L=\frac{N^o}{N_\text{HC}},\quad V=\frac{N^g}{N_\text{HC}},
+\end{equation}
+and notice that $V=1-L$. Then clearly
+\begin{eqnarray}
+  N_o^o & = & N^o C_o^o = L N_\text{HC}\left(1-C_g^o\right), \\
+  N_g^o & = & N^o C_g^o = L N_\text{HC} C_g^o, \\
+  N_o^g & = & N^g C_o^g = (1-L) N_\text{HC} C_o^g, \\
+  N_g^g & = & N^g C_g^g = (1-L) N_\text{HC}\left(1-C_o^g\right).
+\end{eqnarray}
+The phase split thus requires $L$ and the two fractions $C_g^o$ and
+$C_o^g$. To this end, for saturated fluids, the black-oil model uses a
+dew-point curve
+\begin{equation}
+  C_{o,D}^g\left(p,T\right) = \frac{N_o^g}{N^g},
+\end{equation}
+and a bubble-point curve
+\begin{equation}
+  C_{g,B}^o\left(p,T\right) = \frac{N_g^o}{N^o}.
+\end{equation}
+Furthermore, define the overall amount of the oil and gas components
+in the hydrocarbon mixture as
+\begin{equation}
+  Z_o = \frac{N_o}{N_\text{HC}}, \quad
+  Z_g = \frac{N_g}{N_\text{HC}}.
+\end{equation}
+
+\newpage
+
+\begin{figure}
+  \begin{center}
+    \begin{picture}(200,50)
+      \put(0,25){\vector(1,0){200}}
+      \put(210,25){\makebox(0,0){$Z_o$}}
+
+      \put(20,32.5){\makebox(0,0){Gas}}
+      \put(35,20){\line(0,1){10}}
+      \put(35,10){\makebox(0,0){$C_{o,D}^g$}}
+
+      \put(180,32.5){\makebox(0,0){Oil}}
+      \put(165,20){\line(0,1){10}}
+      \put(170,10){\makebox(0,0){$C_{o,B}^o$}}
+
+      \put(100,32.5){\makebox(0,0){Gas \& Oil}}
+
+      \put(140,25){\circle*{2.5}}
+      \put(38,20){$\underbrace{\makebox(100,0){}}_{d_g}$}
+      \put(143,20){$\underbrace{\makebox(20,0){}}_{d_o}$}
+    \end{picture}
+  \end{center}
+  \caption{Binary phase diagram at fixed pressure and temperature.}
+  \label{fig:binary}
+\end{figure}
+
+%......................................................................
+
+\subsubsection{Single-phase oil}
+
+The oil phase is undersaturated if the amount of gas is below the
+bubble-point:
+\begin{equation}
+  Z_g \leq C_{g,B}^o\quad\Leftrightarrow\quad
+  Z_o \geq C_{o,B}^o,
+\end{equation}
+where $C_{o,B}^o=1-C_{g,B}^o$. See Figure~\ref{fig:binary}. Then
+$L=1$, $C_g^o=Z_g$ and $C_o^g=0$.
+
+%......................................................................
+
+\subsubsection{Single-phase gas}
+
+Conversely, the gas phase is undersaturated if the amount of oil in it
+is below the dew-point:
+\begin{equation}
+  Z_o \leq C_{o,D}^g\quad\Leftrightarrow\quad
+  Z_g \geq C_{g,D}^g,
+\end{equation}
+where $C_{g,D}^g=1-C_{o,D}^g$. Now $L=0$, $C_o^g=Z_o$ and $C_g^o=0$.
+
+%......................................................................
+
+\subsubsection{Two-phase oil/gas}
+
+If $Z_o$ lies between the dew- and bubble-points, two phases may
+coexist. Referring again to Figure~\ref{fig:binary}, the liquid
+hydrocarbon fraction is seen to be
+\begin{equation}
+  L = \frac{d_g}{d_g + d_o} =
+  \frac{Z_o - C_{o,D}^g}{
+    \left(Z_o - C_{o,D}^g\right)+
+    \left(C_{o,B}^o - Z_o\right)} =
+  \frac{Z_o - C_{o,D}^g}{1 - C_{o,D}^g - C_{g,B}^o}.
+\end{equation}
+Otherwise, since both phases are saturated, their composition is set
+equal to the composition at the bubble- and dew-points. Hence,
+$C_g^o=C_{g,B}^o$ and $C_o^g=C_{o,D}^g$.
+
+%----------------------------------------------------------------------
+
+\csubsection{Phase properties and derivatives}
+
+The molar mass densities are the given functions
+\begin{eqnarray}
+  \xi^o & = & \xi^o\left(p,C_g^o,T\right), \\
+  \xi^g & = & \xi^g\left(p,C_o^g,T\right).
+\end{eqnarray}
+Phase volumes and their derivatives are dependent on the actual phase
+state.
+
+%......................................................................
+
+\subsubsection{Single-phase oil}
+
+The oil volume is
+\begin{equation}
+  V^o = \frac{N_o + N_g}{\xi^o}.
+\end{equation}
+Its derivatives are
+\begin{eqnarray}
+  \frac{\partial V^o}{\partial p} & = &
+  -\frac{V^o}{\xi^o} \frac{\partial \xi^o}{\partial p}, \\
+  \frac{\partial V^o}{\partial T} & = &
+  -\frac{V^o}{\xi^o} \frac{\partial \xi^o}{\partial T}, \\
+  \frac{\partial V^o}{\partial N_o} & = &
+  \frac{1}{\xi^o} -
+  \frac{V^o}{\xi^o} \frac{\partial \xi^o}{\partial C_g^o}
+  \frac{\partial C_g^o}{\partial N_o}, \\
+  \frac{\partial V^o}{\partial N_g} & = &
+  \frac{1}{\xi^o} -
+  \frac{V^o}{\xi^o} \frac{\partial \xi^o}{\partial C_g^o}
+  \frac{\partial C_g^o}{\partial N_g}.
+\end{eqnarray}
+As $C_g^o=N_g/(N_g+N_o)$, its derivatives are
+\begin{eqnarray}
+  \frac{\partial C_g^o}{\partial N_o} & = &
+  -\frac{C_g^o}{N_\text{HC}}, \\
+  \frac{\partial C_g^o}{\partial N_g} & = &
+  \frac{1-C_g^o}{N_\text{HC}}.
+\end{eqnarray}
+
+%......................................................................
+
+\subsubsection{Single-phase gas}
+
+The gas volume is
+\begin{equation}
+  V^g = \frac{N_o + N_g}{\xi^g}.
+\end{equation}
+Its derivatives are
+\begin{eqnarray}
+  \frac{\partial V^g}{\partial p} & = &
+  -\frac{V^g}{\xi^g} \frac{\partial \xi^g}{\partial p}, \\
+  \frac{\partial V^g}{\partial T} & = &
+  -\frac{V^g}{\xi^g} \frac{\partial \xi^g}{\partial T}, \\
+  \frac{\partial V^g}{\partial N_o} & = &
+  \frac{1}{\xi^g} -
+  \frac{V^g}{\xi^g} \frac{\partial \xi^g}{\partial C_o^g}
+  \frac{\partial C_o^g}{\partial N_o}, \\
+  \frac{\partial V^g}{\partial N_g} & = &
+  \frac{1}{\xi^g} -
+  \frac{V^g}{\xi^g} \frac{\partial \xi^g}{\partial C_o^g}
+  \frac{\partial C_o^g}{\partial N_g}.
+\end{eqnarray}
+Since $C_o^g=N_o/(N_g+N_o)$, its derivatives are
+\begin{eqnarray}
+  \frac{\partial C_o^g}{\partial N_o} & = &
+  \frac{1-C_o^g}{N_\text{HC}}, \\
+  \frac{\partial C_o^g}{\partial N_g} & = &
+  -\frac{C_o^g}{N_\text{HC}}.
+\end{eqnarray}
+
+%......................................................................
+
+\subsubsection{Two-phase oil/gas}
+
+The oil and gas volumes are
+\begin{eqnarray}
+  V^o & = & \frac{N_o^o + N_g^o}{\xi^o} =
+  \frac{L N_\text{HC}}{\xi^o}, \\
+  V^g & = & \frac{N_o^g + N_g^g}{\xi^g} =
+  \frac{(1-L) N_\text{HC}}{\xi^g}.
+\end{eqnarray}
+Pressure derivatives are
+\begin{eqnarray}
+  \frac{\partial V^o}{\partial p} & = &
+  \frac{V^o}{L} \frac{\partial L}{\partial p} -
+  \frac{V^o}{\xi^o} \left(
+    \frac{\partial \xi^o}{\partial p} +
+    \frac{\partial \xi^o}{\partial C_g^o}
+    \frac{\partial C_{g,B}^o}{\partial p}
+  \right), \\
+  \frac{\partial V^g}{\partial p} & = &
+  -\frac{V^g}{1-L} \frac{\partial L}{\partial p} -
+  \frac{V^g}{\xi^g} \left(
+    \frac{\partial \xi^g}{\partial p} +
+    \frac{\partial \xi^g}{\partial C_o^g}
+    \frac{\partial C_{o,D}^g}{\partial p}
+  \right),
+\end{eqnarray}
+temperature derivatives are
+\begin{eqnarray}
+  \frac{\partial V^o}{\partial T} & = &
+  \frac{V^o}{L} \frac{\partial L}{\partial T} -
+  \frac{V^o}{\xi^o} \left(
+    \frac{\partial \xi^o}{\partial T} +
+    \frac{\partial \xi^o}{\partial C_g^o}
+    \frac{\partial C_{g,B}^o}{\partial T}
+  \right), \\
+  \frac{\partial V^g}{\partial T} & = &
+  -\frac{V^g}{1-L} \frac{\partial L}{\partial T} -
+  \frac{V^g}{\xi^g} \left(
+    \frac{\partial \xi^g}{\partial T} +
+    \frac{\partial \xi^g}{\partial C_o^g}
+    \frac{\partial C_{o,D}^g}{\partial T}
+  \right),
+\end{eqnarray}
+and molar mass derivatives are ($\nu=o,g$)
+\begin{eqnarray}
+  \frac{\partial V^o}{\partial N_\nu} & = &
+  \frac{1}{\xi^o}\left(
+    \frac{\partial L}{\partial N_\nu} N_\text{HC} +
+    L \right), \\
+  \frac{\partial V^g}{\partial N_\nu} & = &
+  \frac{1}{\xi^g}\left(
+    -\frac{\partial L}{\partial N_\nu} N_\text{HC} +
+    (1-L) \right),
+\end{eqnarray}
+It remains to differentiate the liquid hydrocarbon fraction $L$:
+\begin{eqnarray}
+  \frac{\partial L}{\partial p} & = &
+  \frac{1}{C_{o,D}^g - \left(1-C_{g,B}^o\right)}
+  \left(
+    (1-L) \frac{\partial C_{o,D}^g}{\partial p} -
+    L \frac{\partial C_{g,B}^o}{\partial p}
+  \right), \\
+  \frac{\partial L}{\partial T} & = &
+  \frac{1}{C_{o,D}^g - \left(1-C_{g,B}^o\right)}
+  \left(
+    (1-L) \frac{\partial C_{o,D}^g}{\partial T} -
+    L \frac{\partial C_{g,B}^o}{\partial T}
+  \right), \\
+  \frac{\partial L}{\partial N_o} & = &
+  \frac{1}{C_{o,D}^g - \left(1-C_{g,B}^o\right)}
+  \frac{Z_o-1}{N_\text{HC}}, \\
+  \frac{\partial L}{\partial N_g} & = &
+  \frac{1}{C_{o,D}^g - \left(1-C_{g,B}^o\right)}
+  \frac{Z_o}{N_\text{HC}}.
+\end{eqnarray}
+
+%----------------------------------------------------------------------
+
+\csubsection{Data verification}
+
+As the black-oil phase split is determined by user-supplied tables, it
+is quite possible for an unphysical situation to arise. This may be
+avoided by a set of tests.
+
+%......................................................................
+
+\subsubsection{Oil component distribution}
+
+It is reasonable to assume that there is more of the heavy oil
+component in the oil phase than in the gas phase. Thus:
+\begin{equation}
+  C_{o,D}^g < C_{o,B}^o = 1 - C_{g,B}^o.
+\end{equation}
+This also ensures that the denominator in the expressions for the
+derivatives of $L$ is negative.
+
+%......................................................................
+
+\subsubsection{Oil/gas mass densities}
+
+A black-oil fluid must give mass densities satisfying
+\begin{equation}
+  \label{eqn:rhoorhog}
+  \rho^o \geq \rho^g.
+\end{equation}
+The binary system yields
+\begin{equation}
+  \rho^\ell = \frac{M_o N_o^\ell + M_g N_g^\ell}{V^\ell}
+  = \left(M_o C_o^\ell + M_g C_g^\ell\right) \xi^\ell
+\end{equation}
+Then \eqref{eqn:rhoorhog} becomes
+\begin{equation}
+  \left[M_o \left(1-C_g^o\right) + M_g C_g^o\right] \xi^o \geq
+  \left[M_o C_o^g + M_g \left(1-C_o^g\right)\right] \xi^g.
+\end{equation}
+The pseudo-component molecular weights are
+\begin{eqnarray}
+  M_o & = & \frac{\sum_{\nu\in\mathcal{O}} M_\nu C_\nu}{\sum_{\nu\in\mathcal{O}} C_\nu}, \\
+  M_g & = & \frac{\sum_{\nu\in\mathcal{G}} M_\nu C_\nu}{\sum_{\nu\in\mathcal{G}} C_\nu}.
+\end{eqnarray}
+Failure of this check may be because the gas molar density is too
+large relative to the oil molar density.
+
+%......................................................................
+
+\subsubsection{Compressibility check}
+
+Increasing the pressure should decrease the total hydrocarbon
+volumes. Thus
+\begin{equation}
+  \frac{\partial\left(V^o + V^g\right)}{\partial p} \leq 0.
+\end{equation}
+If the bubble- and dew-point curves are constant, then this reduces to
+\begin{equation}
+  \frac{V^o}{\xi^o} \frac{\partial\xi^o}{\partial p} +
+  \frac{V^g}{\xi^g} \frac{\partial\xi^g}{\partial p} \geq 0.
+\end{equation}
+
+%......................................................................
+
+\subsubsection{Mass/volume check}
+
+Adding hydrocarbons should increase the total hydrocarbon volumes:
+\begin{equation}
+  \frac{\partial\left(V^o + V^g\right)}{\partial N_\nu} \geq 0,
+  \quad\nu=o,g.
+\end{equation}
+
+%----------------------------------------------------------------------
+
+\csubsection{Inverse grouping}
+
+Define the grouped fractions as
+\begin{eqnarray}
+  C_g & = & \sum_{\nu\in\mathcal{G}} C_\nu, \\
+  C_o & = & \sum_{\nu\in\mathcal{O}} C_\nu.
+\end{eqnarray}
+Then the oil phase composition is
+\begin{equation}
+  C_\nu^o = C_\nu \left\{
+    \begin{array}{ll}
+      C_g^o / C_g, & \nu\in\mathcal{G}, \\
+      C_o^o / C_o, & \nu\in\mathcal{O},
+    \end{array}
+  \right.
+\end{equation}
+and the gas phase composition is
+\begin{equation}
+  C_\nu^g = C_\nu \left\{
+    \begin{array}{ll}
+      C_g^g / C_g, & \nu\in\mathcal{G}, \\
+      C_o^g / C_o, & \nu\in\mathcal{O}.
+    \end{array}
+  \right.
+\end{equation}
+The grouped phase compositions, $C_\nu^\ell$, are known from the phase
+split.
+
+For the volume derivatives with moles, the inverse grouping is
+approximated as follows:
+\begin{equation}
+  \frac{\partial V^\ell}{\partial N_\nu} = \left\{
+    \begin{array}{ll}
+      \partial V^\ell / \partial N_g, & \nu\in\mathcal{G}, \\
+      \partial V^\ell / \partial N_o, & \nu\in\mathcal{O},
+    \end{array}
+  \right.
+\end{equation}
+
+%----------------------------------------------------------------------
+
+\csubsection{Viscosity and enthalpy}
+
+The oil and gas viscosities are the given functions:
+\begin{eqnarray}
+  \mu^o & = & \mu^o\left(p,C_g^o,T\right), \\
+  \mu^g & = & \mu^g\left(p,C_o^g,T\right).
+\end{eqnarray}
+Likewise, the oil gas molar enthalpies are these given functions:
+\begin{eqnarray}
+  \bar h^o & = & \bar h^o\left(p,C_g^o,T\right), \\
+  \bar h^g & = & \bar h^g\left(p,C_o^g,T\right).
+\end{eqnarray}
+The energy conservation law requires the enthalpy density $h^\ell
+\rho^\ell$ and its temperature derivative:
+\begin{eqnarray}
+  h^\ell \rho^\ell & = & \bar h^\ell \xi^\ell, \\
+  \frac{\partial\left(h^o \rho^o\right)}{\partial T} & = &
+  \left(
+    \frac{\partial \bar h^o}{\partial T} +
+    \frac{\partial \bar h^o}{\partial C_g^o}
+    \frac{\partial C_g^o}{\partial T}
+  \right) \xi^o +
+  \bar h^o \left(
+    \frac{\partial \xi^o}{\partial T} +
+    \frac{\partial \xi^o}{\partial C_g^o}
+    \frac{\partial C_g^o}{\partial T}
+  \right), \\
+  \frac{\partial\left(h^g \rho^g\right)}{\partial T} & = &
+  \left(
+    \frac{\partial \bar h^g}{\partial T} +
+    \frac{\partial \bar h^g}{\partial C_o^g}
+    \frac{\partial C_o^g}{\partial T}
+  \right) \xi^g +
+  \bar h^g \left(
+    \frac{\partial \xi^g}{\partial T} +
+    \frac{\partial \xi^g}{\partial C_o^g}
+    \frac{\partial C_o^g}{\partial T}
+  \right).
+\end{eqnarray}
+The derivatives of $C_g^o$ and $C_o^g$ are zero in the single-phase
+region, otherwise the derivatives of the bubble- and dew point curves
+are used.
+
+%======================================================================
+
+\csection{Cubic equation of state}
+
+A cubic equation of state uses the relation for a real gas
+\begin{equation}
+  p V^\ell = Z^\ell N^\ell R T,
+\end{equation}
+where $R=8.3145\ \joule\per(\mole\usk\kelvin)$ is the universal gas
+constant, and $Z^\ell$ is the phase compressibility factor.
+
+The cubic equation for the phase compressibility may be expressed
+\begin{equation}
+  (Z^\ell)^3 + a_2^\ell (Z^\ell)^2 + a_1^\ell (Z^\ell) + a_0^\ell = 0,
+\end{equation}
+in which
+\begin{eqnarray}
+  a_2^\ell & = & -1 - B^\ell (1+\delta_1+\delta_2), \\
+  a_1^\ell & = & A^\ell + B^\ell
+  \left( 1 + B^\ell \right) \left(\delta_1 + \delta_2\right) +
+  \delta_1\delta_2 \left(B^\ell\right)^2, \\
+  a_0^\ell & = & - A^\ell B^\ell - \left(B^\ell\right)^2
+  \left( 1 + B^\ell \right)\delta_1\delta_2.
+\end{eqnarray}
+Two common choices of the parameters herein are:
+\begin{description}
+\item[Soave-Redlich-Kwong] $\delta_1=-1$ and $\delta_2=0$, with
+  $\Omega_a=0.42748$ and $\Omega_b=0.08664$, and
+  \begin{equation}
+    m(\omega_i) = 0.48508 + 1.55171 \omega_i - 0.15613 \omega_i^2.
+  \end{equation}
+\item[Peng-Robinson] $\delta_1=-(1+\sqrt{2})$ and
+  $\delta_2=-(1-\sqrt{2})$, with $\Omega_a=0.45724$ and
+  $\Omega_b=0.0778$, and
+  \begin{equation}
+    m(\omega_i) = \left\{
+      \begin{array}{ll}
+        0.37464 + 1.53226 \omega_i - 0.2699 \omega_i^2, & \omega_i
+        \leq 0.49, \\
+        0.379642 + 1.48503 \omega_i - 0.164423 \omega_i^2 + 0.016666
+        \omega_i^3, & \omega_i > 0.49.
+      \end{array}
+    \right.
+  \end{equation}
+\end{description}
+$\omega_i$ is the acentric factor of component $i$.
+
+%----------------------------------------------------------------------
+
+\csubsection{Phase/component parameters and derivatives}
+
+The following lists component/phase parameters and derivatives which
+will be used in the phase splitting (flash) algorithms and subsequent
+phase property determination.
+
+%......................................................................
+
+\subsubsection{Component parameters}
+
+Pure component parameters are:
+\begin{eqnarray}
+  a_i & = & \frac{\Omega_a R^2 T_{i,c}^2}{p_{i,c}} \alpha_i^2, \\
+  b_i & = & \frac{\Omega_b  R T_{i,c}}{p_{i,c}}, \\
+  \alpha_i & = & 1 + m(\omega_i) \left(
+    1 - \sqrt{\frac{T}{T_{i,c}}}\right).
+\end{eqnarray}
+in which $T_{i,c}$ is the critical component temperature and $p_{i,c}$
+is the critical component pressure, and
+\begin{eqnarray}
+  \frac{\partial a_i}{\partial T} & = &
+  2\frac{a_i}{\alpha_i} \frac{\partial\alpha_i}{\partial T}, \\
+  \frac{\partial\alpha_i}{\partial T} & = &
+  -\frac{m(\omega_i)}{2}\frac{1}{\sqrt{T_{i,c} T}}.
+\end{eqnarray}
+It will also be useful to define
+\begin{equation}
+  a_{ij} = \left( 1 - d_{ij}\right) \sqrt{a_i a_j},
+\end{equation}
+where $d_{ij}$ are the binary interaction parameters, satisfying
+$d_{ij}=d_{ji}$. Its temperature derivative is
+\begin{equation}
+  \frac{\partial a_{ij}}{\partial T} =
+  \left(
+    1 - d_{ij}\right) \frac{a_j \frac{\partial a_i}{\partial T} +
+    a_i \frac{\partial a_j}{\partial T}}{2\sqrt{a_i a_j}}.
+\end{equation}
+
+%......................................................................
+
+\subsubsection{Phase parameters}
+
+Phase parameters and derivatives are:
+\begin{eqnarray}
+  a^\ell & = & \sum_i \sum_j C_i^\ell C_j^\ell a_{ij}, \\
+  b^\ell & = & \sum_i C_i^\ell b_i, \\
+  \frac{\partial a^\ell}{\partial N_i^\ell} & = &
+  \frac{2}{N^\ell} \left(
+    \sum_j C_j^\ell a_{ij} - a^\ell \right), \\
+  \frac{\partial b^\ell}{\partial N_i^\ell} & = &
+  \frac{b_i - b^\ell}{N^\ell}, \\
+  \frac{\partial a^\ell}{\partial T} & = &
+  \sum_i \sum_j C_i^\ell C_j^\ell \frac{\partial a_{ij}}{\partial T}.
+\end{eqnarray}
+Then
+\begin{eqnarray}
+  A^\ell & = & \frac{p a^\ell}{(RT)^2}, \\
+  B^\ell & = & \frac{p b^\ell}{RT}.
+\end{eqnarray}
+Pressure derivatives are
+\begin{eqnarray}
+  \frac{\partial A^\ell}{\partial p} & = & \frac{A^\ell}{p}, \\
+  \frac{\partial B^\ell}{\partial p} & = & \frac{B^\ell}{p},
+\end{eqnarray}
+temperature derivatives are
+\begin{eqnarray}
+  \frac{\partial A^\ell}{\partial T} & = & -2\frac{A^\ell}{T} +
+  \frac{A^\ell}{a^\ell} \frac{\partial a^\ell}{\partial T}, \\
+  \frac{\partial B^\ell}{\partial T} & = & -\frac{B^\ell}{T},
+\end{eqnarray}
+and mole derivatives are
+\begin{eqnarray}
+  \frac{\partial A^\ell}{\partial N_i^\ell} & = &
+  \frac{A^\ell}{a^\ell} \frac{\partial a^\ell}{\partial N_i^\ell}, \\
+  \frac{\partial B^\ell}{\partial N_i^\ell} & = &
+  \frac{B^\ell}{b^\ell} \frac{\partial b^\ell}{\partial N_i^\ell}.
+\end{eqnarray}
+
+%......................................................................
+
+\subsubsection{Phase compressibility}
+
+The roots of the cubic equation may be found by letting
+\begin{eqnarray}
+  Q & = & \frac{3 a_0 - a_2^2}{9}, \\
+  R & = & \frac{9 a_2 a_1 - 27 a_0 - 2 a_2^2}{54}, \\
+  D & = & Q^3 + R^2.
+\end{eqnarray}
+If $D>0$ or $Q=0$, there is just one real root, given by
+\begin{eqnarray}
+  S & = & \sqrt[3]{R + \sqrt{D}}, \\
+  T & = & \sqrt[3]{R - \sqrt{D}}, \\
+  Z & = & -\frac{a_2}{3} + S + T.
+\end{eqnarray}
+Otherwise, there are three real roots, which are given by
+\begin{eqnarray}
+  \theta & = & \cos^{-1}\left(\frac{R}{\sqrt{-Q^3}}\right), \\
+  Z_1 & = & 2\sqrt{-Q}\cos\left(\frac{\theta}{3}\right) - \frac{a_2}{3}, \\
+  Z_2 & = & 2\sqrt{-Q}\cos\left(\frac{\theta+2\pi}{3}\right) - \frac{a_2}{3}, \\
+  Z_3 & = & 2\sqrt{-Q}\cos\left(\frac{\theta+4\pi}{3}\right) - \frac{a_2}{3}.
+\end{eqnarray}
+The largest root is associated with the gas phase, and the smallest to
+the oil phase.
+
+Derivatives of $Z^\ell$ are given by differentiation through the cubic
+equation, yielding
+\begin{equation}
+  \frac{\partial Z^\ell}{\partial X} = -\frac{
+    \frac{\partial a_2^\ell}{\partial X} Z^2 +
+    \frac{\partial a_1^\ell}{\partial X} Z +
+    \frac{\partial a_0^\ell}{\partial X}}{
+    3 Z^2 + 2 a_2^\ell Z + a_1^\ell}.
+\end{equation}
+Derivatives herein are
+\begin{eqnarray}
+  \frac{\partial a_2^\ell}{\partial X} & = &
+  -\frac{\partial B^\ell}{\partial X}
+  (1+\delta_2+\delta_2), \\
+  \frac{\partial a_1^\ell}{\partial X} & = &
+  \frac{\partial A^\ell}{\partial X} +
+  \frac{\partial B^\ell}{\partial X} \left[
+    \left( 1 + 2 B^\ell\right)
+    \left( \delta_1 + \delta_2 \right) +
+    2\delta_1\delta_2 B^\ell \right], \\
+  \frac{\partial a_0^\ell}{\partial X} & = &
+  -\frac{\partial A^\ell}{\partial X} B^\ell -
+  \frac{\partial B^\ell}{\partial X} \left[
+    A^\ell + B^\ell \left[ 2 + 3 B^\ell \right]
+    \delta_1 \delta_2 \right],
+\end{eqnarray}
+where $X$ may be $p, T$, or $N_i^\ell$.
+
+%......................................................................
+
+\subsubsection{Volume translation}
+
+For improved liquid property predictions, volume translations may be
+performed. Then the phase compressibilities and derivatives become
+\begin{eqnarray}
+  Z^\ell & \leftarrow & Z^\ell - \frac{p}{RT} \sum_i C_i^\ell c_i, \\
+  \frac{\partial Z^\ell}{\partial p} & \leftarrow &
+  \frac{\partial Z^\ell}{\partial p} - \frac{1}{RT}
+  \sum_i C_i^\ell c_i, \\
+  \frac{\partial Z^\ell}{\partial T} & \leftarrow &
+  \frac{\partial Z^\ell}{\partial T} + \frac{p}{RT^2}
+  \sum_i C_i^\ell c_i, \\
+  \frac{\partial Z^\ell}{\partial N_i^\ell} & \leftarrow &
+  \frac{\partial Z^\ell}{\partial N_i^\ell} -
+  \frac{p}{RT} \frac{c_i - \sum_j C_j^\ell c_j}{N^\ell}.
+\end{eqnarray}
+$c_i$ is a component shift parameter, and may be related to the
+dimensionless shift parameter $s_i$ by
+\begin{equation}
+  c_i = s_i b_i.
+\end{equation}
+
+%......................................................................
+
+\subsubsection{Component fugacities}
+
+Fugacities for each component in each phase is given by
+\begin{eqnarray}
+  f_i^\ell & = & p C_i^\ell \varphi_i^\ell, \\
+  \varphi_i^\ell & = & y_i^\ell\left(w^\ell\right)^{v_i^\ell}, \\
+  y_i^\ell & = & \frac{\exp\left(\beta_i^\ell (Z^\ell-1)\right)}
+  {Z^\ell - B^\ell}, \\
+  w^\ell & = & \frac{Z^\ell - \delta_2 B^\ell}{Z^\ell - \delta_1
+    B^\ell}, \\
+  v_i^\ell & = & \frac{A^\ell\left(\alpha_i^\ell-\beta_i^\ell\right)}
+  {(\delta_2-\delta_1)B^\ell}, \\
+  \alpha_i^\ell & = & \frac{2}{a^\ell}\sum_j C_j^\ell a_{ij}, \\
+  \beta_i^\ell & = & \frac{b_i}{b^\ell}.
+\end{eqnarray}
+$\varphi_i^\ell$ is the fugacity coefficient. Fugacity derivatives are
+\begin{eqnarray}
+  \frac{\partial f_i^\ell}{\partial p} & = &
+  \frac{f_i^\ell}{p} + \frac{f_i^\ell}{\varphi_i^\ell}
+  \frac{\partial\varphi_i^\ell}{\partial p}, \\
+  \frac{\partial f_i^\ell}{\partial T} & = &
+  \frac{f_i^\ell}{\varphi_i^\ell}
+  \frac{\partial\varphi_i^\ell}{\partial T}, \\
+  \frac{\partial f_i^\ell}{\partial N_j^\ell} & = &
+  \frac{f_i^\ell}{C_i^\ell} \frac{\partial C_i^\ell}{\partial N_j^\ell} +
+  \frac{f_i^\ell}{\varphi_i^\ell}\frac{\partial\varphi_i^\ell}{\partial N_j^\ell}, \\
+  \frac{\partial C_i^\ell}{\partial N_j^\ell} & = &
+  \frac{\delta_{ij} - C_i^\ell}{N^\ell}.
+\end{eqnarray}
+Derivatives of the fugacity coefficient is
+\begin{eqnarray}
+  \frac{\partial\varphi_i^\ell}{\partial X} & = &
+  \frac{\partial y_i^\ell}{\partial X} \frac{\varphi_i^\ell}{y_i^\ell} +
+  \varphi_i^\ell\left(
+    \frac{\partial v_i^\ell}{\partial X} \ln w^\ell +
+    \frac{v_i^\ell}{w^\ell}\frac{\partial w^\ell}{\partial X}
+  \right), \\
+  \frac{\partial y_i^\ell}{\partial X} & = &
+  \left(
+    \frac{\partial\beta_i^\ell}{\partial X} (Z^\ell-1) +
+    \beta_i^\ell \frac{\partial Z^\ell}{\partial X}
+  \right) y_i^\ell -
+  \frac{y_i^\ell}{Z^\ell-B^\ell}\left(
+    \frac{\partial Z^\ell}{\partial X} -
+    \frac{\partial B^\ell}{\partial X}
+  \right), \\
+  \frac{\partial v_i^\ell}{\partial X} & = &
+  \frac{\frac{\partial A^\ell}{\partial
+      X}\left(\alpha_i^\ell-\beta_i^\ell\right) +
+    A^\ell\left(
+      \frac{\partial\alpha_i^\ell}{\partial X} -
+      \frac{\partial\beta_i^\ell}{\partial X}
+    \right)}{\left(\delta_2-\delta_1\right) B^\ell} -
+  \frac{v_i^\ell}{B^\ell}
+  \frac{\partial B^\ell}{\partial X}, \\
+  \frac{\partial w^\ell}{\partial X} & = &
+  \frac{\frac{\partial Z^\ell}{\partial X} -
+    \delta_2 \frac{\partial B^\ell}{\partial X}
+    - w^\ell \left(
+      \frac{\partial Z^\ell}{\partial X} -
+      \delta_1 \frac{\partial B^\ell}{\partial X}
+    \right)}{Z^\ell - \delta_1 B^\ell}.
+\end{eqnarray}
+As before, $X$ may denote pressure, temperature, or a mole number.
+Derivatives of $\alpha_i^\ell$ and $\beta_i^\ell$ are
+\begin{eqnarray}
+  \frac{\partial\alpha_i^\ell}{\partial T} & = &
+  -\frac{\alpha_i^\ell}{a^\ell}\frac{\partial a^\ell}{\partial T} +
+  \frac{2}{a^\ell} \sum_j C_j^\ell \frac{\partial a_{ij}}{\partial T}, \\
+  \frac{\partial\alpha_i^\ell}{\partial C_j^\ell} & = &
+  -\frac{\alpha_i^\ell}{a^\ell}\frac{\partial a^\ell}{\partial C_j^\ell} +
+  \frac{2}{a^\ell} a_{ij}, \\
+  \frac{\partial\beta_i^\ell}{\partial N_j^\ell} & = &
+  -\frac{\beta_i^\ell}{b^\ell}\frac{\partial b^\ell}{\partial N_j^\ell}.
+\end{eqnarray}
+
+%----------------------------------------------------------------------
+
+\csubsection{Flash algorithms}
+
+When splitting a composition into oil and gas, overall material
+balance must be maintained. First define
+\begin{equation}
+  K_i = \frac{C_i^g}{C_i^o},
+\end{equation}
+and
+\begin{equation}
+  C_i^\text{HC} = \frac{N_i}{N_\text{HC}} = L C_i^o + V C_i^g =
+  L C_i^o + (1-L) C_i^g,
+\end{equation}
+where $L=N^o/N_\text{HC}$ is the liquid hydrocarbon fraction and
+$V=N^g/N_\text{HC}$ is the vapor hydrocarbon fraction. It follows
+that
+\begin{eqnarray}
+  C_i^o & = & \frac{C_i^\text{HC}}{L+(1-L) K_i}, \label{eqn:cio} \\
+  C_i^g & = & K_i C_i^o = \frac{K_i C_i^\text{HC}}{L+(1-L) K_i}. \label{eqn:cig}
+\end{eqnarray}
+The liquid fraction yielding material balance is solved from
+\begin{equation}
+  0 = \sum_i \left( C_i^g - C_i^o \right) =
+  \sum_i \frac{(K_i-1) C_i^\text{HC}}{L+(1-L) K_i}
+  = f(L).
+\end{equation}
+$f(L)=0$ is the Rachford-Rice equation, and it may be solved by
+Newton's method. Its derivative is
+\begin{equation}
+  f'(L) = \sum_i\frac{(1-K_i)^2 C_i^\text{HC}}
+  {\left(L+(1-L) K_i\right)^2}.
+\end{equation}
+If $L<0$, then there is no free oil, and if $L>1$, there will not be
+any free gas.
+
+%......................................................................
+
+\subsubsection{Successive substitution}
+
+The successive substitution uses the calculated fugacities, and it does
+achieve a thermodynamical equilibrium. It goes as follows:
+\begin{enumerate}
+\item Solve the Rachford-Rice equation for $L$.
+\item Determine $C_i^o$ and $C_i^g$ from
+  Equation~\eqref{eqn:cio}-\eqref{eqn:cig}.
+\item Calculate new fugacities, which includes solving the cubic
+  equation of state.
+\item Determine new $K_i$-values from
+  \begin{equation}
+    K_i = \frac{\varphi_i^o}{\varphi_i^g}.
+  \end{equation}
+\end{enumerate}
+This iteration is continued until the fugacities do become equal one
+another. Of course, should the iteration enter a single-phase region,
+it should be stopped.
+
+Initial estimates on the $K_i$ values can be determined from Wilson's
+correlation formula:
+\begin{equation}
+  K_i = \frac{p_{i,c}}{p}\exp\left[
+    5.373 (1+\omega_i) \left(
+      1-\frac{T_{i,c}}{T}
+    \right)
+  \right].
+\end{equation}
+
+%......................................................................
+
+\subsubsection{Newton-Raphson iteration}
+
+The fugacity equality can be solved directly using Newton's
+method. Set
+\begin{equation}
+  r_i = f_i^o - f_i^g.
+\end{equation}
+Since $N_i^g=N_i-N_i^o$, it suffices to solve for the oil phase
+composition. The residual derivative is
+\begin{equation}
+  \frac{\partial r_i}{\partial N_j^o} =
+  \frac{\partial f_i^o}{\partial N_j^o} -
+  \frac{\partial f_i^g}{\partial N_j^g}
+  \frac{\partial N_j^g}{\partial N_j^o} =
+  \frac{\partial f_i^o}{\partial N_j^o} +
+  \frac{\partial f_i^g}{\partial N_j^g}.
+\end{equation}
+This iteration gives a system of equations to be solved at each step.
+The molar mass update may yield a negative number of moles for certain
+components, in which case a scaling of the update must be done.
+
+%......................................................................
+
+\subsubsection{Overall flash procedure}
+
+An overall procedure is to apply successive substitution for a few
+iterations, then switch to the Newton-Raphson method. This switching
+may be done by monitoring the residual $f_i^o-f_i^g$, and using
+Newton's method for small residuals, and the successive substitution
+for larger values.
+
+%----------------------------------------------------------------------
+
+\csubsection{Phase properties and derivatives}
+
+Volumes and densities are obtained from the equation of state:
+\begin{eqnarray}
+  V^\ell & = & \frac{Z^\ell N^\ell RT}{p}, \\
+  \xi^\ell & = & \frac{p}{Z^\ell RT}.
+\end{eqnarray}
+Volume derivatives are
+\begin{eqnarray}
+  \frac{\partial V^\ell}{\partial p} & = &
+  \frac{V^\ell}{Z^\ell} \left(
+    \frac{\partial Z^\ell}{\partial p} +
+    \sum_i
+    \frac{\partial Z^\ell}{\partial N_i^\ell}
+    \frac{\partial N_i^\ell}{\partial p}
+  \right) +
+  \frac{V^\ell}{N^\ell} \frac{\partial N^\ell}{\partial p} -
+  \frac{V^\ell}{p}, \\
+  \frac{\partial V^\ell}{\partial T} & = &
+  \frac{V^\ell}{Z^\ell} \left(
+    \frac{\partial Z^\ell}{\partial T} +
+    \sum_i
+    \frac{\partial Z^\ell}{\partial N_i^\ell}
+    \frac{\partial N_i^\ell}{\partial T}
+  \right) +
+  \frac{V^\ell}{N^\ell} \frac{\partial N^\ell}{\partial T} +
+  \frac{V^\ell}{T}, \\
+  \frac{\partial V^\ell}{\partial N_i} & = &
+  \sum_j \left(
+    \frac{V^\ell}{Z^\ell}
+    \frac{\partial Z^\ell}{\partial N_j^\ell} +
+    \frac{V^\ell}{N^\ell}
+  \right) \frac{\partial N_j^\ell}{\partial N_i}.
+\end{eqnarray}
+Mass derivatives are determined differently depending on the number of
+phases. For a single hydrocarbon phase;
+\begin{eqnarray}
+  \frac{\partial N^\ell}{\partial p} & = & 0, \\
+  \frac{\partial N^\ell}{\partial T} & = & 0, \\
+  \frac{\partial N_i^\ell}{\partial N_j} & = & \delta_{ij}.
+\end{eqnarray}
+Here, $\ell$ is the present phase. If both oil and gas are present,
+the following relations reduce the computations somewhat. Starting
+with
+\begin{equation}
+  \frac{\partial N_i}{\partial X} =
+  \frac{\partial N_i^o}{\partial X} +
+  \frac{\partial N_i^g}{\partial X},
+\end{equation}
+it follows that for $X=p$ or $T$, the left hand side is zero, since
+$N_i$ is an independent primary variable. Then
+\begin{eqnarray}
+  \frac{\partial N_i^g}{\partial p} & = &
+  -\frac{\partial N_i^o}{\partial p}, \\
+  \frac{\partial N_i^g}{\partial T} & = &
+  -\frac{\partial N_i^o}{\partial T}.
+\end{eqnarray}
+If $X=N_j$, this becomes
+\begin{equation}
+  \frac{\partial N_i^g}{\partial N_j} =
+  \delta_{ij} - \frac{\partial N_i^o}{\partial N_j}.
+\end{equation}
+
+The determination of $\partial N_i^\ell/\partial X$ for a two-phase
+case will be done using the fugacity equality condition. The total
+derivative of the component fugacity is
+\begin{equation}
+  \frac{d f_i^\ell}{d X} =
+  \frac{\partial f_i^\ell}{\partial p}
+  \frac{\partial p}{\partial X} +
+  \frac{\partial f_i^\ell}{\partial T}
+  \frac{\partial T}{\partial X} +
+  \sum_j
+  \frac{\partial f_i^\ell}{\partial N_j^\ell}
+  \frac{\partial N_j^\ell}{\partial X}.
+\end{equation}
+As $f_i^o - f_i^g = 0$, so must their total derivatives. Hence
+\begin{equation}
+  \left(
+    \frac{\partial f_i^o}{\partial p} -
+    \frac{\partial f_i^g}{\partial p}
+  \right)
+  \frac{\partial p}{\partial X} +
+  \left(
+    \frac{\partial f_i^o}{\partial T} -
+    \frac{\partial f_i^g}{\partial T}
+  \right)
+  \frac{\partial T}{\partial X} +
+  \sum_j
+  \left(
+    \frac{\partial f_i^o}{\partial N_j^o}
+    \frac{\partial N_j^o}{\partial X} -
+    \frac{\partial f_i^g}{\partial N_j^g}
+    \left[
+      \frac{\partial N_j}{\partial X} -
+      \frac{\partial N_j^o}{\partial X}
+    \right]
+  \right) = 0.
+\end{equation}
+This forms a linear system of equations in the unknowns $\partial
+N_j^o/\partial X$. Matrix entries are
+\begin{equation}
+  F_{ij} = 
+  \frac{\partial f_i^o}{\partial N_j^o} +
+  \frac{\partial f_i^g}{\partial N_j^g},
+\end{equation}
+and the right hand side entries are
+\begin{equation}
+  r_i =
+  \left(
+    \frac{\partial f_i^g}{\partial p} -
+    \frac{\partial f_i^o}{\partial p}
+  \right)
+  \frac{\partial p}{\partial X} +
+  \left(
+    \frac{\partial f_i^g}{\partial T} -
+    \frac{\partial f_i^o}{\partial T}
+  \right)
+  \frac{\partial T}{\partial X} +
+  \sum_j
+  \frac{\partial f_i^g}{\partial N_j^g}
+  \frac{\partial N_j}{\partial X}.
+\end{equation}
+Notice that the system matrix is independent of $X$, hence it can be
+factored just once, and then used for solving for pressure,
+temperature and molar mass derivatives.
+
+%----------------------------------------------------------------------
+
+\csubsection{Viscosity}
+
+Viscosity of oil and gas may be calculated from the Lohrenz-Bray-Clark
+(LBC) formula. It proceeds by first calculating mole fraction averaged
+component properties:
+\begin{eqnarray}
+  V_c^\ell & = & \sum_i C_i^\ell V_{i,c}, \\
+  T_c^\ell & = & \sum_i C_i^\ell T_{i,c}, \\
+  M^\ell & = & \sum_i C_i^\ell M_i, \\
+  p_c^\ell & = & \sum_i C_i^\ell p_{i,c}, \\
+  M_2^\ell & = & \sum_i C_i^\ell \sqrt{M_i}, \\
+  \mu_*^\ell & = & \frac{\sum_i C_i^\ell \mu_i \sqrt{M_i}}{M_2^\ell}.
+\end{eqnarray}
+$V_{i,c}$ is the critical component molar volume. The diluted gas
+viscosity for each component is given by
+\begin{equation}
+  \mu_i = \zeta_i^{-1} \left\{
+    \begin{array}{ll}
+      c_1 T_{i,r}^{e_1}, & T_{i,r} < T_\text{div}, \\
+      c_2 \left( c_3 T_{i,r} - c_4 \right)^{e_2}, &
+      T_{i,r} \geq T_\text{div}.
+    \end{array}
+  \right.
+\end{equation}
+The viscosity reducing parameter $\zeta_i$ is
+\begin{equation}
+  \zeta_i^{-1} = \frac{M_i^{1/2} p_{i,c}^{2/3}}{T_{i,c}^{1/6}},
+\end{equation}
+the reduced temperature is
+\begin{equation}
+  T_{i,r} = \frac{T}{T_{i,c}},
+\end{equation}
+and the constants are
+\begin{eqnarray}
+  c_1 & = & 3.4\cdot 10^{-4}, \\
+  c_2 & = & 1.778\cdot 10^{-4}, \\
+  c_3 & = & 4.58, \\
+  c_4 & = & 1.67, \\
+  e_1 & = & 0.94, \\
+  e_2 & = & 0.625, \\
+  T_\text{div} & = & 1.5.
+\end{eqnarray}
+
+The phase viscosity is then
+\begin{equation}
+  \mu^\ell = \mu_*^\ell + \left(\zeta^\ell\right)^{-1}
+  \left( (\chi^\ell)^4 - 10^{-4} \right),
+\end{equation}
+where
+\begin{eqnarray}
+  \left(\zeta^\ell\right)^{-1} & = &
+  \frac{\left(M^\ell\right)^{1/2} \left(p_c^\ell\right)^{2/3}}
+  {\left(T_c^\ell\right)^{1/6}}, \\
+  \chi^\ell & = &
+  a_1 + \xi_r^\ell \left(
+    a_2 + \xi_r^\ell \left(
+      a_3 + \xi_r^\ell \left(
+        a_4 + \xi_r^\ell a_5 \right)
+    \right)
+  \right), \\
+  \xi_r^\ell & = & \xi^\ell V_c^\ell,
+\end{eqnarray}
+and the five new constants are
+\begin{eqnarray}
+  a_1 & = & 0.1023, \\
+  a_2 & = & 0.023364, \\
+  a_3 & = & 0.058533, \\
+  a_4 & = & -0.040758, \\
+  a_5 & = & 0.0093324.
+\end{eqnarray}
+
+%----------------------------------------------------------------------
+
+\csubsection{Enthalpy}
+
+The molar enthalpy of a hydrocarbon phase may be given by
+\begin{equation}
+  \bar h^\ell = \sum_i C_i^\ell M_i h_i^\ell.
+\end{equation}
+The component enthalpies in each phase are given through the heat
+capacities
+\begin{equation}
+  c_i^\ell = c_{i,1}^\ell + c_{i,2}^\ell (T-T_0),
+\end{equation}
+where $T_0$ is a reference temperature, for instance at surface
+conditions. Then
+\begin{equation}
+  h_i^\ell = \int_{T_0}^T c_i^\ell(T)\, dT =
+  c_{i,0}^\ell + c_{i,1}^\ell (T-T_0) +
+  \frac{c_{i,2}^\ell}{2} (T-T_0)^2.
+\end{equation}
+The heat capacities $c_{i,j}^\ell$ must be specified for each phase
+and component. Unspecified values may default to zero.
+
+The enthalpy density and heat capacity is given by
+\begin{eqnarray}
+  h^\ell \rho^\ell & = & \bar h^\ell \xi^\ell, \\
+  \frac{\partial\left(h^\ell\rho^\ell\right)}{\partial T} & = &
+  \frac{\partial\bar h^\ell}{\partial T} \xi^\ell +
+  \bar h^\ell \frac{\partial\xi^\ell}{\partial T}, \\
+  \frac{\partial\bar h^\ell}{\partial T} & = &
+  \sum_i \left(
+    \frac{\partial C_i^\ell}{\partial N_i^\ell}
+    \frac{\partial N_i^\ell}{\partial T} M_i h_i^\ell +
+    C_i^\ell M_i \frac{\partial h_i^\ell}{\partial T}
+  \right), \\
+  \frac{\partial C_i^\ell}{\partial N_i^\ell} & = &
+  C_i^\ell \left(
+    \frac{1}{N_i^\ell} - \frac{1}{N^\ell}
+  \right), \\
+  \frac{\partial h_i^\ell}{\partial T} & = & c_i^\ell, \\
+  \frac{\partial\xi^\ell}{\partial T} & = &
+  \frac{\xi^\ell}{N^\ell} \sum_i \frac{\partial N_i}{\partial T} -
+  \frac{\xi^\ell}{V^\ell} \frac{\partial V^\ell}{\partial T}.
+\end{eqnarray}
+
+%======================================================================
+
+\csection{Water properties}
+
+The water phase properties are determined by the moles of component
+$\nu=0$ and the functions
+\begin{eqnarray}
+  \xi^w & = & \xi^w\left(p,T\right), \\
+  \bar h^w & = & \bar h^w\left(p,T\right), \\
+  \mu^w & = & \mu^w\left(p,T\right).
+\end{eqnarray}
+Then its volume and associated properties are
+\begin{equation}
+  V^w = \frac{N^w}{\xi^w},\quad
+  N^w = N_0^w = N_0,
+\end{equation}
+and the volume derivatives are
+\begin{eqnarray}
+  \frac{\partial V^w}{\partial p} & = &
+  -\frac{V^w}{\xi^w} \frac{\partial\xi^w}{\partial p}, \\
+  \frac{\partial V^w}{\partial T} & = &
+  -\frac{V^w}{\xi^w} \frac{\partial\xi^w}{\partial T}, \\
+  \frac{\partial V^w}{\partial N_w} & = &
+  \frac{1}{\xi^w}.
+\end{eqnarray}
+Enthalpy density and the heat capacity are
+\begin{eqnarray}
+  h^w \rho^w & = & \bar h^w \xi^w, \\
+  \frac{\partial\left(h^w \rho^w\right)}{\partial T} & = &
+  \frac{\partial \bar h^w}{\partial T} \xi^w +
+  \bar h^w \frac{\partial \xi^w}{\partial T}.
+\end{eqnarray}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "td"
+%%% End: 

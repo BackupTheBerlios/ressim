@@ -1,0 +1,149 @@
+begin MeshDescription
+
+	type StructuredMeshDescription
+	
+	dimension 3
+	
+	begin Geometry
+
+		%origin
+		X0	0.0 
+		Y0	0.0 
+		Z0	0.0
+		
+		%X-parts specification	
+		array Nx
+			1 1 
+		end
+
+		array Dx
+			1.0 1.0
+		end
+
+		%Y-parts specification	
+		array Ny
+			1 1
+		end
+
+		array Dy
+			1.0 1.0
+		end
+		
+		array Nz
+			1 5
+		end
+		
+		array Dz
+			-1 -0.2
+		end
+		
+		% Uniform or Layer
+		RegionMappingType Layer
+		
+		LinearIJKOrdering NaturalIJKOrdering
+		
+		begin StructuredTransform
+			type TranslateDilateTransform
+			
+			array TargetOrigin
+				10.0 2.0 10.0
+			end
+			
+			array TargetLengths
+				1.0 5 -3
+			end
+		end
+		
+	end
+	
+	begin Boxes
+		
+		array BoxOfShale
+			1 2 2 2 1 1
+		end
+		
+		array SandBox
+			1 2 1 1 1 1
+		end
+	
+	end
+
+
+	begin RockRegionMap
+
+		%names must match RockRegion input data
+		array Shale
+		   1     % indices must match those produced by RegionMappingType above
+		end
+		
+		array LimeStone
+			2
+		end
+			
+	end
+	
+	begin RockRegionBoxed
+		BoxOfShale Shale
+		
+		SandBox SandStone
+	end
+
+	begin RockData
+	
+		type Global
+
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		
+		array permy
+			1.0 
+		end
+		
+		array permz 
+			1.0 
+		end
+		
+	end
+	
+	% boxed rock data
+	begin RockDataBoxed
+		
+		begin BoxOfShale
+			array poro
+				0.3
+			end
+			array permx
+				2.0
+			end
+			array permy 
+				2.0
+			end
+			array permz
+				2.0
+			end
+		end
+		
+		begin SandBox
+			array poro
+				0.4
+			end
+			array permx
+				3.0
+			end
+			array permy 
+				3.0
+			end
+			array permz
+				3.0
+			end
+		end
+		
+	end
+	
+end
+
+

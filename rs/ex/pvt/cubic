@@ -1,0 +1,55 @@
+% Compositional PVT data
+
+begin Components
+
+	begin H2O
+	end
+
+	begin N2
+	end
+
+	begin CO2
+	end
+
+	begin H2S
+	end
+
+	begin C1
+	end
+
+	begin C2
+	end
+
+	begin C3
+	end
+
+	begin C4
+	end
+
+	begin C5
+	end
+
+	begin C6
+	end
+
+	begin C7
+	end
+
+	begin C8
+	end
+
+	begin C9
+	end
+
+	begin C10
+	end
+
+end
+
+begin EquationOfState
+
+	type CubicEquationOfState
+
+	rinclude water
+
+end

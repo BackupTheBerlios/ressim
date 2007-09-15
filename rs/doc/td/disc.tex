@@ -1,0 +1,241 @@
+\chapter{Control volume discretisation}
+
+\minitoc
+
+A control volume finite difference method is used for calculating the
+Darcy and Fourier fluxes between the gridcells. The overall procedure
+is to solve implicitly for the pressure using the volume balance
+equation, and then explicitly calculate masses and temperature. Hence
+the solution procedure for a given timestep is:
+\begin{enumerate}
+\item Solve the volume balance equation for the pressure: $p^w$.
+\item Calculate volumetric Darcy phase fluxes: $D^\ell$.
+\item Solve for temperature: $T$.
+\item Solve for the masses: $N_\nu$.
+\item Calculate a new thermodynamical equilibrium.
+\end{enumerate}
+
+%======================================================================
+
+\csection{Flux discretisations}
+
+Properties inside of a control volume are taken to be spatially
+constant, and as such it is only the flux discretisation which needs
+closer attention. The surface of the control volume $\Omega_i$ is
+denoted $\partial\Omega_i$, and this surface is further subdivided
+into planar faces
+\begin{equation}
+  \partial\Omega_i = \bigcup_{k=1}^{n_i} \partial\Omega_{i,k}.
+\end{equation}
+Furthermore, let $\mathcal{M}_{i,k}^\tensor{H}$ contain the set of
+control volume indices contributing to the flux over
+$\partial\Omega_{i,k}$. Then a flux integral can be approximated with
+\begin{eqnarray}
+  -\int_{\partial\Omega_i} \lambda\tensor{H}\nabla\Psi\cdot\vec n\, dS
+  & = & -\sum_{k=1}^{n_i} \int_{\partial\Omega_{i,k}}
+  \lambda\tensor{H}\nabla\Psi\cdot\vec n_{i,k}\, dS \\
+  & \approx & \sum_{k=1}^{n_i} \lambda_{i,k}
+  \sum_{j\in\mathcal{M}_{i,k}^\tensor{H}} t_{ij} \Psi_j.
+\end{eqnarray}
+$t_{ij}$ are the geometrical coupling coefficients, or simply the
+transmissibilities. They are only dependent on the medium conductivity
+$\tensor{H}$ and the geometry, and therefore may be computed as a
+preprocessing step. See \cite{aavatsmarkell} for details on their
+computation.
+
+The mobility $\lambda$ is evaluated upstream on
+$\partial\Omega_{i,k}$, yielding $\lambda_{i,k}$. The upstream
+direction is given by the sign of the summation
+\begin{equation}
+  \sum_{j\in\mathcal{M}_{i,k}^\tensor{H}} t_{ij} \Psi_j.
+\end{equation}
+If is is positive, the flow is outwards and control volume $i$ is
+chosen. Otherwise, the neighbour value is used instead.
+
+%----------------------------------------------------------------------
+
+\csubsection{Darcy flux}
+
+A Darcy flux integral is approximated as
+\begin{eqnarray}
+  D_{i,k}^\ell = \int_{\partial\Omega_{i,k}} \vec u^\ell\cdot\vec n\, dS
+  & \approx &
+  - \lambda_{i,k}^\ell\int_{\partial\Omega_{i,k}}
+  \tensor{K}\nabla\Psi^\ell\cdot\vec n\, dS \\
+  & \approx &
+  \lambda_{i,k}^\ell
+  \sum_{j\in\mathcal{M}_{i,k}^\tensor{K}} t_{ij} \Psi_j^\ell.
+\end{eqnarray}
+The cell centred phase potential is given by
+\begin{equation}
+  \Psi_j^\ell = p_j^\ell + \bar\rho^\ell_{i,k} b_j,
+\end{equation}
+where the face saturation averaged phase mass density is
+\begin{equation}
+  \bar\rho^\ell_{i,k} =
+  \frac{S_i^\ell \rho_i^\ell + S_k^\ell \rho_k^\ell}{S_i^\ell + S_k^\ell},
+\end{equation}
+and the body force is
+\begin{equation}
+	b_j = g z_j + \frac{\omega^2}{2}
+   \|\vec a_{x,y} - \vec (x_j,y_j,0)\|_2^2.
+\end{equation}
+
+The volume balance formulation requires the pressure derivative of the
+Darcy flux, which is approximated as:
+\begin{equation}
+  \frac{\partial}{\partial p_l^o} D_{i,k}^\ell \approx
+  \lambda_{i,k}^\ell
+  \sum_{j\in\mathcal{M}_{i,k}^\tensor{K}} t_{ij} \delta_{jl}.
+\end{equation}
+
+%----------------------------------------------------------------------
+
+\subsubsection{Mass flux}
+
+The mass flux of component $\nu$ is
+\begin{equation}
+  \sum_\ell \int_{\partial\Omega_i} \xi^\ell C_\nu^\ell \vec
+  u^\ell\cdot\vec n\, dS \approx
+  \sum_{k=1}^{n_i} \sum_\ell
+  \left(\xi^\ell C_\nu^\ell\right)_{i,k}
+  D_{i,k}^\ell.
+\end{equation}
+The pressure derivative of the mass flux only considers the variation
+of the Darcy flux, and not $\xi^\ell C_\nu^\ell$.
+
+%----------------------------------------------------------------------
+
+\subsubsection{Energy flux}
+
+The advective energy flux is approximated by
+\begin{equation}
+  \sum_\ell \int_{\partial\Omega_i} \rho^\ell h^\ell \vec
+  u^\ell\cdot\vec n\, dS \approx
+  \sum_{k=1}^{n_i} \sum_\ell
+  \left(\rho^\ell h^\ell\right)_{i,k}
+  D_{i,k}^\ell.
+\end{equation}
+As for the mass flux, it is only $D_{i,k}^\ell$ which varies with the
+pressure.
+
+%----------------------------------------------------------------------
+
+\csubsection{Fourier flux}
+
+The Fourier (conductive) energy flux is
+\begin{equation}
+  F_{i,k} = -\int_{\partial\Omega_i} \kappa\nabla T\cdot\vec n\, dS
+  \approx
+  \sum_{k=1}^{n_i} \sum_{j\in\mathcal{M}_{i,k}^\kappa} k_{ij} T_j.
+\end{equation}
+Its pressure derivative is zero, while its temperature derivative is
+\begin{equation}
+  \frac{\partial}{\partial T_l} F_{i,k} \approx
+  \sum_{k=1}^{n_i} \sum_{j\in\mathcal{M}_{i,k}^\kappa} k_{ij} \delta_{jl}.
+\end{equation}
+
+%======================================================================
+
+\csection{Volume balance discretisation}
+
+The volume balance equation is solved for the pressure, and the
+residual equation in each gridblock is
+\begin{equation}
+  r_i = \frac{R^{n+1}_i}{\Delta t} + \frac{\partial R_i}{\partial p^o}
+  \frac{p_i^{n+1,w} - p_i^{n,w}}{\Delta t} +
+  \frac{\partial R_i}{\partial T}\frac{\partial T_i}{\partial t} +
+  \sum_\nu \frac{\partial R_i}{\partial N_\nu}
+  \frac{\partial N_{i,\nu}}{\partial t}.
+\end{equation}
+The temperature timederivative is
+\begin{equation}
+  \frac{\partial T_i}{\partial t} \approx
+  \frac{q_i^e}{\delta_i^T}-\frac{1}{\delta_i^T}
+  \sum_{k=1}^{n_i} \left(\sum_\ell
+    \left(\rho^\ell h^\ell\right)_{i,k}
+    D_{i,k}^\ell + F_{i,k}
+  \right).
+\end{equation}
+The mass timederivative is
+\begin{equation}
+  \frac{\partial N_{i,\nu}}{\partial t} \approx
+  q_{i,\nu}-\sum_{k=1}^{n_i} \sum_\ell
+  \left(\xi^\ell C_\nu^\ell\right)_{i,k} D_{i,k}^\ell.
+\end{equation}
+The residual $r_i$ is a nonlinear function of the water pressure, so a
+Newton-Raphson iteration is appropriate. Its pressure derivative is
+approximated with
+\begin{equation}
+  \frac{\partial}{\partial p_l^w} r_i \approx
+  \frac{\partial R_i}{\partial p^w}
+  \frac{\delta_{il}}{\Delta t} +
+  \frac{\partial R_i}{\partial T}
+  \frac{\partial}{\partial p_l^w} \frac{\partial T_i}{\partial t} +
+  \sum_\nu \frac{\partial R_i}{\partial N_\nu}
+  \frac{\partial}{\partial p_l^w} \frac{\partial N_{i,\nu}}{\partial t},
+\end{equation}
+in which $\delta_{il}$ is the Dirac delta function. The second order
+temperature derivative is approximated
+\begin{equation}
+  \frac{\partial}{\partial p_l^w} \frac{\partial T_i}{\partial t} \approx
+  -\frac{1}{\delta_i^T}
+  \sum_{k=1}^{n_i} \sum_\ell
+  \left(\rho^\ell h^\ell\right)_{i,k}
+  \frac{\partial D_{i,k}^\ell}{\partial p_l^w},
+\end{equation}
+and likewise the second order mass derivative is
+\begin{equation}
+  \frac{\partial}{\partial p_l^w}
+  \frac{\partial N_{i,\nu}}{\partial t} \approx
+  -\sum_{k=1}^{n_i} \sum_\ell
+  \left(\xi^\ell C_\nu^\ell\right)_{i,k}
+  \frac{\partial D_{i,k}^\ell}{\partial p_l^w}.
+\end{equation}
+
+The Newton-Raphson iteration is now to solve the linear matrix system
+\begin{equation}
+  \sum_l \frac{\partial r_i}{\partial p_l^w} \Delta p_l^w =
+  -r_i,\quad\forall i.
+\end{equation}
+
+%======================================================================
+
+\csection{Mass discretisation}
+
+Using an explicit forward Euler time discretisation, the mass
+equations become
+\begin{equation}
+  N_{i,\nu}^{n+1} = N_{i,\nu}^n +
+  \Delta t \left(
+    q_{i,\nu} -
+    \sum_{k=1}^{n_i} \sum_\ell
+    \left(\xi^\ell C_\nu^\ell\right)_{i,k} D_{i,k}^\ell
+  \right).
+\end{equation}
+
+%======================================================================
+
+\csection{Energy discretisation}
+
+The discretisation of the energy equation treats the Fourier flux
+implicitly while the Darcy flux is taken explicitly. Its block
+residual is
+\begin{equation}
+  r_i = \delta_i^T \frac{T_i^{n+1} - T_i^n}{\Delta t} +
+  \sum_{k=1}^{n_i} \left(\sum_\ell
+    \left(\rho^\ell h^\ell\right)_{i,k}
+    D_{i,k}^\ell + F_{i,k}
+  \right) - q_i^e.
+\end{equation}
+The Jacobian matrix is formed from
+\begin{equation}
+  \frac{\partial r_i}{\partial T_l} \approx
+  \delta_i^T\frac{\delta_{il}}{\Delta t} +
+  \frac{\partial F_{i,k}}{\partial T_l}.
+\end{equation}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "td"
+%%% End: 

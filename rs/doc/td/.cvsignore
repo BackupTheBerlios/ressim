@@ -1,0 +1,14 @@
+*.aux
+*~
+.*~
+*.dvi
+*.ps
+*.log
+*.toc
+*.bbl
+*.blg
+*.mtc*
+*.pdf
+*.bmt
+td.out
+auto

@@ -1,0 +1,164 @@
+begin Mesh
+
+	type UnstructuredMesh
+	
+	dimension 2
+	
+	begin Points
+
+		NumberOfPoints		4		
+	
+		% (x,y,z) coordinates of corner points
+		array Coordinates     
+			0.0 0.5 0.0		% point 0: x y z
+			1.0 0.0 0.0		% point 1: x y z
+			1.0 1.0 0.0		% point 2: x y z
+			2.0 0.5 0.0		% point 3: x y z
+		end
+	
+	end
+	
+	begin Interfaces
+	
+		NumberOfInterfaces	8
+	
+		array Points  
+			2 0 1
+			2 1 2
+			2 0 2
+			2 2 1
+			2 1 3
+			2 3 2
+			2 2 1
+			2 1 2
+		end
+	
+		array Areas   % area(numInterfaces)
+			1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
+		end
+	
+		array Normals  % x,y,z (numInterfaces)
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+		end
+	
+		array CenterPoints  % x,y,z (numInterfaces)
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+			0.0 0.0 0.0
+		end
+	end
+	
+	begin Elements
+
+		NumberOfElements	3
+		
+		array Interfaces   
+		   	3 0 1 2
+		   	3 3 4 5
+		   	2 6 7
+		end
+	
+		%optional data for elements
+		array Volumes  % volume(numElements)
+			1.0 1.0 0.1
+		end
+	
+		array Centers  % x, y, z (numElements)
+			0.5 0.5 0.0
+			1.5 0.5 0.0
+			1.0 0.5 0.0
+		end
+	
+	end
+
+	begin Connections
+	
+		NumberOfConnections	2
+		
+		% 2*NumberOfConnections Interface indices
+		% each pair represents a connection
+		array Connections
+			1 6
+			3 7
+		end
+		
+		% NumberOfConnections flux multiplier values
+		% if empty or not specified, flux multipliers default to 1.0
+		array FluxMultipliers 
+			1.0 1.0	
+		end
+		
+	end	
+		
+	
+	begin RockRegionMap
+	
+		array Stone
+			0
+		end
+		
+		array Granite
+			1
+		end
+	
+	end
+	
+	begin RockData
+	
+		type Global  % only global for the moment. 
+					 % Region might be added, similar to StructuredMesh
+
+		% a single value is duplicated for all cells
+		array poro
+			0.2 0.1 0.01
+        end
+
+		array permx
+			100.0
+		end
+
+		%a specific value for all cells
+		array permy
+			10.0  8.0 0.1
+		end
+
+		array permz
+			1.0  2.0 1.0
+		end
+
+	end
+	
+	begin Sources
+	
+		begin Injector
+		
+			% element indices
+			array Elements
+				1
+			end
+			
+		end
+		
+		begin Producer
+		
+			array Elements
+				3
+			end
+			
+		end
+	
+	end
+	
+end

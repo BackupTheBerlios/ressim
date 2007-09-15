@@ -1,0 +1,58 @@
+begin RunSpec
+
+	EndTime		5000
+
+	TimeUnit	Days
+
+	ReportEvery	100
+
+	TimeStepMaximum	5
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	2e+6
+
+	Temperature	400
+	C10			1
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/two
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+	end
+end
+
+begin Sources
+	begin Fixed
+		%begin Injector
+		%	Temperature	400	% Kelvin
+		%	H2O		1	% 100 percent
+		%end
+
+		begin Producer
+			Temperature	400	% Kelvin
+			C10		1	% 100 percent
+		end
+	end
+
+	begin Outlet
+		%begin Producer
+		%	Mass -5e-4 	% mol/s
+		%end
+	end
+
+	begin Regular
+		begin Injector
+			H2O	1e-2	% mol/s
+		end
+	end
+end

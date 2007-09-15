@@ -1,0 +1,613 @@
+Datum           Aenderung
+-------------------------------------------------------------------------------
+15.04.99	Einfuerung des Dokumentationsfiles
+
+bis dato	In File "intersection_lines.c" werden zwei Ausgabefiles fuer 
+		Tecplot geoeffnet: 
+		edge3d.tec   : enthaelt die Schnittlinien
+		vertex3d.tec : enthaelt die singulaeren Schnittpunkte
+
+
+20.04.99----------------------------------------------------------------------
+        	I. Schnittlinien berechnen 
+		Editiert wurden: intersection_lines.c
+				 intersection_points.c
+
+		Problem: zwei Ebenen beruehren sich an einer Kante
+	  	         --> es existiert nur 1 Schnittpunkt,
+			     berechnet werden aber zwei Schnittpunkte
+		Vorgehensweise
+		1.1)	Fkt "intersection_nodes_plane_plane" alle moeglichen
+			(max 2) Schnittpunkte berechnen und an 
+                        Fkt "intersection_lines" zurueckgeben.
+
+		1.2)	in Fkt "intersection_lines" untersuchen, ob die
+			zwei ermittelten Schnittpunkte identisch sind:
+			Abstand der beiden voneinander <= 10e-16 (epsilon_0)
+
+		1.3)	sind die Schnittpunkte identisch:
+			--> singulaerer Schnittpunkt: VERTEX3D--Liste eintragen
+
+		1.4)	sind sie nicht identisch:
+			--> zwei Schnittpunkt: in die EDGE3D--Liste eintragen
+
+		
+		II.  intersection.h
+		Deklarieren :  struct point pt_intersect[2]  
+		(war seltsamerweise noch nicht deklariert)
+
+
+21.04.99----------------------------------------------------------------------
+	I. Stichwort Kluftorientierung 
+	in den folgenden Files wurden zu den unten genannten Funktionen 
+	Veraenderungen vorgenommen:
+	fracvert.c, function.h, Eingabefile (z.B. aa.dat), geometry.c
+
+	kluftor_simple1: Fehler, wurde rausgeschmissen
+
+	kluftor_simple2: wurde rausgeschmissen                            
+
+ 	kluftor_fisher: in "kluftor_sphere_fisher" umbenannt
+			In der Funktion sind immer noch ein paar Unklarheiten 
+			drin. Weiterhin erstmal mit Vorsicht geniessen :-)
+
+	kluftor_norm_nonvariat: neue Funktion,
+			Bestimmt direkt aus Azimut und Fallwinkel den 
+			Normalenvektor einer Flaeche im Raum, 
+			(ohne Variation!)
+			Algorithmus aus Fisher et al. (1993),p.19--21
+
+
+ 	kluftor_sphere_fisher_AH: spaehrische Normalverteilung nach 
+			Fisher et al. (1993)
+			scheint im Gegensatz zur Fkt kluftor_sphere_fisher
+			zu funktionieren
+
+
+27.04.99----------------------------------------------------------------------
+	I. Vergleich der Verzeichnisse (und deren Files): 
+	   -      ~hemming/KLUFT_GEN/3D_KLUFT_c/AREA51_2304/  
+           		(entspricht  ~zimmer/KLUFT_GEN/AREA51/)
+	   - und  ~hemming/KLUFT_GEN/3D_KLUFT_c/aktuelle_Quelle/
+
+	   Fazit: Die Files sind fast schon gleich. 
+	   Bitte noch den folgenden File in ~zimmer/KLUFT_GEN/AREA51/ 
+           einbauen bzw. ersetzten:
+	    ~hemming/KLUFT_GEN/3D_KLUFT_c/aktuelle_Quelle/intersection_lines.c
+           
+	II. Was ist noch zu tun:
+	II.a) Das Ausgabefile fuer den Netzgenerator muss an einigen Stellen
+	      noch veraendert werden.
+	      (weitere Infos bei Annette) 
+	II.b) Den FRAC.log File gemaess den Erweiterungen im Eingabefile 
+              ebenso erweitern
+
+08.05.99----------------------------------------------------------------------
+	I. fracvert.c:
+	   In Funktion "kluftor_sphere_fisher_AH" war noch ein Fehler
+
+
+02.07.99----------------------------------------------------------------------
+Einbau der Routine 'subdomain_3D.c' in das aktuelle Verzeichnis
+	(AREA51 von Jan am 01.07.99 kopiert)
+
+	1.) functions.h : Definieren der beiden Funktionen:
+		- void subdomain_2D_intersection();
+		- void subdomain_3D_intersection();              
+
+	2.) parameter.h: 
+	    static double epsilon_0  wurde mit neuem Wert belegt, da
+            epsilon_0 = 10e-16 zu "streng" war.
+            --> neu: epsilon_0 = 10e-10
+
+	3.) subdomain_2D.h: Eintrag 
+             struct point centre_point(int i, struct fracture *FRAC);
+
+	4.) intersection.h: 
+	    Funktion: intersection_nodes_plane_plane()
+	    4.1) Als Uebergabewert war in der folgenden Funktion noch ein 
+	         'int x' definiert  --> rausgeworfen. 
+	    4.2) Der Rueckuebergabe wert war als 'double' definiert: falsch
+
+	    --> Die Funktion ist nun wie folgt definiert:
+             int intersection_node_line_line(struct edge line[2],
+                                             struct point *s_pt_intersect);
+
+	    4.3) Auch im File 'intersection_points.c' geaendert. 
+	    4.4) Auch im File 'isubdomain_2D.c'  geaendert.
+
+	5.) parallel.c: 
+            5.1) Die Abfrage ueber den Abstand von zwei parallelen Platten
+	         erfolgt nun nicht mehr ueber die Funktion
+	         'intersection_nodes_plane_plane', sondern direkter.
+            5.2) Kommentare eingefuegt
+
+            5.3) Anmerkung: Funktion auf Gueltigkeit noch testen?!
+
+
+	6.) subdomain_3D.h: laeuft fast!!!
+
+
+05.07.99----------------------------------------------------------------------
+	1.) subdomain_3D.h: laeuft fast. Immer noch :-) 
+
+
+06.07.99----------------------------------------------------------------------
+	1.) fracvert.c
+	    Bug in der Funktion fuer die Exponentialverteilung geaendert. 
+
+
+28.07.99----------------------------------------------------------------------
+	1.) ACHTUNG: Im Zuge der Installation des neuen SuseLinux wurde ebenfalls 
+	    ein neuer Compiler installiert. Dadurch kommt es beim compilieren
+		zu einer grossen Warning-Liste. 
+		Uebersetzten funktioniert, jedoch nervt diese Warning-Liste. Mir
+		scheint, das Problem liegt im Bereich der globalen Variablen, aber
+		wo genau ... :-) (noch TODO)
+
+
+	2.) Update der Files in ~hemming/KLUFT_GEN/3D_KLUFT_c/aktuelle_Quelle/ 
+	    mit denen aus ~zimmer/KLUFT_GEN/AREA51/    
+	    In ~zimmer/KLUFT_GEN/AREA51/parameter.h habe ich den epsilon Wert 
+		mit neuem Wert belegt:  
+		alt: static double epsilon_0 = 10e-6;
+		neu: static double epsilon_0 = 10e-10;
+
+
+	3.) neue Funktions- und Headerdatei:	gls_loeser.c 
+	    									gls_loeser.h 
+
+		Enthaelt die Funktionen und Definition aus den Dateien:	gauss.c 
+																gauss.h
+		und zusaetzlich die neue Funktion 'cramer()' der Cramerschen Regel 
+		zum Loesen von linearen Gleichungssystemen. 
+		
+		--> Gauss'sches Eliminationsverfahren nicht mehr anwenden
+
+		In den folgenden Files wurde das Gauss'sches Eliminationsverfahren
+		auskommentiert und durch die Funktion 'cramer()' ersetzt.
+		Zudem wurde der Headerdateiname 'gauss.h' durch 'gls_loeser.h'
+		ersetzt  
+        --> Folgende Files rueberziehen: intersection_points.c
+										 parallel.c
+										 gls_loeser.c
+										 gls_loeser.h
+										 makefile
+
+        --> Folgende Files nicht mehr verwenden: gauss.c
+												 gauss.h
+
+
+29.07.99----------------------------------------------------------------------
+    Auf der Suche nach den Warnings habe ich das gesamte Programm mit den 
+	folgenden CFLAGS uebersetzt:  CFLAGS =  -g -Wall  (im makefile)
+    Mit dem Flag -Wall werden beim Uebersetzten das Programmes saemtliche
+	Warnings aufgezeigt. Entsprechend der Warnings wurden einige
+	'Schoenheits'-Reperaturen vorgenommen. 
+	Z.B. wurden nicht verwendete Variablen geloescht, 
+	     nicht eindeutige Klammerbeziehungen () wurden erweitet ...
+
+	1.) subdomain_2D.c : zwei unbenuetzte Variablen entfernt
+			 subdomain_2D.c:266: warning: unused variable `which_coordi'
+			 subdomain_2D.c:265: warning: unused variable `which_plane'
+
+    2.) File einlesen_imputfile.c umbenennen in einlesen_inputile.c 
+	    Functionen mit '...imput...' in '...input...' umbenennen
+        (mit dem Befehl :  grep 'imput' *.c
+		                   grep 'imput' *.h 
+         die einzelnen Files nach dem Begriff durchsuchen) 				   
+	3.) In einlesen_inputfile.c : 
+	       geometry.c           : 
+		   intersection_points.c: 
+		   intersection_lines.c : 
+		   lesen_kenndaten.c    :
+		   random.c             : 
+		   parallel.c           :
+		   subdomain_2D.c       :
+		   subdomain_3D.c       :
+
+
+	Einige Warnings vom Typ... 
+		prog_functions.c: In function `open_inputfile':
+		prog_functions.c:108: warning: control reaches end of non-void function
+    noch bearbeiten. 
+
+    --> AM BESTEN ALLE FILES RUEBERZIEHEN!!!
+
+    4.) Probleme mit den Listen EDGE2D, EDGE3D, VERTEX3D
+
+
+
+
+03.08.99----------------------------------------------------------------------
+    1.) subdomain_3D.c : weiter programmiert 
+
+    2.) parameter.h: 'struct poly_point' erweitert 
+	    OLD: struct poly_point { int pt_nr; int inside; 
+		                         double x; double y; double z;
+						  	   };
+
+	    NEW: struct poly_point { int pt_nr; int inside; 
+		                         struct point glob; struct point loc;
+						  	   };
+
+
+03.08.99----------------------------------------------------------------------
+    1.) parameter.h: 'struct poly_point' rausgeworfen
+        'struct poly_point' ist nun in subdomain_2D.h definiert
+
+
+09.08.99-13.08.99 ------------------------------------------------------------
+    1.) in /AREA51_0608/ folgende Files aus /aktuelle_Quelle/ reinkopiert
+        subdomain_3D.c
+        subdomain_2D.h
+        gls_loeser.c / gls_loeser.h
+
+    2.) in parameter.h : hier Definiton von struct poly_point
+        in subdomain_2D.h: hier polygon_frac als ´struct poly_point´ definiert
+                  
+    3.) in parameter.h : Erweiertung von ´struct fracture´
+        in parameter.h : ´struct point´ wird um 'int pt_nr' erweitert
+           (wird fuer Aufbau der scanlinept-Liste benoetigt, siehe scanline.c)
+
+    4.) subdomain_2D.h aufgeteilt in:   - subdomain_2D.h    
+                                        - subdomain_3D.h
+
+    5.) in subdomain_2D.c und build_list.c : 
+        Variable 'edge_nr' wird in ´edge2D_nr´ umgewandelt.
+        Die Variable EDGE2D[].edge_nr wird aber nicht umgewandelt, denn 
+        hierbei handelt es sich um eine global definiert Variable (siehe
+        parameter.h). 
+
+    6.) in geometry.c: die Variablen sind nun im Headerfile geometry.h
+        definiert.
+
+    7.) in intersection_points.c und intersection.h: 
+        neue Funktion definiert  "intersection_node_line_plane()
+
+    8.) in intersection_points.c und intersection.h: 
+        Funktionsargumente von 'abs_distance_point_line() umbenannt 
+
+
+17.08.99----------------------------------------------------------------------
+    1.) in parameter.h: Erweiterung von ´struct fracture´
+             int inside_subd3D  = -1 fracture plane totally outside subdomain
+             int inside_subd3D  = +1 fracture plane totally inside subdomain
+
+             int index_cv       = -1: fracture is still a rectangle
+                                = +1: fracture described as convex hull 
+
+    2.) intersection_lines.c rueberkopiert               
+        subdomain_2D.c       rueberkopiert               
+        in prog_functions.c: line 59 geaendert:
+               fprintf(stdout,
+               "\n%s allready exists, new name for %s file (<#> overwrite):",
+                new_filename, new_filename);
+                
+18.08.99----------------------------------------------------------------------
+    1.) File subdomain_3D.c : fertig !!!                            
+        Eventuell noch splitten in einzelne Files da subdomain_3D.c relativ
+        gross geworden ist.
+
+
+    2.) struct edge ___ (struct point pt0
+                         struct point pt1)   umbenannt 
+        struct vertex ___ ( struct point pt) umbenannt  
+        In den folgenden Files geaendert:
+        built_list: Version von Jan ruebergezogen und dann geaendert
+        file_output.c:  geaendert
+        intersection_points.c
+        main.c
+        parameter.h
+
+
+    TODO: Netgen -- Ausgabe !!!
+
+19.08.99----------------------------------------------------------------------
+    1.) File build_list.c: erweitert um die Allokierungsfunktionen:
+
+ 
+..............................................................................
+..............................................................................
+..............................................................................
+..............................................................................
+..............................................................................
+
+
+16.10.99----------------------------------------------------------------------
+    TODO: Netgen--Ausgabe (3D) mit Kontrollwoertern bestuecken !!
+          Pro aeussere Seitenflaeche ein Kontrollwort: cw
+
+    TODO: Netgen--Ausgabe (2D): aufbauen !!!
+ 
+    TODO: Gleichunsloeser: hier gibt es immer noch Probleme !!!
+ 
+
+21.10.99----------------------------------------------------------------------
+    1.) parameter.h: in struct face und struct edge3d ein 'int cw' eingefuegt
+
+
+01.11.99----------------------------------------------------------------------
+    1.) Funktionen umbenannt: 
+        'lesen_rseed'  -->  'read_rseed' 
+        'lesen_domain' -->  'read_domain' 
+
+    2.) Erweiterte bzw. neue Funktion:
+        'open_pointfile_2Delements_in_3D()'  --> function.h, prog_functions.c
+        'open_pointfile_1Delements_in_3D()'  --> function.h, prog_functions.c
+
+    3.) Neue Parameter: 
+        3.1) 'struct trace *TRACE;   <-- parameter.h 
+        3.2) 'ntrace'                <-- parameter.h 
+
+    4.) File 'geometry.c' aufgeteilt in
+         -->  geometry_stochastic.c 
+         -->  geometry_deterministic.c 
+
+    5.) Neue Funktionen:                  
+        struct trace *insert_TRACE_into_list() in 'build_list.c'
+        void intersection_FRAC-FRAC()  (old name: intersection_lines)
+        void intersection_TRACE-TRACE() 
+        .... 
+        und jede Menge mehr
+
+---> laeuft noch nicht!!!!!!!!
+
+
+13.12.99----------------------------------------------------------------------
+---> LAEUFT
+
+..............................................................................
+..............................................................................
+..............................................................................
+..............................................................................
+..............................................................................
+
+
+22.02.2000 -------------------------------------------------------------------
+    1.) File 'fracvert.c' 
+         --> log-Normalverteilung: hier stimmt was nicht!
+         --> Erlang-2 Verteilung : hier stimmt was nicht!
+
+    2.) File 'parallel.c' 
+         --> Abfrage ueber den Abstand der Kluftplatten. Hier wird
+             die Kluftbreite mit einbzogen. Macht dies Sinn???
+
+    3.) Ausgabe Filenamen. Sollten wieder variable gemachte weden.
+
+
+
+         -->  geometry_deterministic.c 
+
+
+16.03.2000 -------------------------------------------------------------------
+    1.) File 'geometry.c' 
+         --> Kluftlaenge: case 3 eingefueht: const_length 
+
+    2.) frac_dens:  
+         --> nicht mehr integer value, sondern double 
+             (parameter.h, lesen_..c, Eingabefile)
+
+
+12.05.2000 -------------------------------------------------------------------
+    Wichtige Modifikation: 
+    Kluftdichte ist [m^2/m^3] und nicht [Kluefte/m^3] !!!
+    --> die Variable 'nfrac' macht keinen Sinn mehr!!!
+        es muss nun die gesamte Kluftfl"ache pro Volumen berechnet werden
+ 
+    1.) File 'geometry.c' 
+         --> tausche for-Schleife mit while-Schleife 
+             Berechnung der Kluftfla2che pro m^3        
+         --> Auswahl der Haupt-Kluft-Orientierung geaendert.
+
+    2.) Variable 'char_percentage_nfrac' und 'percentage_nfrac' wurde
+        in 'char_percentage_orient' und 'percentage_orient' umbenannt. 
+         --> geaendert in den folgenden Files: 
+             file_output.c, geometry.c, geometry.h, Eingabefile.dat
+
+16.05.2000 -------------------------------------------------------------------
+    Die Modifikation vom 12.05.2000 werden weiter bearbeitet.
+    3.) File 'lesen_kenndaten.c' 
+         --> Berechnung der Kluftanzahl 'nfrac' wird hier rausgenommen,
+             Berechnung findet nun im File 'geometry.c' statt.
+
+    4.) File 'geometry.h' 
+        Neue Variable 'double frac_surface': total fracture surface in the domain
+        Neue Variable 'double frac_dens_3d_sim': generated fracture density 
+
+    5.) File 'file_output.c'
+        * Kluftdichte fuer die Ausgabe FRAC.log entsprechend den Aenderungen 
+          (siehe 12.05.) mit neuer Varibale 'frac_dens_3d_sim' belegen 
+        * Ausgabe FRAC.log um weitere Infos erweitert 
+
+    6.) File 'intersection.c' und 'geometry.c'
+        * intersection.c: Variable n50,count50 auf ....  n100,count100 gesetzt
+        * geometry.c    : Variable n200,count200 neu eingefuehrt
+
+
+
+26.07.2000 -------------------------------------------------------------------
+    SA -- MCMC: File 'scanline.c' und 'mcmc.c' viele Modifikationen 
+
+    1.) File 'mcmc.c', Funktion EvaluateInitialPicture()
+        Zuweisung der 'property' in die Klassen erfolgt nach folgender 
+        boundary Regel:  class.lower <= property <class.upper
+ 
+    2.) in File 'parameter.h' neue Variable eingefuegt:
+        struct scanline *SCANLINE
+
+
+06.11.2000 -------------------------------------------------------------------
+    TODO: Mail von Alex Fuchs, 06.11.2000
+          Epsilon gr"o"ser w"ahlen, da Punkte zu dicht aneinander
+
+    TODO: Wenn von Kluftfläche im ausgeschnittenen Gebiet nur noch eine Linie
+          übrigbleibt, so darf die Kluft nicht mehr als 'face' bestehend aus
+          zwei kanten im ___.art File aufgeführt werden.
+
+
+19.12.2000 -------------------------------------------------------------------
+    1.) geometry.c:
+        Fkt gen_static_trace_list(): maximale 'pt_nr' wurde von 4 auf 2 gesetzt 
+
+
+
+------------------------------------------------------------------------------
+--  Hartmut arbeitet das Verzeichnis 'mcmc_aktuelle_Quelle_1701.tgz'        --
+--- auf: Variablen, Funktionen, Übergabewerte ...                           --
+------------------------------------------------------------------------------
+
+06.02.2001 -------------------------------------------------------------------
+    1.) pre_netgen_outp.c / pre_netgen_outp.h
+        neu Variable 'ncw_fracture_edge' 
+
+    2.) o.) main.c
+            1: Alter File 'main.c' in 'main.c_temp06052001' kopiert
+            2: Neue Funktion 'void read_start_values_from_inputfile()'.
+               Die Funktion ist in 'read_startvalues.c' beschrieben.
+ 
+        Routine 'read_frac_gen_type()' (bisher im File 'prog_functions.c')
+        wird in den main.c File eingebaut.
+
+        o.) neue Variable 'frac_gen_type' im File parameter.h definiert
+            --> Variable ist nun global bekannt!
+
+        o.) read_startvalues.c: 
+            folgende Zeilen wurden auskommentiert:
+            1: 'int frac_gen_type;' 
+            2: in der Funktion 'read_domain()' wurde die Zeile auskommentiert
+               'frac_gen_type = read_frac_gen_type();'
+            3: Neue Funktion 'void read_start_values_from_inputfile()'.
+               Diese Funktion wird in 'main.c' aufgerufen. In der Funktion
+               werden die Startwerte fuer den ersten Teil der Generierung 
+               aufgerufen.
+
+        o.) prog_functions.c: 
+            Da die Variable 'frac_gen_type' nun global bekannt ist, konnten
+            folgende Zeilen auskommentiert werden:
+            1: 'int index_frac_gen_type;'
+            2: 'index_frac_gen_type = read_frac_gen_type();'
+
+        o.) area_computation.c / area_computation.h:
+            Da die Variable 'frac_gen_type' nun global bekannt ist, konnten
+            folgende Zeilen auskommentiert werden:
+            1: 'int index_frac_gen_type;'  (in area_computation.h)
+            2: 'index_frac_gen_type = read_frac_gen_type();'
+            3: Variable 'index_frac_gen_type' wird im ganzen File in 
+               'frac_gen_type' umbenannt
+            4: aufgeraeumt, bzw. Kommentar eingefuegt
+            5: Optimierungsroutinen nun nur noch fuer stochastische Klüfte aktiv
+
+        o.) subplane3D.c
+            1: Abfrage der 'trace_length' erfolgt nun ueber das Epsilon 
+               'epsilon_length', das aus dem Eingabefile eingelesen wird. 
+
+        o.) pre_netgen_outp.c
+            1: VERTEX_net[*nvertex_net].appear_net = 1000;
+               Die Eckpunkte der 'subplane3D' bekommen einen sehr hohen Wert
+               'VERTEX_net[].appear_net. Dieser Wert ist eine Art Priorität.
+               Damit soll sicher gestellt werden, dass innerhalb der Abfrage
+               >Very small EDGE_net[i] length causes trouble for the 
+               netgenerator< nicht die Exkpunkte der 'subplane3D' rausgeworfen
+              werden. Dies könnte fuer den Fall 'VERTEX_net[].appear_net=0' 
+              durchaus vorkommen.        
+
+
+19.02.2001 -------------------------------------------------------------------
+    1.) parallel.c / parallel.h
+        o.) neu Variable 'index_check_parallel'
+        o.) auch 'nahezu' parallele Ebenen werden untersucht
+            Kriterium ist der Winkel zwischen den beiden Normalenvektoren.
+        o.) neu Variable 'index_check_parallel'
+     TODO: noch nicht fertig
+
+20.02.2001 -------------------------------------------------------------------
+    1.) geometry.c / geometry.h
+        o.) neu Variable 'struct point midpt'
+            als Kluftaufhaengepunkt wurde der Mittelpunkt der zukuenftigen
+            Kluft gewaehlt.
+
+    2.) subvolume.c /subvolume.h 
+        neue Funktion 'void NewFractureBorders_inSubvolume_TouchEachOther()'
+
+
+24.04.2001 -------------------------------------------------------------------
+    1.) Funktion: 'PointIsInQuadrilateral_3D()' in File subvolume3D.c
+        Liegt der Punkt A auf der aeusseren Linie des Polygon, wird der
+        'index_return=1' gesetzt. In der Routine, aus der die Fkt aufgerufen
+        wird, wird der Punkt A nur dann auf bzw. als in dem Polygon liegende 
+        erkannt, wenn der Returnwert ==4 ist! Dies wird nun umgeändert. 
+
+        Neu: Punkt A liegt auf einer aeusseren Polygonlinie: index_return=4
+    
+    2.) in 'pre_netgen_outp.c': 
+        a] Zeile: LINES[i].inside_subd3D = EDGE3D[i].inside_subd3D;' eingefuegt
+        b] weitere Fehler bei der Zuweisung innerhalb der Schleife (siehe a])
+
+
+17.05.2001 -------------------------------------------------------------------
+    1.) Funktion: 'intersection_nodes_plane_plane()'
+        Wenn ein zweiter, moeglicher Schnitpunkte gefunden wird, so ueberprueft,
+        ob der 1. und der 2. Schnittpunkt gleich sind.
+    
+    2.) Funktion: 'PointIsInQuadrilateral_3D()' in subvolume3D.c
+        Die Abfrage, ob ein Punkt A auf einer Kanten und auch zwischen den
+        beiden Eckpunkten der Kante liegt, war fehlerbehaftet. Aufgrund sehr 
+        kleiner numerischer Ungenauigkeiten kam es hier zu falschen Aussagen.
+        Dies wurde verbessert.
+
+    3.) Funktion: 'PointIsOnLineSegment_2D()' in subvolume3D.c
+        Wenn der Punkt C auf der Geraden, die durch AB geht liegt, und die 
+        Gerade parallel zu einer der Koordinatenachsen verlaeuft, wird der 
+        's' zu Null: s=0 
+        Dies bedeutet jedoch per Definition, dass C innerhalb AB liegt, was 
+        aber nur dann stimmt, wenn auch gilt: 0<r<1 = P is interior to AB
+        --> folgendes wurde eingefuegt: 
+            wenn      [(s=0) und (0<=r<=1)]          -> return (s*L) 
+            wenn aber [(s=0) und ((r<0) oder (r>1))] -> return (r*L) 
+
+        a.) Aenderung: Funktion 'PointIsOnLineSegment_2D()' neuer Typ
+            int PointIsOnLineSegment_2D()
+
+
+18.05.2001 -------------------------------------------------------------------
+    1.) Funktion: 'Point1_equal_Point2_epsilonlarge()' neu hinzugefuegt
+        Kommt insbesondere im File 'pre_netgen_outp.c' zum Einsatz.
+
+23.05.2001 -------------------------------------------------------------------
+    1.) neuer globaler Parameter: 'frac_surface_det': 
+        Wichtig, wenn deterministische und stochastische Felder miteinander 
+        gekoppelt werden. Der Anteil der deterministischen Kluefte muss mit 
+        in die totale Kluftfläche, aus der die Kluftdichte [m^2/m^3] berechnet
+        wird, eingehen.
+        --> gesamte determ. Kluftfläche 'frac_surface_det' wird in der Funktion
+            'gen_static_fracture_list' berechnet und in der Fkt 
+            'gen_random_fracture_list' weiter verwendet.
+
+    FRAGE: stehen die deterministischen Kluefte weit ueber das Generierungsgebiet
+           hinaus, wird der Wert der deterministischen Kluftdichte falsch
+           berechnet. Denn die Gesamtfläche der Klüfte (also auch der Kluftanteil
+           der nicht im Gebiet liegt) wird in die Berechnung der Kluftdichte
+           einbezogen!!! TODO
+
+
+
+***************************************************************************
+***************************************************************************
+***************************************************************************
+***************************************************************************
+  
+21.12.2001
+
+    Parameter 'frac_dens_type' in geometr.c / geometry.h eingefuegt.
+
+
+05.05.2002 -------------------------------------------------------------------
+    1.) intersection_points.c: 
+        Probleme bei der Schnittpunktberechnung von Linie-Linie!
+        changed by Annette, 06.05.2002
+        old value: double epsilon_inll = 10e-14;
+        new value: double epsilon_inll = 10e-14;
+
+
+

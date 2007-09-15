@@ -1,0 +1,8 @@
+pressure	5e+6
+temperature	350
+
+C1	0.75
+C10	0.25
+
+include ../pvt/cubic
+

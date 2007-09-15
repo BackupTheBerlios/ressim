@@ -1,0 +1,53 @@
+% Flow through a highly skewed grid
+
+begin RunSpec
+
+	timeunit	days
+
+	EndTime		200
+
+	ReportEvery	5
+
+	%TimeStepMaximum	10
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	2e+6
+
+	Temperature	450
+	C10			1
+end
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Stone
+	end
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/two
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Fixed
+		begin Injector
+			Temperature	450
+			H2O		1
+		end
+	end
+
+	begin Outlet
+		begin Producer
+			Mass	-1e-4	% mol/s
+		end
+	end
+
+end

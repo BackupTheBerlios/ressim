@@ -1,0 +1,116 @@
+\chapter{Overview}
+
+\minitoc
+
+The simulation suite is written in the Java programming language,
+version 1.5. Its namespace is \texttt{no.uib.cipr.rs}, and since all
+classes are stored in that namespace, it will omitted when the context
+is clear.
+
+The entry point of the simulator is the class
+\texttt{no.uib.cipr.rs.Main}. Its only task is to delegate the
+execution to the user-chosen task, and it is this class which is
+called when the jar-file \texttt{rs.jar} is run.
+
+%======================================================================
+
+\csection{Primary subsystems}
+
+At present, there are six subsystems available:
+\begin{list}{}{}
+\item[\texttt{geometry}] Mesh data structures and flux calculation. The mesh is
+  assumed to be unstructured, with polyhedral cells connected by a
+  general graph topology. Transmissibilities between the cells may be
+  calculated by either a two- or a multi-point method. See
+  Chapter~\ref{chap:geometry}.
+\item[\texttt{meshgen}] Mesh generators and import filters. Can generate
+  structured meshes and also locally refined ones. Import filters are
+  available for some unstructured formats. See
+  Chapter~\ref{chap:meshgen}.
+\item[\texttt{rock}] Rock and rock/fluid data. Stores rock parameters for each
+  cell, and calculates relative permeabilities and capillary
+  pressures. See Chapter~\ref{chap:rock}.
+\item[\texttt{fluid}] PVT (pressure, volume, temperature) calculations.
+  Calculates phase states from pressure, temperature, and overall
+  molar masses. Both black-oil and cubic equation of states are
+  implemented. See Chapter~\ref{chap:fluid}.
+\item[\texttt{field}] Simulation system state. Stores the state in each control
+  volume and on each control surface of the mesh, and calculates
+  secondary variables from the primary. Also performs initial
+  equilibration of the reservoir. See Chapter~\ref{chap:field}.
+\item[\texttt{numerics}] Flow simulator. The simulator uses the other packages,
+  and thus models a compositional fluid on an unstructured grid with a
+  control volume discretisation. See Chapter~\ref{chap:numerics}.
+\item[\texttt{upscale}] Petrophysics upscaling. Calculates upscaled
+  permeability and porosity from single-phase upscaling. See
+  Chapter~\ref{chap:upscale}.
+\item[\texttt{output}] Data export into the General Mesh Viewer (GMV) format.
+  Either just the mesh or the simulation data can be dumped. See
+  Chapter~\ref{chap:output}.
+\end{list}
+In addition, some common utilities are located within the
+\texttt{util} namespace.
+
+%----------------------------------------------------------------------
+
+\csubsection{Paths and data exchange}
+
+As mentioned in the Users Guide, the different parts of the simulation
+suite creates directories for data exchange and storage. These are
+always relative to the directory the simulator is started from, and
+are defined in the \texttt{Paths} class:
+\begin{list}{}{}
+\item[\texttt{mesh}] Mesh generator input file.
+\item[\texttt{run}] Simulator input file.
+\item[\texttt{pvt}] PVT calculations input file.
+\item[\texttt{upscale}] Upscaling input file.
+\item[\texttt{gridding/}] Directory containing the output of the mesh
+  generator:
+  \begin{list}{}{}
+  \item[\texttt{mesh}] Fine scale mesh. Binary serialization data.
+  \item[\texttt{mesh.\#}] Subdomain meshes, which also contains source
+    locations and subdomain couplings. Binary serialization data.
+  \end{list}
+\item[\texttt{simulation/}] Directory containing the output from the simulator:
+  \begin{list}{}{}
+  \item[\texttt{\textit{time/\#}}] Field state at the given time for
+    the given subdomain. Binary serialization data.
+  \item[\texttt{\textit{producer}.csv}] Production data in semi-colon
+    separated format. May be imported into a spreadsheet.
+  \item[\texttt{time}] Time and timestep information, in text format.
+  \end{list}
+\item[\texttt{visualization/}] Directory containing the output from
+  the output filters. Contents vary, and the files are usually
+  binaries.
+\end{list}
+The input files are all in plain text, while the files in the
+subdirectories are usually only meant to be read by the simulator.
+
+%======================================================================
+
+\csection{Common utilities}
+
+In \texttt{no.uib.cipr.rs.util}, there are some utilities used by many
+parts of the code:
+\begin{list}{}{}
+\item[\texttt{Configuration}] Reads in a configuration text file, and
+  stores it in a hashmap. Where the keys are the string names and the
+  values are either numbers, arrays, or subsections. The subsections
+  are actually configurations themselves, stored recursively.
+\item[\texttt{Function}] General function, $f(\vec x)$. Some instances:
+  \begin{list}{}{}
+  \item[\texttt{LookupTable}] Lookup table for dimensions 1, 2, or 3.
+    Arbitrary spacing is permitted, and linear interpolation is used.
+  \item[\texttt{EvenLookupTable}] Lookup table where the spacing is
+    even. This allows for a somewhat higher performance.
+  \item[\texttt{ConstantValue}] Constant in all dimensions.
+  \end{list}
+\item[\texttt{Constants}] Physical constants.
+\item[\texttt{Tolerances}] Some ``generic'' tolerance criteria.
+\item[\texttt{Logger}] Output mechanism for a multi-threaded run.
+\end{list}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

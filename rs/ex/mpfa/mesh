@@ -1,0 +1,101 @@
+begin MeshGenerator
+
+	type StructuredMeshGenerator
+
+	dimension 2
+
+	begin Geometry
+
+		X0	0.0 
+		Y0	0.0 
+		
+		array Nx
+			21
+		end
+
+		array Dx
+			0.047619
+		end
+
+		array Ny
+			10
+		end
+
+		array Dy
+			0.1
+		end
+
+		RegionMappingType uniform
+
+		% Mesh transformation
+		begin StructuredTransform
+
+			type BilinearTransform
+
+			array x
+				0.0 105.0 20.0 125.0
+			end
+
+			array y
+				0.0 0.0 10.0 10.0
+			end
+
+		end
+		
+	end
+
+	begin RockRegionMap
+
+		array Rock
+			1
+		end
+
+	end
+
+	begin RockData
+
+		type Global
+
+		array poro
+			0.2
+		end
+
+		array permx
+			1e-10
+		end
+
+		array permy
+			1e-10
+		end
+
+		array permz
+			1e-10
+		end
+	end
+
+end
+
+%-------------------------------------------------------------------------------
+
+begin TransmissibilityMethod
+	% type TPFA
+end
+
+%-------------------------------------------------------------------------------
+
+begin Sources
+
+	begin Injector
+		array elements
+			196
+		end
+	end
+
+	begin Producer
+		array elements
+			8 14
+		end
+	end
+
+end
+

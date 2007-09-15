@@ -1,0 +1,43 @@
+begin MeshDescription
+
+	type PartitionMeshDescription
+
+	% width of border region
+	Border	16.0
+	
+	% the target coarse domains (only 2D for the moment)
+	begin Domains
+		
+		X0	24.0
+		Y0 	24.0
+		
+		array Nx
+			%4
+			1
+		end
+		
+		array Dx
+			%16.0
+			16
+		end
+		
+		array Ny
+			%4
+			1
+		end
+		
+		array Dy
+			%16.0
+			16
+		end
+		
+	end
+		
+	
+	% the underlying fine mesh
+	include ../fine/mesh.input.1
+	
+	% dump partitions for visualization (Global) or upscaling (Local)
+	PartitionIndices  Global % or Local
+		
+end

@@ -1,0 +1,69 @@
+begin RunSpec
+
+	TimeUnit	Days
+
+	EndTime		10000
+
+	ReportEvery	100
+
+	TimeStepMaximum	100
+
+	TimeStepMinimum	1e-3
+
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	1e+7
+
+	Temperature	450
+	C10			1
+end
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Fixed
+		begin Injector
+			Temperature	450
+			H2O		1
+		end
+	end
+
+	begin Outlet
+		begin Producer
+			Mass	-1
+		end
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/two
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin LGR1
+	end
+	begin LGR2
+	end
+	begin LGR3
+	end
+	begin LGR4
+	end
+	begin LGR5
+	end
+	begin LGR6
+	end
+	begin LGR7
+	end
+	begin LGR8
+	end
+end
+

@@ -1,0 +1,611 @@
+begin MeshDescription
+
+	type LGRMeshDescription
+		
+	begin Coarse
+		begin CoarseGeometry
+			X0	0.0 
+			Y0	0.0 
+			Z0	0.0
+			array Nx
+				1 1 
+			end
+			array Dx
+				50 70
+			end
+			array Ny
+				1 1
+			end
+			array Dy
+				60 50
+			end
+			array Nz
+				1 1 1 1 1
+			end
+			array Dz
+				-5 -8 -2 -5 -3
+			end
+		end		% end CoarseGeometry
+		
+	end		% end Coarse
+
+	begin Refinements
+	
+		begin Block1A
+			array CoarseElementIJK
+				1 1 3
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					1
+				end
+				array Ny
+					10
+				end
+				array Dy
+					1
+				end
+				array Nz
+					5
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block1
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+
+		begin Block1B
+			array CoarseElementIJK
+				1 1 4
+			end
+			begin FineGeometry
+				array Nx
+					4
+				end
+				array Dx
+					1
+				end
+				array Ny
+					4
+				end
+				array Dy
+					1
+				end
+				array Nz
+					11
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block1
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+
+		begin Block1C
+			array CoarseElementIJK
+				1 1 5
+			end
+			begin FineGeometry
+				array Nx
+					5
+				end
+				array Dx
+					1
+				end
+				array Ny
+					5
+				end
+				array Dy
+					1
+				end
+				array Nz
+					6
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block1
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		begin Block2A
+			array CoarseElementIJK
+				2 1 2
+			end
+			begin FineGeometry
+				array Nx
+					4
+				end
+				array Dx
+					1
+				end
+				array Ny
+					4
+				end
+				array Dy
+					1
+				end
+				array Nz
+					10
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block2
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+	
+		begin Block2B
+			array CoarseElementIJK
+				2 1 3
+			end
+			begin FineGeometry
+				array Nx
+					6
+				end
+				array Dx
+					1
+				end
+				array Ny
+					10
+				end
+				array Dy
+					1
+				end
+				array Nz
+					4
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block2
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+	
+
+		begin Block2C
+			array CoarseElementIJK
+				2 1 4
+			end
+			begin FineGeometry
+				array Nx
+					4
+				end
+				array Dx
+					1
+				end
+				array Ny
+					8
+				end
+				array Dy
+					1
+				end
+				array Nz
+					4
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block2
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		begin Block3A
+			array CoarseElementIJK
+				1 2 1
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					1
+				end
+				array Ny
+					10
+				end
+				array Dy
+					1
+				end
+				array Nz
+					10
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block3
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+	
+		begin Block3B
+			array CoarseElementIJK
+				1 2 2
+			end
+			begin FineGeometry
+				array Nx
+					7
+				end
+				array Dx
+					1
+				end
+				array Ny
+					3
+				end
+				array Dy
+					1
+				end
+				array Nz
+					4
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block3
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+		
+		begin Block3C
+			array CoarseElementIJK
+				1 2 3
+			end
+			begin FineGeometry
+				array Nx
+					11
+				end
+				array Dx
+					1.0
+				end
+				array Ny
+					9
+				end
+				array Dy
+					1
+				end
+				array Nz
+					6
+				end
+				array Dz
+					-1
+				end
+
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block3
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+			
+		end
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		begin Block4A
+			array CoarseElementIJK
+				2 2 1
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					1
+				end
+				array Ny
+					15
+				end
+				array Dy
+					1
+				end
+				array Nz
+					5
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block4
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+	
+		begin Block4B
+			array CoarseElementIJK
+				2 2 2
+			end
+			begin FineGeometry
+				array Nx
+					5
+				end
+				array Dx
+					1
+				end
+				array Ny
+					5
+				end
+				array Dy
+					1
+				end
+				array Nz
+					8
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block4
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+		
+		begin Block4C
+			array CoarseElementIJK
+				2 2 3
+			end
+			begin FineGeometry
+				array Nx
+					10
+				end
+				array Dx
+					1
+				end
+				array Ny
+					8
+				end
+				array Dy
+					1
+				end
+				array Nz
+					4
+				end
+				array Dz
+					-1
+				end
+				RegionMappingType Uniform
+			end
+			begin RockRegionMap
+				array Block4
+		   			1   
+				end
+			end
+			begin RockData
+				type Global
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+				array permy
+					1.0 
+				end
+				array permz 
+					1.0 
+				end
+			end
+		end
+
+	end
+		
+end
+
+

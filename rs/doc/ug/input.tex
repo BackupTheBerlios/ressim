@@ -1,0 +1,730 @@
+\chapter{Simulator input file specification}
+\label{chapter:input}
+
+\minitoc
+
+The input file to the simulator defines all the parameters needed to
+carry out a simulation, including fluid properties, rock data, the
+geometrical domain, its discretisation into a mesh, and the fluid flux
+discretisation.
+
+%======================================================================
+
+\csection{Configuration file overview}
+
+The simulator accepts a single main input file, \texttt{run}, which is
+organized into several sections. Broadly, the input file would look
+like this:
+\begin{verbatim}
+begin RunSpec
+  % Specifies numerical parameters and timestepping controls
+end
+
+begin Components
+  % Distinct chemical species in the study
+end
+
+begin EquationOfState
+  % Method for calculating phase properties and equilibrium
+end
+
+begin RockFluid
+  % Relative permeability and capillary pressures
+end
+
+begin Sources
+  % Fluid sources/sinks for driving the flow
+end
+
+begin InitialValues
+  % Initial fluid distribution in the reservoir
+end
+\end{verbatim}
+
+Since the input file may be rather large, it is recommended to split
+it into several smaller files which are included from the main file.
+
+%======================================================================
+
+\csection{Rock/fluid properties}
+
+Relative permeability and capillary pressures are given on a region
+basis in the \texttt{RockFluid} section:
+\begin{verbatim}
+begin RockFluid
+
+  begin SandStone
+    type SomeRockFluid
+    ...
+  end
+
+  begin Shale
+    type AnotherRockFluid
+    ...
+  end
+
+end
+\end{verbatim}
+The names of the subsections (here: \texttt{SandStone} and
+\texttt{Shale}) must match the region names defined in the
+\texttt{Mesh} section. A model must be specified for each rock/fluid
+region, and two types are currently available.
+
+%----------------------------------------------------------------------
+
+\subsection{Twophase rock/fluid properties}
+
+For simple studies with either two phases or with pairwise two phases,
+the \text{type TwoPhaseRockFluid} may be suitable. It uses the
+relative permeability functions
+\begin{equation}
+  k_r^\ell(S^\ell) = \left(\frac{S^\ell - S_r^\ell}{1-S_r^\ell}\right)^2.
+\end{equation}
+Residual saturations default to zero. Capillary pressures are given as
+the functions $p_c^{ow}(S^w)$ and $p_c^{go}(S^g)$, and these also
+default to zero. An example:
+\begin{verbatim}
+begin RockFluid
+
+  begin SandStone
+    type TwoPhaseRockFluid
+
+    Swr  0.2 % Water residual saturation
+    Sor  0.1 % Oil residual saturation
+    Sgr  0.3 % Gas residual saturation
+
+    begin pcow
+      % 1D function of Sw
+      ...
+    end
+
+    begin pcgo
+      % 1D function of Sg
+      ...
+    end
+  end
+
+  ...
+
+end
+\end{verbatim}
+
+%----------------------------------------------------------------------
+
+\subsection{Tabular rock/fluid properties}
+
+This model uses tables for all relative permeabilities, and an
+interpolated relation for the oil relative permeability. For water and
+gas the functions needed are $k_r^w(S^w)$ and $k_r^g(S^g)$, while for
+oil, the functions $k_r^{ow}(S^o)$ and $k_r^{og}(S^o+S^w)$ are used.
+Then
+\begin{equation}
+  k_r^o\left(S^w,S^o,S^g\right) =
+  \frac{S^g k_r^{og}(S^o+S^w) + S^w k_r^{ow}(S^o)}{S^g + S^w}.
+\end{equation}
+Capillary pressures are given as $p_c^{ow}(S^w)$ and $p_c^{go}(S^g)$,
+which default to zero. An example follows:
+\begin{verbatim}
+begin RockFluid
+
+  begin Shale
+    type TabularRockFluid
+
+    begin krw
+      % 1D function of Sw
+      ...
+    end
+
+    begin krg
+      % 1D function of Sg
+      ...
+    end
+
+    begin krow
+      % 1D function of So
+    end
+
+    begin krog
+      % 1D function of So+Sw
+    end
+
+    begin pcow
+      % 1D function of Sw
+    end
+
+    begin pcgo
+      % 1D function og Sg
+    end
+
+  end
+
+  ...
+
+end
+\end{verbatim}
+
+%----------------------------------------------------------------------
+
+\subsection{Three-phase tabular rock/fluid properties}
+
+This model is similar to the \texttt{TabularRockFluid}, but its tables
+are two-dimensional in water and gas saturations:
+\begin{verbatim}
+begin RockFluid
+
+  begin Clay
+    type ThreePhaseTabularRockFluid
+
+    begin krw
+      % 2D function of (Sw,Sg)
+      ...
+    end
+
+    begin krg
+      % 2D function of (Sw,Sg)
+      ...
+    end
+
+    begin kro
+      % 2D function of (Sw,Sg)
+      ...
+    end
+
+    begin pcow
+      % 2D function of (Sw,Sg)
+    end
+
+    begin pcgo
+      % 2D function of (Sw,Sg)
+    end
+
+  end
+
+  ...
+
+end
+\end{verbatim}
+Capillary pressures need not be given, as they default to zero.
+
+%======================================================================
+
+\csection{Components}
+
+The section \texttt{Components} lists all the available components.
+Each component is listed in a subsection, where the section name is
+the component name. The following properties may be given in each
+component subsection:
+
+\begin{tabular}{lll}
+  \texttt{Mw} & Molecular weight & $\left[\kilogram\per\mole\right]$ \\
+  \texttt{Tc} & Critical temperature & $\left[\kelvin\right]$ \\
+  \texttt{Pc} & Critical pressure & $\left[\pascal\right]$ \\
+  \texttt{Vc} & Critical molar volume & $\left[\meter\cubed\per\mole\right]$ \\
+  \texttt{omega} & Acentric factor & $\left[-\right]$
+\end{tabular}
+
+Default values are provided for H$_2$O, N$_2$, CO$_2$, H$_2$S, and the
+twenty first alkanic hydrocarbons (C$_1$ through C$_{20}$). Example:
+
+\begin{verbatim}
+begin Components
+  begin H2O
+    Mw 0.1 % Modified weight
+  end
+
+  begin C1
+    % Use defaults
+  end
+
+  begin C2
+    % Use defaults
+  end
+end
+\end{verbatim}
+
+Notice that the water component (H$_2$O) will always be included, even
+if omitted from the input file.
+
+%----------------------------------------------------------------------
+
+\csection{Equation of state}
+
+At present, the simulator uses a either a black-oil equation of state
+or a general cubic equation of state.
+
+%......................................................................
+
+\subsection{Black-oil}
+
+In the black-oil model, it is necessary to group components into an
+oil group and a gas group. Binary mixture thermodynamics are then used
+to derive phase properties. This is accomplished using tables on molar
+densities, molar enthalpies, viscosities, and dew/bubble-points:
+
+\begin{tabular}{lll}
+  \texttt{WaterMolarDensity} & $\xi^w(p,T)$ &
+  $[\mole\per\meter\cubed]$ \\
+  \texttt{OilMolarDensity} & $\xi^o\left(p,C_g^o,T\right)$ &
+  $[\mole\per\meter\cubed]$ \\
+  \texttt{GasMolarDensity} & $\xi^g\left(p,C_o^g,T\right)$ &
+  $[\mole\per\meter\cubed]$ \\
+  \texttt{WaterMolarEnthalpy} & $\bar h^w(p,T)$ &
+  $[\joule\per\mole]$ \\
+  \texttt{OilMolarEnthalpy} & $\bar h^o\left(p,C_g^o,T\right)$ &
+  $[\joule\per\mole]$ \\
+  \texttt{GasMolarEnthalpy} & $\bar h^g\left(p,C_o^g,T\right)$ &
+  $[\joule\per\mole]$ \\
+  \texttt{WaterViscosity} & $\mu^w(p,T)$ &
+  $[\pascal\usk\second]$ \\
+  \texttt{OilViscosity} & $\mu^o\left(p,C_g^o,T\right)$ &
+  $[\pascal\usk\second]$ \\
+  \texttt{GasViscosity} & $\mu^g\left(p,C_o^g,T\right)$ &
+  $[\pascal\usk\second]$ \\
+  \texttt{BubblePoint} & $C_{g,B}^o(p,T)$ & $\left[-\right]$ \\
+  \texttt{DewPoint} & $C_{g,D}^o(p,T)$ & $\left[-\right]$
+\end{tabular}
+
+For iso-thermal runs the enthalpy tables may be omitted, and the
+miscibility tables (bubble- and dew-points) default to zero (no
+mixing). Example:
+
+\begin{verbatim}
+begin EquationOfState
+  type BlackOilEquationOfState
+
+  % Oil group
+  array oil
+    C3 C4
+  end
+
+  % Gas group
+  array gas
+    C1 C2
+  end
+
+  begin WaterMolarDensity
+    % 2D function
+    ...
+  end
+
+  begin WaterViscosity
+    % 2D function
+    ...
+  end
+
+  begin OilMolarDensity
+    % 3D function
+    ...
+  end
+
+  begin GasMolarDensity
+    % 3D function
+    ...
+  end
+
+  begin OilViscosity
+    % 3D function
+    ...
+  end
+
+  begin GasViscosity
+    % 3D function
+    ...
+  end
+
+end
+\end{verbatim}
+
+%......................................................................
+
+\subsection{Cubic equation of state}
+
+The general cubic equation of state is
+\begin{equation}
+  p = \frac{RT}{\bar V^\ell - b^\ell} - \frac{a^\ell}
+  {\left(\bar V^\ell - \delta_1 b^\ell\right)
+    \left(\bar V^\ell - \delta_2 b^\ell\right)}.
+\end{equation}
+$\bar V^\ell$ is the molar phase volume, and $a^\ell$ and $b^\ell$ are
+mixing parameters, given in the Technical Description. The parameters
+$\delta_1$ and $\delta_2$ depend on the type of cubic equation of
+state, and currently there are two choices: Soave-Redlich-Kwong and
+Peng-Robinson.
+
+These are used for calculating the oil/gas properties and equilibrium,
+while the water properties are calculated as for the black-oil case
+with tables:
+
+\begin{verbatim}
+begin EquationOfState
+  type CubicEquationOfState
+
+  begin WaterMolarDensity
+    % 2D function
+    ...
+  end
+
+  begin WaterViscosity
+    % 2D function
+    ...
+  end
+
+  % PR for Peng-Robinson (default), SRK for Soave-Redlich-Kwong
+  EOS PR
+
+  % When the largest component fugacity difference is less than this (in Pascal),
+  % switch from the sucessive substitution method to Newton's method
+  FlashSwitchingCriteria 1e+4 % default value
+
+  % EOS specific component data
+  begin ComponentData
+    begin C1
+      s 0.1 % Volume shift, defaults to zero
+
+      % Binary interaction coefficients, defaults to zero
+      begin Binary
+        C2 0.02 % Interaction between C1 and C2
+        C3 0.01 % Interaction between C1 and C3
+        ...
+      end
+    end
+
+    begin C2
+      ...
+    end
+
+    ...
+  end
+
+  % Coefficients for the Lohrenz-Bray-Clark viscosity calculations
+  % Values are defaulted unless specified
+  begin Viscosity
+    a1 0.1023
+    a2 0.023364
+    a3 0.058533
+    a4 -0.040758
+    a5 0.0093324
+  end
+end
+\end{verbatim}
+Consult the Technical Description for details on the algorithm used
+and the precise meaning of all the parameters.
+
+%======================================================================
+
+\csection{Initial values}
+
+Initial temperature, $T$, and overall mass fractions, $C_\nu$, may be
+specified as a function of the $z$-coordinate. A datum depth
+($z$-coordinate) and pressure must also be given:
+
+\begin{verbatim}
+begin InitialValues
+
+  DatumDepth    50   % z-coordinate
+  DatumPressure 2e+7 % Pascal
+
+  begin Temperature
+    % 1D function of the z-coordinate, in Kelvin
+    ...
+  end
+
+  begin H2O
+    % 1D function of the z-coordinate, in moles
+    ...
+  end
+
+  begin C1
+    % 1D function of the z-coordinate, in moles
+    ...
+  end
+
+end
+\end{verbatim}
+
+The temperature may not be omitted, but any of the mole fractions may,
+in which case they default to zero. If the fractions do not sum to
+unity, they are automatically normalized. If no fractions have been
+given, then water is assumed: $C_{\text{H}_2\text{O}} = 1$.
+
+%======================================================================
+
+\csection{Sources}
+
+The system is usually driven by the fluid sources and sinks. These
+must already have been mapped by the mesh generator, as described in
+Section~\ref{sec:gg:sources}. The \texttt{run} file adds information
+on their behavior. There are three types: fixed, regular, and outlet.
+
+\begin{verbatim}
+begin Sources
+
+  begin Fixed
+    begin MyFixedSource1
+      ...
+    end
+
+    begin MyFixedSource2
+      ...
+    end
+  end
+
+  begin Regular
+    begin MyRegularSource
+      ...
+    end
+  end
+
+  begin Outlet
+    begin MyProductionWell
+      ...
+    end
+  end
+end
+\end{verbatim}
+
+Note that the names must exactly match the names given in the
+\texttt{mesh} file.
+
+%----------------------------------------------------------------------
+
+\subsection{Fixed source}
+
+A fixed source has the same system state for all times. It is
+specified by a temperature, $T$, and an overall composition, $C_\nu$.
+Pressure, $p$, and total masses, $N$, are determined by a volume
+balance method. Fractions are automatically normalized, and water is
+substituted in the absence of any fractions.
+
+\begin{verbatim}
+begin Sources
+  begin Fixed
+    begin MyFixedSource
+      Temperature 300
+
+      % Component name / fraction
+      H2O                0.1
+      C1                 0.9
+
+      ...
+    end
+    ...
+  end
+  ...
+end
+\end{verbatim}
+
+%----------------------------------------------------------------------
+
+\subsection{Regular source}
+
+A regular source contributed energy, $q^e$, and molar masses,
+$q^\nu$ to the associated elements. It is given by:
+\begin{verbatim}
+begin Sources
+  begin Regular
+    begin MyRegularSource
+      % Watts
+      Energy  1e+10
+
+      % Component name / mol/s
+      H2O                1e+10
+      ...
+    end
+    ...
+  end
+  ...
+end
+\end{verbatim}
+The energy and mass sources may be timedependent. Then a
+one-dimensional function can be substituted with the appropriate name.
+Its argument is the current time relative to the total time of the
+run, hence between zero and one.
+
+%----------------------------------------------------------------------
+
+\subsection{Outlet}
+
+An outlet has a specified energy sink, $q^e$, and calculates molar
+mass losses by $q^\nu=\sum_\ell C_\nu^\ell f^\ell q_T$, where $f^\ell$
+is the fractional flow function and $q_T$ is the given total molar
+mass sink.
+\begin{verbatim}
+begin Sources
+  begin Outlet
+    begin MyOutlet
+      % Watts
+      Energy  -1e+10
+
+      % mol/s
+      Mass    -1e+10
+
+      ...
+    end
+    ...
+  end
+  ...
+end
+\end{verbatim}
+An outlet reports on the amount of mass and energy flowing through.  A
+file with the outlet name will be created in the \texttt{simulation}
+directory, containing production statistics.
+
+As for the regular source, the energy and mass can be given as
+functions of the dimensionless time (current time relative to the
+total runtime).
+
+%======================================================================
+
+\csection{Run specification}
+
+The run specification deals with timestepping, reporting and numerical
+discretisation. It contains a large number of parameters, most of
+which are optional. The following may be given within the section
+\texttt{RunSpec}:
+
+\begin{list}{}{}
+\item[\texttt{TimeUnit}] Possible timeunits are \texttt{Seconds}
+  (default), \texttt{Days}, \texttt{Years}, and \texttt{MillionYears}.
+\item[\texttt{EndTime}] Endtime of the run in the chosen timeunit.
+  Defaults to zero, so to enable a run forward, it must be given as a
+  positive number.
+\item[\texttt{MinimumTimeStep}] Smallest timestep size in the chosen
+  timeunit. Defaults to $10^{-10}$.
+\item[\texttt{MaximumTimeStep}] Largest timestep size in the chosen
+  timeunit. Defaults to $1$.
+\item[\texttt{ReportTimes}] Array of desired report times, in the
+  chosen timeunit.
+\item[\texttt{ReportEvery}] Evenly spaced report time, in the chosen
+  time units. This is in addition to \texttt{ReportTimes}.
+\item[\texttt{ReportAlways}] If true, every single timestep will be
+  reported. Useful for debugging, hence it defaults to false.
+\item[\texttt{Thermal}] True to enable thermal features, defaults to
+  false.
+\item[\texttt{MaximumNonlinearPressureIterations}] The maximum number
+  of nonlinear pressure iterations to use. Defaults to $10$.
+\item[\texttt{PressureTolerance}] Convergence criteria in the
+  Newton-Raphson iteration on the volume balance equation. The
+  iteration is finished once
+  \begin{equation}
+    \max_i \left|\frac{\Delta p_i}{p_i}\right| < \text{PressureTolerance}.
+  \end{equation}
+  Default value is $10^{-6}$. $\Delta p_i$ is the pressure change from
+  the linear pressure solver, and $p_i$ is the current pressure, both
+  in element $i$.
+\end{list}
+
+%----------------------------------------------------------------------
+
+\csubsection{Timestep control}
+
+There is also a set of parameters controlling the selection of the
+timestep size, $\Delta t$. Firstly,
+\begin{equation}
+  \texttt{MinimumTimeStep} < \Delta t < \texttt{MaximumTimeStep}.
+\end{equation}
+Then
+\begin{equation}
+  \Delta t^{n+1} = \Delta t^n \min_i \left(
+    \frac{(1+\lambda) \Delta x_T}{\Delta x + \lambda \Delta x_T}.
+  \right),
+\end{equation}
+where $\lambda$ is given by \texttt{Lambda}, default is $0.5$, $\Delta
+x$ is a quantity change, and $\Delta x_T$ is the target change. The
+following target changes are monitored:
+\begin{list}{}{}
+\item[\texttt{TargetResidualVolume}] Defaults to $0.01$, and is
+  computed as
+  \begin{equation}
+    \Delta R = \max_i \left|\frac{R_i}{V_i^p}\right|.
+  \end{equation}
+\item[\texttt{TargetNonLinearIterations}] Defaults to $0.5$, and is
+  the target ratio of the number of nonlinear pressure iterations
+  relative to the maximum allowed.
+\item[\texttt{TargetThroughputRatio}] Defaults to $0.5$, and is
+  the target ratio of the total molar change in a grid block relative
+  to the amount present in the beginning of a timestep:
+  \begin{equation*}
+    \Delta T = \max_i \frac{\Delta N_i}{N_i},\quad N_i>0.
+  \end{equation*}
+\end{list}
+
+%----------------------------------------------------------------------
+
+\csubsection{Linear solver}
+
+The pressure and temperature system is stored in a sparse matrix, and
+for parallel runs, this matrix system is automatically distributed
+amongst the participating threads, see Figure~\ref{fig:matrix}. A
+Krylov subspace solver is used, and a block diagonal preconditioner
+may be optionally applied. The blocks are the $A_i$ matrices in the
+figure.
+
+\begin{figure}
+  \centering
+  \begin{picture}(100,100)
+    \thicklines
+    \put(0,0){\framebox(100,100){}}
+
+    \thinlines
+    \put(0,75){\dashbox{5}(25,25){$A_1$}}
+    \put(25,50){\dashbox{5}(25,25){$A_2$}}
+    \put(50,25){\dashbox{5}(25,25){$A_3$}}
+    \put(75,0){\dashbox{5}(25,25){$A_4$}}
+
+    \put(0,75){\dashbox{5}(100,0){}}
+    \put(0,50){\dashbox{5}(100,0){}}
+    \put(0,25){\dashbox{5}(100,0){}}
+
+    \put(25,75){\makebox(75,25){$B_1$}}
+    \put(50,50){\makebox(50,25){$B_2$}}
+    \put(0,25){\makebox(50,25){$B_3$}}
+    \put(0,0){\makebox(75,25){$B_4$}}
+  \end{picture}
+  \caption{Matrix structure with four subdomains. Thread $i$ stores
+    the block diagonal part $A_i$ and the off-diagonal part $B_i$. The
+    submatrices $A_i$ and $B_i$ are stored in a compressed row format
+    \cite{templates}.}
+  \label{fig:matrix}
+\end{figure}
+
+There are quite a number of options, all are optional:
+\begin{list}{}{}
+\item[\texttt{NumberOfIterations}] Maximum number of iterations
+  (default: 1000).
+\item[\texttt{RelativeTolerance}] Relative convergence tolerance
+  (default: $10^{-50}$).
+\item[\texttt{AbsoluteTolerance}] Absolute convergence tolerance
+  (default: $10^{-15}$).
+\item[\texttt{DivergenceTolerance}] Divergence tolerance (default:
+  $10^{5}$).
+\item[\texttt{ReportIterations}] If set to ``yes'', the residual at
+  each step of the iterative process will be printed.
+\item[\texttt{LinearSolver}] The name of the Krylov subspace
+  method. Possibilities are:
+  \begin{list}{}{}
+  \item[\texttt{BiCG}] BiConjugate Gradients.
+  \item[\texttt{BiCGstab}] BiConjugate Gradients stabilized (default).
+  \item[\texttt{CG}] Conjugate Gradients.
+  \item[\texttt{CGS}] Conjugate Gradients Squared.
+  \item[\texttt{GMRES}] Restarted generalized minimal residual.
+  \item[\texttt{IR}] Iterative refinement.
+  \item[\texttt{QMR}] Quasi minimal residual.
+  \end{list}
+\item[\texttt{Preconditioner}] Associated
+  preconditioner. Possible choices are:
+  \begin{list}{}{}
+  \item[\texttt{Diagonal}] Inverse of the matrix diagonal.
+  \item[\texttt{SSOR}] Successive overrelaxation.
+  \item[\texttt{ICC}] Incomplete Cholesky decomposition.
+  \item[\texttt{ILU}] Incomplete LU factorization (default).
+  \item[\texttt{ILUT}] Incomplete LU with thresholding.
+  \item[\texttt{AMG}] Algebraic multigrid using smoothed aggregation.
+  \item[\texttt{none}] No preconditioning.
+  \end{list}
+\end{list}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "ug"
+%%% End: 

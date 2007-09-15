@@ -1,0 +1,94 @@
+begin mesh
+	begin connections
+		array connections
+		end
+
+		numberofconnections 0
+
+	end
+
+	begin rockdata
+		array permz
+			9.869232667160128E-14 
+		end
+
+		type Global
+
+		array permx
+			9.869232667160128E-14 
+		end
+
+		array poro
+			0.6 
+		end
+
+		array permy
+			9.869232667160128E-14 
+		end
+
+	end
+
+	dimension 3
+
+	type UnstructuredMesh
+
+	begin interfaces
+		numberofinterfaces 6
+
+		array centerpoints
+			0.5 0.5 -0.0 0.5 0.5 -1.0 0.55 0.0 -0.5 0.45 1.0 -0.5 0.0 0.5 -0.5 1.0 0.5 -0.5 
+		end
+
+		array areas
+			1.0 1.0 1.1 0.9 1.0 1.019803902718557 
+		end
+
+		array normals
+			0.0 0.0 1.0 -0.0 -0.0 -1.0 0.0 -1.0 -0.0 -0.0 1.0 0.0 -1.0 0.0 0.0 0.9805806756909201 
+			0.196116135138184 -0.0 
+		end
+
+		array points
+			4 6 2 1 4 4 0 7 5 3 4 2 6 7 0 4 4 1 3 5 4 6 4 5 7 4 1 2 0 3 
+		end
+
+	end
+
+	include sources.inp
+
+	begin rockregionmap
+		array rock
+			0 
+		end
+
+	end
+
+	begin points
+		numberofpoints 8
+
+		array coordinates
+			1.2 0.0 -1.0 1.0 1.0 -0.0 1.0 0.0 -0.0 0.8 1.0 -1.0 0.0 1.0 -0.0 0.0 1.0 -1.0 
+			0.0 0.0 -0.0 0.0 0.0 -1.0 
+		end
+
+	end
+
+	begin elements
+		array volumes
+			1.0 
+		end
+
+		numberofelements 1
+
+		array centers
+			0.5 0.5 -0.5 
+		end
+
+		array interfaces
+			6 0 1 2 3 4 5 
+		end
+
+	end
+
+end
+

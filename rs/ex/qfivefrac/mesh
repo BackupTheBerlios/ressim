@@ -1,0 +1,27 @@
+begin MeshGenerator
+	type	DFNMeshImporter
+
+	GridFile	frac2c.grid
+	TransFile	frac2c.trans
+end
+
+%-------------------------------------------------------------------------------
+
+begin Sources
+	begin Injector
+		type CenterPointCellPicker
+
+		X	0
+		Y	0
+		Z	0
+	end
+
+	begin Producer
+		type CenterPointCellPicker
+
+		X	1
+		Y	1
+		Z	0
+	end
+end
+

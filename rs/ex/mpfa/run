@@ -1,0 +1,50 @@
+% MPFA test-case
+
+begin RunSpec
+
+	EndTime		400
+
+	ReportEvery	10
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	2e+7
+
+	Temperature	400
+	C10			1
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/two
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+	end
+end
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Regular
+		begin Injector
+			H2O	1e+4	% mol/s
+		end
+	end
+
+	begin Fixed
+		begin Producer
+			Temperature	400
+			C10		1
+		end
+	end
+
+end
+

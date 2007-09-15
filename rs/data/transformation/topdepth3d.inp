@@ -1,0 +1,132 @@
+begin RunSpec
+	name topdepth3d
+end
+
+begin RockRegions
+	begin Stone
+	end
+end
+
+begin Mesh
+
+	type StructuredMesh
+	
+	dimension 3
+	
+	begin Domains
+
+		%origin
+		X0	0.0 
+		Y0	0.0
+		Z0	0.0 
+		
+		%X-domains specification	
+		array Nx
+			20
+		end
+
+		array Dx
+			1.0e+3
+		end
+
+		%Y-domains specification	
+		array Ny
+			30
+		end
+
+		array Dy
+			1.0e+3
+		end
+		
+		%Z-domains specification	
+		array Nz
+			1
+		end
+
+		array Dz
+			-50.0
+		end
+		
+		%uniform, layer or domain
+		RegionMappingType uniform
+		
+		% Mesh transformation
+		begin StructuredTransform
+	
+			type TopDepthTransform
+		
+			begin TopDepth
+		
+				type EvenLookupTable2D
+		
+				xMin      0
+				xMax  20000
+				nx      201
+				
+				yMin      0
+				yMax  30000
+				ny      301
+			
+				include topdepths.inp
+				
+			end
+	
+		end
+		
+	end
+	
+
+	begin RockRegionMap
+
+		%names must match RockRegion input data
+		array Stone
+		   1     % indices must match those produced by RegionMappingType above
+		end
+			
+	end
+
+	begin RockData
+	
+		type Global
+
+		array poro
+			0.2
+		end
+		array permx 
+			1.0
+		end
+		
+		array permy
+			1.0 
+		end
+		
+		array permz 
+			1.0 
+		end
+		
+	end
+	
+	begin Sources
+
+		begin Injector
+
+			% element indices
+			array Elements
+				1
+			end
+			
+		end
+		
+		begin Producer
+		
+			array Elements
+				600
+			end
+			
+		end
+	
+	end
+
+end
+
+

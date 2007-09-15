@@ -1,0 +1,53 @@
+% Grid for SPE10
+
+begin Mesh
+
+	type UniformMesh	
+	
+	dimension 3
+
+	% origin
+	X0	0.0 
+	Y0	0.0 
+	Z0	0.0
+		
+	% mesh dimensions
+	Nx   60
+	Dx	 6.0  % 20 ft.
+	
+	Ny	220
+	Dy	3.0   % 10 ft.
+		
+	Nz	85
+	Dz -0.6   % 2 ft.
+
+	% Currently only a single rock region is allowed, which is
+	% specified here
+	RockRegion  Stone
+	
+	begin RockData
+	
+		type Global
+
+		%a single value is duplicated for all cells
+		array poro
+		  0.2
+        end
+
+		array permx
+			100.0
+		end
+
+		%a specific value for all cells
+		array permy
+		      10.0
+		end
+
+		%values from file 
+		array permz
+			10.0
+		end
+
+	end
+	
+end

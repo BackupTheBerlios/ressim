@@ -1,0 +1,6 @@
+begin RunSpec
+	name partition-fine
+	directory .
+end
+
+include mesh.input

@@ -1,0 +1,17 @@
+begin Sources
+	begin Injector
+		type CenterPointCellPicker
+
+		x	0.5
+		y	0.5
+		z	-0.5
+	end
+
+	begin Producer
+		type CenterPointCellPicker
+
+		x	3.5
+		y	0.5
+		z	-0.5
+	end
+end

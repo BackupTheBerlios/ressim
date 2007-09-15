@@ -1,0 +1,306 @@
+\chapter{Configuration file syntax}
+
+The input files are written in a plain text format, where elements are
+separated from each other by whitespace. Whitespace is one or more of:
+space, newline, tab, or similar. Hence, whitespaces may not occur in
+any identifier.  The file format is:
+\begin{description}
+\item[Key/value] The basic construct is the key=value pairing. Examples:
+\begin{verbatim}
+keyword1	value1
+keyword2	value2
+\end{verbatim}
+\item[Arrays] Arrays of data may be entered as follows:
+\begin{verbatim}
+array myArray
+  data1 data2 data3
+end
+\end{verbatim}
+  Strings, integers, and floating point numbers may be used in arrays.
+
+\item[Nested includes] Another configuration file may be included into
+the current file:
+\begin{verbatim}
+include myFile
+\end{verbatim}
+Neither the filename nor its path may include whitespaces. By default
+files are located relative to the current directory. If the keyword 
+{\tt rinclude} is used instead of {\tt include}, files are located relative
+to the file in which the directive is given. This may be useful for
+files that need to include further files only knowing where they are
+located relative to themselves.
+\item[Sections] The configuration file is divided into a hierarchy of sections,
+as illustrated here:
+\begin{verbatim}
+begin mySection
+  ... section data ...
+end
+\end{verbatim}
+The section data may include all the usual configuration file contents.
+\end{description}
+
+The order of the different elements do not matter, as the input files
+are in a free-format form.
+
+Comments can be written anywhere on a line after the comment sign
+``\%''. What's written after ``\%'' until the end-of-line is skipped.
+
+%----------------------------------------------------------------------
+
+\csection{Lookup table syntax}
+
+Lookup tables are common elements in a configuration file. There are two basic
+types: even lookup tables which has regularly spaced data points, and standard
+lookup tables with irregularly spaced points. Each of these tables may be
+given in 1D, 2D, or 3D.
+
+%......................................................................
+
+\subsubsection{1D even lookup table}
+
+\begin{verbatim}
+begin MyEven1DLookupTable
+  type EvenLookupTable
+
+  dimension 1
+
+  % Data given at x={0,1/3,2/3,1}
+  xMin 0
+  xMax 1
+  nx   4
+
+  array data
+    1 % x=0
+    2 % x=1/3
+    3 % x=2/3
+    4 % x=1
+  end
+end
+\end{verbatim}
+
+%......................................................................
+
+\subsubsection{1D lookup table}
+
+\begin{verbatim}
+begin My1DLookupTable
+  type LookupTable
+
+  dimension 1
+
+  % X coordinates
+  array coord1
+    0 0.4 0.8 1
+  end
+
+  array data
+    1 % x=0
+    2 % x=0.4
+    3 % x=0.8
+    4 % x=1
+  end
+end
+\end{verbatim}
+
+%......................................................................
+
+\subsubsection{2D even lookup table}
+
+\begin{verbatim}
+begin MyEven2DLookupTable
+  type EvenLookupTable
+
+  dimension 2
+
+  % Data given at x={0,1/2,1} ...
+  xMin 0
+  xMax 1
+  nx   3
+
+  % ... and at y={2,3,4}
+  yMin 2
+  yMax 4
+  ny   3
+
+  array data
+    % y=2
+    % x=0, 1/2, 1
+        1	  2   3
+
+    % y=3
+    % x=0, 1/2, 1
+        4	  5   6
+
+    % y=4
+    % x=0, 1/2, 1
+        7	  8   9
+  end
+end
+\end{verbatim}
+
+%......................................................................
+
+\subsubsection{2D lookup table}
+
+\begin{verbatim}
+begin My2DLookupTable
+  type LookupTable
+
+  dimension 2
+
+  % X coordinates
+  array coord1
+    0 0.5 0.7 1
+  end
+
+  % Y coordinates
+  array coord2
+    2 3 3.5 4
+  end
+
+  array data
+    % y=2
+    % x=0, 0.5, 0.7, 1
+        1	  2    3   4
+
+    % y=3
+    % x=0, 0.5, 0.7, 1
+        5	  6    7   8
+
+    % y=4
+    % x=0, 0.5, 0.7, 1
+        9	  10   11  12
+  end
+end
+\end{verbatim}
+
+%......................................................................
+
+\subsubsection{3D even lookup table}
+
+\begin{verbatim}
+begin MyEven3DLookupTable
+  type EvenLookupTable
+
+  dimension 3
+
+  % Data given at x={0,1/2,1} ...
+  xMin 0
+  xMax 1
+  nx   3
+
+  % ... and at y={2,3,4} ...
+  yMin 2
+  yMax 4
+  ny   3
+
+  % ... and at z={10,20}
+  zMin 10
+  zMax 20
+  nz   2
+
+  array data
+    % y=2, z=10
+    % x=0, 1/2, 1
+        1	  2   3
+
+    % y=3, z=10
+    % x=0, 1/2, 1
+        4	  5   6
+
+    % y=4, z=10
+    % x=0, 1/2, 1
+        7	  8   9
+
+    % y=2, z=20
+    % x=0, 1/2, 1
+      1.5	 2.5  3.5
+
+    % y=3, z=20
+    % x=0, 1/2, 1
+      4.5	 5.5  6.5
+
+    % y=4, z=20
+    % x=0, 1/2, 1
+      7.5	 8.5  9.5
+  end
+end
+\end{verbatim}
+
+%......................................................................
+
+\subsubsection{3D lookup table}
+
+\begin{verbatim}
+begin My3DLookupTable
+  type LookupTable
+
+  dimension 3
+
+  % X coordinates
+  array coord1
+    0 0.5 0.7 1
+  end
+
+  % Y coordinates
+  array coord2
+    2 3 3.5 4
+  end
+
+  % Z coordinates
+  array coord2
+    10 20
+  end
+	
+  array data
+    % y=2, z=10
+    % x=0, 0.5, 0.7, 1
+        1	  2    3   4
+
+    % y=3, z=10
+    % x=0, 0.5, 0.7, 1
+        5	  6    7   8
+
+    % y=4, z=10
+    % x=0, 0.5, 0.7, 1
+        9	  10   11  12
+
+    % y=2, z=20
+    % x=0, 0.5, 0.7, 1
+      1.5	 2.5  3.5  4.5
+
+    % y=3, z=20
+    % x=0, 0.5, 0.7, 1
+      5.5	 6.5  7.5  8.5
+
+    % y=4, z=20
+    % x=0, 0.5, 0.7, 1
+      9.5	 10.5 11.5 12.5
+  end
+end
+\end{verbatim}
+
+%======================================================================
+
+\csection{Constants}
+
+As an alternative to providing a lookup table, a single constant value
+may be specified. Such a constant may be given quite briefly by
+\begin{verbatim}
+MyConstant 10
+\end{verbatim}
+where the function \texttt{MyConstant} is assigned the value 10. This
+is equivalent to the more cumbersome
+\begin{verbatim}
+begin MyConstant
+  type  ConstantValue
+  value 10
+end
+\end{verbatim}
+
+Constants may be supplied in place of any function, 1D, 2D, or 3D.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "ug"
+%%% End: 

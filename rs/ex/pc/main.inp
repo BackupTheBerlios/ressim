@@ -1,0 +1,88 @@
+% Capillary pressure test
+
+begin RunSpec
+
+	timeunit		days
+
+	EndTime		5000
+
+	array	ReportTimes
+		5000
+	end
+	%ReportEvery	1
+
+	begin LinearSolver
+		type BandLinearSolver
+	end
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth		0		% z-coordinate
+	DatumPressure	2e+7	% Pascal
+
+	begin Temperature
+		type	ConstantValue
+		value	450			% Kelvin
+	end
+
+	begin C4
+		type	ConstantValue
+		value	1	% mole fraction
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Regular
+		begin Injector
+			H2O		1e-6	% mol/s
+
+			array elements
+				 1
+			end
+		end
+	end
+
+	begin Fixed
+		begin Outlet
+			Temperature	450     % Kelvin
+			C4			1		% mole fraction
+
+			array elements
+				20
+			end
+		end
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+include ../common/bo-pvt.inp
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Matrix
+		type TwoPhaseRockFluid
+	end
+
+	begin Pores
+		type TwoPhaseRockFluid
+
+		begin pcow
+			type	ConstantValue
+			value	-2e+6
+		end
+	end
+end
+
+%--------------------------------------------------------------------
+
+include mesh.inp

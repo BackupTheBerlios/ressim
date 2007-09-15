@@ -1,0 +1,28 @@
+% PVT tester
+
+pressure	1e+6	% Pascal
+temperature	400	% Kelvin
+
+C1	100
+C2	213
+C3	213
+C4	123
+C5	12
+C6	54
+C7	12
+C8	1243
+C9	1
+C10	1	% Moles
+CO2	10
+H2S	5
+N2	50
+
+%verify	yes
+
+% delta	1e-7
+
+%--------------------------------------------------------------------
+
+%include bo
+include cubic
+

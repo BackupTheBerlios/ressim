@@ -1,0 +1,70 @@
+begin Components
+	begin H2O
+		Mw	1
+	end
+	begin C10
+		Mw	1
+	end
+end
+
+begin EquationOfState
+	type BlackOilEquationOfState
+
+	% Oil group
+	array oil
+		C10
+	end
+
+	begin WaterMolarDensity
+		type		LookupTable
+		dimension	2
+
+		array coord1
+			1e+5	1e+7
+		end
+
+		array coord2
+			300	500
+		end
+
+		array data
+			1	2
+			1	2
+		end
+	end
+
+	GasMolarDensity	1
+
+	WaterViscosity	1
+	OilViscosity	1
+	GasViscosity	1
+
+	begin OilMolarDensity
+		type		LookupTable
+		dimension	3
+
+		% Pressure, in Pascal
+		array coord1
+			1e+5 1e+7
+		end
+
+		% Fraction of gas in the oil
+		array coord2
+			0 1
+		end
+
+		% Temperature, in Kelvin
+		array coord3
+			300 500
+		end
+
+		array data
+			1	2
+			1	2
+
+			1	2
+			1	2
+		end
+	end
+end
+

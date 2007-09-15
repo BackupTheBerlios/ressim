@@ -1,0 +1,49 @@
+\chapter{Field}
+\label{chap:field}
+
+\minitoc
+
+The \texttt{field} package is primarily an interface between the
+numerical flow simulator and the \texttt{fluid} and \texttt{rock}
+packages. \texttt{field.Field} is as follows:
+\begin{lstlisting}
+  class Field {
+
+    // Gets the control volume for the given element
+    CV getControlVolume(Element el);
+
+    // Gets the control surface for the given connection
+    CS getControlSurface(Connection c);
+
+    // Lists the mass and heat sources
+    Iterable<Source> sources();
+
+    // Calculates secondary variables for all CV's and CS's
+    void calculateSecondaries();
+
+    // Gets the current time in seconds
+    double getTime();
+
+    // $t = t + \Delta t$
+    void changeTime(double dt);
+
+    // Rewinds the field state to the given time with the given state
+    void retract(double t, double[] p, double[] T, Composition[] N);
+  }
+\end{lstlisting}
+
+The class \texttt{CV} stores all primary and secondary variables in an
+element, and calculates all secondary quantities from an equation of
+state and the associated \texttt{RockFluid} object.
+
+\texttt{CS} does likewise on a connection. It determines the upstream
+directions and Darcy fluxes for all the phases.
+
+A \texttt{Field} also calculates an initial fluid state using the
+\texttt{InitialValues} class. The exact procedure is given in the
+Technical Description.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

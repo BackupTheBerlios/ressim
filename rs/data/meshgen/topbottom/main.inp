@@ -1,0 +1,6 @@
+begin RunSpec
+	name topbottom3d
+	directory .
+end
+
+include mesh.inp

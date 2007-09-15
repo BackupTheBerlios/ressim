@@ -1,0 +1,102 @@
+begin MeshDescription
+
+	type StructuredMeshDescription
+
+	dimension 3
+
+	begin Domains
+
+		%origin
+		X0	0.0
+		Y0	0.0
+		Z0	0.0
+
+		%X-domains specification	
+		array Nx
+			10
+		end
+
+		array Dx
+			100
+		end
+
+		%Y-domains specification	
+		array Ny
+			1
+		end
+
+		array Dy
+			100
+		end
+
+		array Nz
+			1 4
+		end
+
+		array Dz
+			-50.0 -5.0
+		end
+
+		%uniform, layer or domain
+		RegionMappingType layer
+
+		% Mesh transformation
+		begin StructuredTransform
+
+			type TopDepthTransform
+
+			begin TopDepth
+
+				type		EvenLookupTable
+				dimension	2
+
+				xMin      0
+				xMax   1000
+				nx        3
+
+				yMin      0
+				yMax    100
+				ny        2
+
+				array data
+					50.0  0.0 50.0
+					50.0  0.0 50.0
+				end
+
+			end
+
+		end
+
+	end
+
+	begin RockRegionMap
+
+		%names must match RockRegion input data
+		array Rock
+		   1 2 3 4 5 % indices must match those produced by RegionMappingType above
+		end
+
+	end
+
+	begin RockData
+
+		type Global
+
+		array poro
+			0.2
+		end
+
+		array permx
+			1.0e-12
+		end
+
+		array permy
+			1.0e-12
+		end
+
+		array permz
+			1.0e-12
+		end
+
+	end
+end

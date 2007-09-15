@@ -1,0 +1,163 @@
+\chapter{Fluid}
+\label{chap:fluid}
+
+\minitoc
+
+The fluid package calculates and stores PVT properties for a general
+compositional fluid. For higher performance, it also includes a
+special black-oil model as well.
+
+%======================================================================
+
+\csection{Static fluid data}
+
+The different fluid phases are enumerated:
+\begin{lstlisting}
+  enum Phase {
+    WATER, OIL, GAS;
+  }
+\end{lstlisting}
+Fluid components are instances of the \texttt{Component} class:
+\begin{lstlisting}
+  class Component {
+
+    // Component index $\nu$
+    int index();
+
+    // Component name
+    String name();
+
+    // Component molecular weight $M_\nu$
+    double getMolecularWeight();
+
+    // Critical temperature $T_\nu^c$
+    double getCriticalTemperature();
+
+    // Critical pressure $p_\nu^c$
+    double getCriticalPressure();;
+
+    // Critical molar volume $\bar V_\nu^c$
+    double getCriticalMolarVolume();
+
+    // Pitzer's acentric factor $\omega_\nu$
+    double getAcentricFactor();
+  }
+\end{lstlisting}
+This class stores a small database of default values for many
+components. The components are in turn collected into a component
+database:
+\begin{lstlisting}
+  class Components {
+
+    // All the stored components
+    Component[] all;
+
+    // The water component
+    Component water();
+
+    // All the components, except water
+    Component[] hc;
+
+    // Gets a component by name
+    Component getComponent(String name);
+
+    // Gets a component by index
+    Component getComponent(int index);
+
+    // Number of components
+    int numComponents();
+  }
+\end{lstlisting}
+The indices are set by the \texttt{Components} class. The water
+component always gets index zero. Note that the use of primitive
+arrays rather than collections is due to performance profiling.
+
+Generic data may be associated with each phase:
+\begin{lstlisting}
+  class PhaseData<T> {
+    T water; // Water property
+    T oil;   // Oil property
+    T gas;   // Gas property
+
+    T get(Phase phase);
+    void set(Phase phase, T value);
+  }
+\end{lstlisting}
+A specialization, \texttt{PhaseDataDouble}, has been created for
+higher performance when storing double-precision numbers.
+
+A composition is used for storing global mass compositions $N_\nu$ or
+phase compositions $N_\nu^\ell$:
+\begin{lstlisting}
+  class Composition {
+
+    // Getters and setters
+    double getMoles(Component nu);
+    void setMoles(Component nu, double N);
+
+    // Gets $C_\nu$ or $C_\nu^\ell$
+    double getMoleFraction(Component nu);
+
+    // Gets the total number of moles
+    double getMoles();
+
+    // Zeros out the composition
+    void zero();
+  }
+\end{lstlisting}
+
+%======================================================================
+
+\csection{Equation of state calculations}
+
+An equation of state represents the interface to a general PVT
+calculation (black-oil, compositional, etc):
+
+\begin{lstlisting}
+  abstract class EquationOfState {
+    abstract void calculatePhaseState(
+      double p, Composition N, double T,
+      PhaseData<EquationOfStateData> data);
+  }
+\end{lstlisting}
+The global pressure (taken as the oil pressure), composition and
+temperature are used to calculate the phase compositions, stored in an
+auxiliary data object for each phase:
+
+\begin{lstlisting}
+  class EquationOfStateData {
+    Phase phase;     // What phase is this?
+    boolean present; // And is it present?
+
+    double      V; // $V^\ell$
+    Composition N; // $N_\nu^\ell$
+    double     xi; // $\xi^\ell$
+
+    double     dVdp; // $\left.\partial V^\ell/\partial p\right|_{T,N_\nu^\ell,\forall\nu}$
+    double     dVdT; // $\left.\partial V^\ell/\partial T\right|_{p,N_\nu^\ell,\forall\nu}$
+    double[]   dVdN; // $\left.\partial V^\ell/\partial N_\nu^\ell\right|_{p,T,N_\mu^\ell,\forall\mu\neq\nu}$
+
+    double h;    // $\rho^\ell h^\ell$
+    double dhdT; // $\left.\partial\left(\rho^\ell h^\ell\right)/\partial T\right|_{p,N_\nu,\forall\nu}$
+
+    double mu; // $\mu^\ell$
+  }
+\end{lstlisting}
+
+There are two implemented equations of state:
+\begin{list}{}{}
+\item[\texttt{BlackOilEquationOfState}] Uses tables for all
+  properties, and in particular dew- and bubble-point tables. It
+  performs very little data-verification, so care must be exersised
+  when using it.
+\item[\texttt{CubicEquationOfState}] Calculates oil/gas equilibrium
+  based on equality of fugacities. Uses a mixed
+  sucessive-subsitution/Newton's method approach.
+\end{list}
+Both inherit from \texttt{WaterEquationOfState}, which calculates the
+properties of the water phase from tables.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

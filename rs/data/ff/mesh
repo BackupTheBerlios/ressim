@@ -1,0 +1,4 @@
+begin MeshGenerator
+        Type		EclipseMeshImporter
+	Name		lgrmini.grdecl
+end

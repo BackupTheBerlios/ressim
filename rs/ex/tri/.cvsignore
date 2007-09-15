@@ -1,0 +1,14 @@
+*.1.*
+mesh.inp
+3Dtest_*
+Quader_*
+Statistic_*
+Subplane3D_*
+mesh.poly
+mesh.input
+compat.input
+mesh.*.*
+output
+simulation
+visualization
+gridding

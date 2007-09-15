@@ -1,0 +1,55 @@
+% Primary production by lowering reservoir pressure.
+% As the pressure drops below the bubblepoint, gas appears, and the
+% heavier hydrocarbons are not produced anymore.
+
+begin RunSpec
+
+	TimeUnit	Days
+
+	EndTime		5
+
+	ReportEvery	1e-1
+	%ReportAlways	yes
+
+	TimeStepMaximum	1e-2
+	%TimeStepMinimum	1e-1
+
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	3e+7
+
+	Temperature	400
+
+	C1			1
+	C10			1
+end
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Outlet
+		begin Producer
+			Mass	-2e-1
+		end
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/cubic
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+		Sor	0.3
+	end
+end
+

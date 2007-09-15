@@ -1,0 +1,56 @@
+% Fractured qfive problem
+
+begin RunSpec
+
+	TimeUnit	Days
+
+	EndTime		1
+
+	ReportEvery	1e-2
+
+	TimeStepMaximum	1e-3
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	1e+6
+
+	Temperature	450
+	C10			1
+end
+
+%--------------------------------------------------------------------
+
+begin Sources
+
+	begin Regular
+		begin Injector
+			H2O	3e-2	% mol/s
+		end
+	end
+
+	begin Fixed
+		begin Producer
+			Temperature	450
+			C10		1
+		end
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/two
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Zone0
+	end
+	begin Zone1
+	end
+end
+

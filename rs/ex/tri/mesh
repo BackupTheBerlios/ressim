@@ -1,0 +1,37 @@
+begin MeshGenerator
+	type		TriangleMeshImporter
+
+	% stem of the file which will be read
+	%ProbName	mesh
+
+	% number of iterations through Triangle program
+	Refinement	2
+
+	% transmissibility multiplier for interfaces over fractures
+	FracMult	0
+end
+
+begin Sources
+
+	begin Injector
+		% select element by giving coordinates in three and three values
+		type CenterPointCellPicker
+
+		X	0
+		Y	0
+		Z	0
+	end
+
+	begin Producer
+		% select element by giving coordinates in three and three values
+		type CenterPointCellPicker
+
+		% center-point picker uses the element whose center that is closest to the 
+		% coordinate specified; if we use 'infinitely' far away, we'll get the 
+		% upper-right corner (without having to know the size of the mesh)
+		X	9999.9
+		Y	9999.9
+		Z	9999.9
+		end
+	end
+end

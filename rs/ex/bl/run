@@ -1,0 +1,52 @@
+% Buckley-Leverett case (1D waterflooding)
+
+begin RunSpec
+
+	EndTime		1
+
+	ReportEvery	1e-2
+
+	TimeStepMaximum	1e-3
+end
+
+%--------------------------------------------------------------------
+
+begin InitialValues
+
+	DatumDepth	0
+	DatumPressure	2e+6
+
+	Temperature	400
+	C10			1
+end
+
+%--------------------------------------------------------------------
+
+include ../pvt/two
+
+%--------------------------------------------------------------------
+
+begin RockFluid
+	begin Rock
+	end
+end
+
+%----------------------------------------------------------------------
+
+begin Sources
+
+	begin Regular
+		begin Injector
+			H2O	3e+7	% mol/s
+		end
+	end
+
+	begin Fixed
+		begin Producer
+			Temperature	400
+			C10		1
+		end
+	end
+
+end
+

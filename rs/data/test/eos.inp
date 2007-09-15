@@ -1,0 +1,46 @@
+% Equation of state test
+
+begin EquationOfState
+	type CubicEquationOfState
+
+	% Dummy density
+	begin WaterMolarDensity
+		type ConstantValue
+		value 1
+	end
+
+	% Dummy enthalpy
+	begin WaterMolarEnthalpy
+		type ConstantValue
+		value 1
+	end
+end
+
+% H2O is always there
+begin Components
+
+	%begin CO2
+	%end
+
+	begin CO2
+	end
+
+	begin CH4
+	end
+
+	begin C19H40
+	end
+
+	begin C20H42
+	end
+end
+
+Pressure 100000
+Temperature 400
+
+begin Composition
+	CO2	100
+	CH4	100
+	C19H40 100
+	C20H42 100
+end

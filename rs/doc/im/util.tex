@@ -1,0 +1,57 @@
+\chapter{Utilities}
+
+\minitoc
+
+The utilities package contains functionality which is used by all the
+other packages, such as parsing of configuration files, using
+tabulated data, and reporting information back to the user.
+
+%======================================================================
+
+\csection{Configuration files}
+
+%======================================================================
+
+\csection{Table look-up}
+
+%======================================================================
+
+\csection{Logging}
+
+Simulator output is of two types: messages written to the console
+during execution, and field states written to separate files. The
+former is divided into two subtypes:
+\begin{description}
+\item[$\lstinline{System.out}$] Progress information (from
+  timestepping, Newton iterations, and linear iterations), and time
+  usage statistics.
+\item[$\lstinline{System.err}$] Internal details from the simulator
+  initialization and possibly error messages. In the latter case, the
+  simulator must stop.
+\end{description}
+
+%======================================================================
+
+\csection{Time measurements}
+
+The time usage of the simulator may be performed using a clock:
+\begin{lstlisting}
+  class Clock {
+
+    // Starts a named timer
+    static void start(String timer);
+
+    // Stops a named timer
+    static void stop(String timer);
+
+    // Creates a printable report over all the timers
+    static String report();
+  }
+\end{lstlisting}
+
+The timestepper outputs time usage at each sucessful timestep.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "im"
+%%% End: 

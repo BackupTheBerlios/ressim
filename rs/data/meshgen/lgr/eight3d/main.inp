@@ -1,0 +1,9 @@
+begin RunSpec
+	name eight3d
+	directory .
+end
+
+include mesh.inp
+
+
+	

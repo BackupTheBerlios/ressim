@@ -1,0 +1,29 @@
+% Input file for testing the geometry
+
+begin RockRegions
+	begin Zone0
+	end
+	
+	begin Zone1
+	end
+	
+	begin Stone
+	end
+
+	begin Granite
+	end
+
+	begin Mud
+	end
+end
+
+begin BoundaryConditions
+	begin Left
+	end
+
+	begin Right
+	end
+
+	begin Sealed
+	end
+end

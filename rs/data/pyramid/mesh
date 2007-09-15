@@ -1,0 +1,81 @@
+begin TransmissibilityMethod
+      type L_MPFA
+end
+begin MeshGenerator
+      type PyramidMeshGenerator
+begin MeshGenerator
+
+	type StructuredMeshGenerator
+
+	dimension 3
+
+	begin Geometry
+
+		% Origin
+		X0	0.0
+		Y0	0.0
+		Z0	0.0 
+
+		% X-domains specification	
+		array Nx
+			2
+		end
+
+		array Dx
+			1
+		end
+
+		array Ny
+		      1
+		end
+
+		array Dy
+		      1
+		end
+
+		array Nz
+		      1
+		end
+
+		array Dz
+		      -1
+		end
+
+		%uniform, layer or domain
+		RegionMappingType uniform
+
+	end
+
+	begin RockRegionMap
+
+		% Names must match RockRegion input data
+		array Rock
+		   1     % indices must match those produced by RegionMappingType above
+		end
+
+	end
+
+	begin RockData
+
+		type Global
+
+		array poro
+			1
+		end
+
+		array permx 
+			1
+		end
+
+		array permy
+			1
+		end
+
+		array permz 
+			1
+		end
+
+	end
+end
+end
+%----------------------------------------------------------------------

@@ -1,0 +1,162 @@
+% Simple unstructured grid file for defining purposes
+
+% A single cell/element consisting of 8 interfaces defined by 8 corner points
+% Note that indices in this example are correct but all double values are dummies
+
+begin Mesh
+
+	type UnstructuredMesh
+
+	dimension 3
+
+	% the sizes given in the different configurations are actually not needed 
+	% for core implementation purposes, but added to this file format to give 
+	% some error checking possibility
+
+	begin Points
+
+		NumberOfPoints		8			
+
+		array Coordinates      % 8 points: x, y, z (numPoints)
+			0.0 0.0 0.0
+			1.0 0.0 0.0
+			1.0 1.0 0.0
+			0.0 1.0 0.0
+
+			0.0 0.0 -1.0
+			1.0 0.0 -1.0
+			1.0 1.0 -1.0
+			0.0 1.0 -1.0
+		end
+
+		%there might be additional info here later
+	end
+
+	begin Interfaces
+
+		NumberOfInterfaces	6
+
+		% the points for each interface must be ordered corresponding to an outward 
+		% pointing normal in a right-hand system (fingers pointing in increasing index direction). 
+
+		array Points  % 8 interfaces:  numPoints pointIndices(numPoints)
+			4 0 1 2 3  % top    
+			4 7 6 5 4  % bottom
+			4 4 5 1 0  % front	
+			4 6 7 3 2  % back
+			4 7 4 0 3  % left
+			4 5 6 2 1  % right
+		end
+
+		%optional data for interfaces (this can be calculated internally for simplfied shapes)
+
+		array Areas   % area(numInterfaces)
+			1.0	1.0	1.0	1.0	1.0	1.0
+		end
+
+		array Normals  % x,y,z (numInterfaces)
+			0.0 0.0  0.0
+			1.0 0.0  0.0
+			1.0 1.0  0.0
+			0.0 1.0  0.0
+			0.0 0.0 -1.0
+			1.0 0.0 -1.0
+		end
+
+		array CenterPoints  % x,y,z (numInterfaces)
+			0.0 0.0  0.5    
+			0.5 0.0  0.5
+			0.5 0.5  0.5
+			0.0 0.5  0.5
+			0.0 0.0 -0.5
+			0.5 0.0 -0.5
+		end
+	end
+
+	begin Elements
+
+		NumberOfElements	1
+
+		array Interfaces   % 1 element in this example
+		   	6 0 1 2 3 4 5  % numInterfaces interfaceIndices(numInterfaces)(optional: volume, center) 
+		end
+
+		%optional data for elements
+		array Volumes  % volume(numElements)
+			1.0
+		end
+
+		array Centers  % x, y, z (numElements)
+			0.5 0.5 0.5
+		end
+
+	end
+
+
+	% this lists the internal connections between grid cells and their transmissibilities
+	% if this list is not given the simulator tries to calcualate its own transmissibilites
+	% based on the user-supplied choice of discretization scheme.
+	%begin ConnectivityList
+
+	%	NumberOfMainConnections  0
+
+	%	%N main0 main1 sub1 sub2 ... subN (numMainConnections) (not including self-coupling)
+	%	array Connections
+
+	%	end
+
+	%	% trans12 trans1s1 trans1s2 ... trans1sN  (numMainConnections)  (relies on N above)
+	%	array Transmissibilities
+
+	%	end
+
+	%end
+
+	%----------------------------------------------------------------
+	% Maps lithologies to control volumes given by 
+	%----------------------------------------------------------------
+
+	begin LithologyMap
+
+		AllCVs SandStone	%typically Sandstone would include file perm/poro
+
+	%   % selected cells can be given alternative lithology values here
+	%	array Granite
+	%		2 4
+	%	end
+
+
+	end
+
+	%------------------------------------------------------------------
+	% Maps boundary conditions to the outer interfaces not having zero flux
+	% A global interface index must be given corresponding to the interface
+	% defined above
+	%------------------------------------------------------------------
+
+	begin HeatBCMap
+	
+		begin BC1
+		
+			name HeatSource
+			
+			array interfaces
+				0 
+			end
+		end
+		
+	end
+
+	begin MassBCMap
+
+		begin BC1
+			name Inflow
+			
+			array interfaces
+				0
+			end
+		end
+
+	end
+
+end

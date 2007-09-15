@@ -1,0 +1,85 @@
+% Simple grid file for testing purposes
+
+begin Mesh
+
+	type StructuredMesh
+	
+	dimension 3
+
+	begin Domains
+
+		%origin
+		X0	0.0 
+		Y0	0.0 
+		Z0	0.0
+		
+		%X-domains specification	
+		array Nx
+			2
+		end
+
+		array Dx
+			1.0
+		end
+
+		%Y-domains specification	
+		array Ny
+			1
+		end
+
+		array Dy
+			1.0
+		end
+
+		%Z-domains specification
+		array Nz
+			1 2 1
+		end
+
+		array Dz
+			-1.0 -2.0 -3.0
+		end
+		
+		RegionMappingType domain
+
+	end
+
+
+	begin RockRegionMap
+
+		%names must match RockRegion input data
+		array Stone
+		   1
+		end
+
+		array Granite
+		   2 3
+		end  
+			
+	end
+
+	begin RockData
+	
+		type Global
+
+		%a single value is duplicated for all cells
+		array poro
+		  0.2
+        end
+
+		array permx
+		      100.0
+		end
+
+		%a specific value for all cells
+		array permy
+		      10.0  8.0  5.0  5.0  10.0  50.0  25.0  27.0
+		end
+
+		%values from file 
+		include permz.inp
+
+
+	end
+	
+end

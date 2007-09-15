@@ -1,0 +1,369 @@
+\chapter{Mesh specification}
+\label{chapter:mesh}
+
+\minitoc
+
+The simulator accepts a single unstructured mesh format which is
+defined within the section \texttt{Mesh}. This section is typically
+not edited by the user, although minor modifications can be done by
+hand. Instead, this section should be created with either the
+accompanying mesh generator or constructed from other external meshing
+tools. The \texttt{Mesh} section must contain subsections describing
+geometry and data mappings. Subsections for choosing transmissibility
+computation methods are optional:
+%
+\begin{verbatim}
+begin Mesh
+
+  begin Points
+    ...
+  end
+
+  begin Interfaces
+    ...
+  end
+
+  begin Elements
+    ...
+  end
+
+  begin NeighbourConnections
+    ...
+  end
+
+  % optional
+  begin NonNeighbourConnections
+    ...
+  end
+
+  begin RockRegionMap
+    ...
+  end
+
+  begin RockData
+    ...
+  end
+
+  begin AbsPermTransmissibilities
+    ...
+  end
+
+  % for thermal runs only
+  begin CondTransmissibilities
+    ...
+  end
+
+end
+\end{verbatim}
+%
+Note that in this native format all indices start at 0. 
+
+\csection{Geometry}
+\label{sec:geometry}
+
+The mesh geometry is specified within the three subsections
+\texttt{Points}, \texttt{Interfaces} and \texttt{Elements}.  Element
+connections are listed in the \texttt{NeighbourConnections} and
+\texttt{NonNeighbourConnections} subsections.
+
+\subsection{Points}
+\label{sec:points}
+In the \texttt{Points} subsection the number of mesh points must be
+specified along with the coordinates of each point. The order of the
+coordinates implicitly determines the point numbering. Example:
+%
+\begin{verbatim}
+  begin Points
+    NumberOfPoints 2
+
+    array Coordinates
+      0.0 0.0 0.0     % point 0
+      1.0 0.0 0.0     % point 1
+    end
+  end
+\end{verbatim}
+
+\subsection{Interfaces}
+\label{sec:interfaces}
+In the \texttt{Interfaces} subsection the number of mesh interfaces
+must be specified. Each interface is specified in the \texttt{Points}
+array. First the number of points for the interface is given, then the
+indices to the contributing points are listed. These points must be
+given in a circular order that results in an outward pointing normal
+following the right hand rule. This is meaningful since interfaces are
+not shared among elements of the mesh. The numbering of the interfaces
+are given implictly by the order in the \texttt{Points} array. In
+addition to the points, the interface areas, unit normals and center
+point coordinates must be given for each interface.  Example:
+%
+\begin{verbatim}
+  begin Interfaces
+    NumberOfInterfaces 2
+
+    array Points
+      3   0 1 2     % interface 0 has 3 points: {0, 1, 2}
+      4   2 1 3 4   % interface 1 has 4 points: {2, 1, 3, 4}
+    end
+
+    array CenterPoints
+      0.0 0.0 0.0   % center point of interface 0
+      0.5 0.0 0.5   % center point of interface 1
+    end             
+                    
+    begin Areas     
+      1.0           % area of interface 0
+      2.0           % area of interface 1
+    end             
+                    
+    begin Normals   
+      0.0 0.0 1.0   % unit normal vector of interface 0
+      0.0 1.0 0.0   % unit normal vector of interface 1
+    end
+
+  end
+\end{verbatim}
+
+\subsection{Elements}
+\label{sec:elements-1}
+In the \texttt{Elements} subsection the number of mesh elements (grid
+cells) must be specified. Each element is given as a list of defining
+interfaces. These are given in the \texttt{Interfaces} array which
+lists the number of interfaces and interfaces indices for each
+element. The ordering of elements are given implicitly from the
+ordering of the \texttt{Interfaces} array. Additional data necessary
+are the volumes and center point coordinates for each element.
+Example:
+%
+\begin{verbatim}
+  begin Elements
+
+    NumberOfElements 3
+
+    array Interfaces
+      6   0 1 2 3 4  % element 0 has 6 interfaces: {0, 1, 2, 3, 4}
+      4   1 2 5 6    % element 1 has 4 interfaces: {1, 2, 5, 6}
+      5   3 4 6 7    % element 2 has 5 interfaces: {3, 4, 6, 7}
+    end
+
+    array Volumes
+      1.0            % volume of element 0
+      1.5            % volume of element 1
+      20.0           % volume of element 2
+    end
+
+    array Centers
+       0.0 0.0 0.0   % center point of element 0
+       1.5 0.0 0.2   % center point of element 1
+       0.0 1.0 0.5   % center point of element 2
+    end
+
+  end
+\end{verbatim}
+
+
+\subsection{NeighbourConnections}
+\label{sec:neigh-connections}
+In the \texttt{NeighbourConnections} subsection the number of
+(internal) connections between neighbouring elements must be
+specified. For each connection two interface indices must be given.
+These are listed in the \texttt{Connections} array. Example:
+%
+\begin{verbatim}
+  begin NeighbourConnections
+
+    NumberOfConnections 2
+
+    array Connections
+      1 11    % neighbour connection 0 between interfaces 1 and 11
+      7 9     % neighbour connection 1 between interfaces 7 and 9
+    end
+
+    % optional flux multipliers
+    array FluxMultipliers
+      0.9     % flux multiplier for neighbour connection 0
+      0.7     % flux multiplier for neighbour connection 1
+    end
+
+  end
+\end{verbatim}
+%
+An optional array of \texttt{FluxMultipliers} can be specified. If not
+given, the flux multipliers all default to \texttt{1.0}.
+
+\subsection{NonNeighbourConnections}
+\label{sec:non-neigh-connections}
+The \texttt{NonNeighbourConnections} subsection is optional. Here the
+number of connections between non-neighbouring elements must be
+specified. For each connection two element indices must be given.
+These are listed in the \texttt{Connections} array. Example:
+%
+\begin{verbatim}
+  begin NonNeighbourConnections
+
+    NumberOfConnections 2
+
+    array Connections
+      0 4    % non-neighbour connection 0 between elements 0 and 4
+      3 5    % non-neighbour connection 1 between elements 3 and 5
+    end
+
+    % optional flux multipliers
+    array FluxMultipliers
+      0.7     % flux multiplier for non-neighbour connection 0
+      0.5     % flux multiplier for non-neighbour connection 1
+    end
+
+  end
+\end{verbatim}
+%
+An optional array of \texttt{FluxMultipliers} can be specified. If not
+given, the flux multipliers all default to \texttt{1.0}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\csection{Data mapping}
+\label{sec:data-mapping}
+
+Rock/fluid regions and rock data are mapped to elements in the
+subsections \texttt{RockRegionMap} and \texttt{RockData}.
+
+\subsection{RockRegionMap}
+\label{sec:rockregionmap}
+%
+In the \texttt{RockRegionMap} subsection rock regions are mapped to
+elements. For each region that should be mapped, an array of element
+indices must be given. The array names must match names of regions
+defined in the \texttt{RockFluid} section. All elements of the mesh
+must be given a rock region. If an element occurs in more than one
+region array, behaviour is undefined. An example of the format for a
+mesh of 5 elements with the regions \texttt{SandStone} and
+\texttt{Shale} defined:
+%
+\begin{verbatim}
+  begin RockRegionMap
+ 
+    array Shale
+      0 2 4
+    end
+
+    array SandStone
+      1 3 5
+    end
+
+  end
+\end{verbatim}
+
+
+
+\subsection{RockData}
+\label{sec:rockdata}
+
+In the \texttt{RockData} subsection, porosity, permeability,
+conductivity, compressibility and heat capacity can be given for each
+element. Porosity, \texttt{Poro}, and diagonal permeabilities,
+\texttt{PermX}, \texttt{PermY}, \texttt{PermZ}, are required. Thermal
+runs also require the rock heat capacity, \texttt{C}, and heat
+conductivity tensor diagonals, \texttt{CondX}, \texttt{CondY},
+\texttt{CondZ}. Optional data are the off-diagonal permeabilities,
+\texttt{PermXY}, \texttt{PermXZ}, \texttt{PermYZ}, the off-diagonal
+rock heat conductivities, \texttt{CondXY}, \texttt{CondXZ},
+\texttt{CondYZ}, and the rock compressibility, \texttt{Cr}. The array
+values follow the element ordering, and the number of values must
+equal the number of elements. Otherwise, if an array contains only one
+value, that value is used for all elements. Example for a mesh with 5
+elements:
+%
+\begin{verbatim}
+  begin RockData
+
+    begin Poro
+      0.2 0.25 0.3 0.15 0.2
+    end
+  
+    begin PermX
+      1.0e-5        % one value is used for all elements      
+    end
+  
+    begin PermY
+      1.0e-5  5.0e-6  6.0e-6  1.0e-5  1.0e-5  9.0e-8
+    end
+  
+    begin PermZ
+      include permz.dat  % file permz.dat contains 5 permeability values
+    end
+
+  end
+\end{verbatim}
+%
+
+\csection{Transmissibilities}
+\label{sec:transmissibilities}
+
+Absolute permeability and heat conductivity transmissibilities are
+computed externally. The latter is only relevant for thermal runs.
+
+\subsection{AbsPermTransmissibilities}
+\label{sec:absp}
+Transmissibilities must be specified for all connections, neighbouring
+and non-neighbouring (if present). For each connection, two
+transmissibility-values and two element-indices are required.
+Additional transmissibility values and corresponding element indices
+can be given for sub-connections of multi-point flux stencils.
+Example:
+%
+\begin{verbatim}
+    begin AbsPermTransmissibilities
+
+      % mesh connection 0       
+      begin 0
+        array Transmissibilities
+          1.0 -1.0
+        end
+      
+        array Elements
+          0 1
+        end
+      end
+
+      % mesh connection 1
+      begin 1                    
+        array Transmissibilities
+          0.5 -0.5
+        end
+      
+        array Elements
+          1 2
+        end
+      end
+
+      ...
+
+    end
+\end{verbatim}
+%
+
+\subsection{CondTransmissibilities}
+\label{sec:condtr}
+
+The format is the same as for the absolute permeability
+transmissbilities above. This section is only used for thermal runs.
+%
+\begin{verbatim}
+  begin CondTransmissibilities
+
+    % same syntax as AbsPermTransmissibilities
+    ...
+
+  end
+\end{verbatim}
+%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "ug"
+%%% End: 

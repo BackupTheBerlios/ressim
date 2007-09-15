@@ -1,0 +1,153 @@
+\chapter{Notation}
+
+The physical units of an entity is given in brackets following its
+description. These units are all SI. Dimensionless units are given the
+unit $[-]$.
+
+%----------------------------------------------------------------------
+
+\section{Indices}
+
+Superscripts refer to phases, while subscripts refer to components
+(mass or energy).
+
+\begin{description}
+\item[$\ell$] Phase superscript: water ($\ell=w$), oil ($\ell=o$), and
+  gas ($\ell=g$).
+\item[$\nu,\mu$] Component subscripts. $0$ is taken to be water.
+\end{description}
+
+%----------------------------------------------------------------------
+
+\section{Volumes}
+
+\begin{description}
+\item[$V$] Bulk volume. $\left[\meter\cubed\right]$
+\item[$V^p$] Pore volume, $V^p=\phi V$. $\left[\meter\cubed\right]$
+\item[$V^f$] Fluid volume, $V^f=\sum_\ell V^\ell$. $\left[\meter\cubed\right]$
+\item[$V^\ell$] Phase volume. $\left[\meter\cubed\right]$
+\item[$R$] Residual volume, $R=V^p-V^f$. $\left[\meter\cubed\right]$
+\item[$\phi$] Porosity, the ratio between pore volume and bulk volume:
+  $\phi=V^p/V$. $\left[-\right]$
+\item[$V^r$] Rock volume, $V^r=V - V^p$. $\left[\meter\cubed\right]$
+\item[$c^r$] Rock compressibility. $\left[1\per\pascal\right]$
+\item[$\phi_0$] Reference (initial) porosity. $\left[-\right]$
+\item[$p_0$] Reference (initial) pressure. $\left[\pascal\right]$
+\item[$S^\ell$] Phase saturation, $S^\ell=V^\ell/V^f$.
+  $\left[-\right]$
+\item[$z_D$] Datum depth. $\left[\meter\right]$
+\item[$p_D$] Pressure at datum depth. $\left[\pascal\right]$
+\end{description}
+
+%----------------------------------------------------------------------
+
+\section{Mass flow}
+
+\begin{description}
+\item[$N_\nu$] Moles of component $\nu$. $\left[\mole\right]$
+\item[$\xi^\ell$] Molar density of phase $\ell$.
+  $\left[\mole\per\meter\cubed\right]$
+\item[$C_\nu^\ell$] Molar fraction of component $\nu$ in phase $\ell$.
+  $\left[-\right]$
+\item[$C_\nu$] Molar fraction of component $\nu$.  $\left[-\right]$
+\item[$N_\nu^\ell$] Moles of component $\nu$ in phase $\ell$.
+  $\left[\mole\right]$
+\item[$\vec u^\ell$] Darcy phase velocity of phase $\ell$.
+  $\left[\meter\per\second\right]$
+\item[$\lambda^\ell$] Mobility of phase $\ell$,
+  $\lambda^\ell=k_r^\ell/\mu^\ell$.
+  $\left[1\per\pascal\usk\second\right]$
+\item[$k_r^\ell$] Relative permeability. $\left[-\right]$
+\item[$\mu^\ell$] Phase viscosity. $\left[\pascal\usk\second\right]$
+\item[$\tensor K$] Absolute permeability. $\left[\meter\squared\right]$
+\item[$\Psi^\ell$] Phase potential. $\left[\pascal\right]$
+\item[$p^\ell$] Phase pressure. $\left[\pascal\right]$
+\item[$\gamma^\ell$] Specific phase gravity, $\gamma^\ell=g\rho^\ell$.
+  $\left[\pascal\per\meter\right]$
+\item[$g$] Gravitational acceleration constant. $g=9.81
+  \meter\per\second\squared$
+\item[$\rho^\ell$] Phase density.
+  $\left[\kilogram\per\meter\cubed\right]$
+\item[$z$] Coordinate in the upwards (anti-gravity) direction.
+  $\left[\meter\right]$
+\item[$p_c^{ow}$] Oil/water capillary pressure. $\left[\pascal\right]$
+\item[$p_c^{go}$] Gas/oil capillary pressure. $\left[\pascal\right]$
+\item[$q_\nu$] Source of component $\nu$. $\left[\mole\per\second\right]$
+\item[$q^\ell$] Source of phase $\ell$. $\left[\mole\per\second\right]$
+\item[$q_T$] Total source/sink. $\left[\mole\per\second\right]$
+\item[$f^\ell$] Fractional flow function,
+  $f^\ell=\lambda^\ell/\sum_\ell \lambda^\ell$. $\left[-\right]$
+\end{description}
+
+%----------------------------------------------------------------------
+
+\section{Energy flow}
+
+\begin{description}
+\item[$\rho^r$] Rock density. $\left[\kilogram\per\meter\cubed\right]$
+\item[$e^r$] Rock energy density. $\left[\joule\per\kilogram\right]$
+\item[$e^\ell$] Phase energy density. $\left[\joule\per\kilogram\right]$
+\item[$h^\ell$] Phase enthalpy, $h^\ell=e^\ell+p^\ell/\rho^\ell$.
+  $\left[\joule\per\kilogram\right]$
+\item[$\kappa$] Rock thermal conductivity.
+  $\left[\watt\per\meter\usk\kelvin\right]$
+\item[$T$] Temperature. $\left[\kelvin\right]$
+\item[$q^e$] Energy source. $\left[\watt\right]$
+\item[$\delta^T$] Heat capacity. $\left[\joule\per\kelvin\right]$
+\end{description}
+
+%----------------------------------------------------------------------
+
+\section{Thermodynamics}
+
+\begin{description}
+\item[$M_\nu$] Molecular weight of component $\nu$.
+  $\left[\kilogram\per\mole\right]$
+\item[$\mathcal{G}$] Set of components grouped to the gas
+  pseudo-component.
+\item[$\mathcal{O}$] Set of components grouped to the oil
+  pseudo-component.
+\item[$N_\text{HC}$] Moles of hydrocarbons. $\left[\mole\right]$
+\item[$Z_o$] Fraction of oil in the hydrocarbon system,
+  $Z_o=N_o/N_\text{HC}$. $\left[-\right]$
+\item[$Z_g$] Fraction of gas in the hydrocarbon system,
+  $Z_g=N_g/N_\text{HC}$. $\left[-\right]$
+\item[$C_{g,B}^o$] Bubble-point curve. $\left[-\right]$
+\item[$C_{o,D}^g$] Dew-point curve. $\left[-\right]$
+\item[$L$] Liquid hydrocarbon fraction, $L=N^o/N_\text{HC}$. $\left[-\right]$
+\item[$V$] Liquid hydrocarbon fraction, $V=N^g/N_\text{HC}$. $\left[-\right]$
+\item[$\bar h^\ell$] Phase molar enthalpy.
+  $\left[\joule\per\mole\right]$
+\end{description}
+
+%----------------------------------------------------------------------
+
+\section{Control volume discretisation}
+
+\begin{description}
+\item[$\Omega_i$] Control volume $i$.
+\item[$\partial\Omega_i$] Surface of the control volume $\Omega$.
+\item[$\partial\Omega_{i,j}$] Face $j$ of the surface
+  $\partial\Omega_i$. $\partial\Omega_{i,j}$ is planar, meaning that
+  the whole surface has just one normal vector $\vec n_{i,j}$.
+  $\partial\Omega_i$ has no single normal vector.
+\item[$\vec n_{i,j}$] Outward normal vector on $\partial\Omega_{i,j}$.
+  $\left[-\right]$
+\item[$\mathcal{M}_{i,k}^\tensor{K}$] Set of control volumes
+  contributing to the Darcy flux across $\partial\Omega_{i,k}$.
+\item[$\mathcal{M}_{i,k}^\kappa$] Set of control volumes contributing
+  to the Fourier flux across $\partial\Omega_{i,k}$.
+\item[$t_{ij}$] Coupling coefficient or transmissibility for the
+  absolute permeability.
+\item[$k_{ij}$] Coupling coefficient or transmissibility for the
+  heat conductivity.
+\item[$D_{i,k}^\ell$] Volumetric phase Darcy flux in the outward
+  normal direction on $\partial\Omega_{i,j}$.
+  $\left[\meter\cubed\per\second\right]$
+\item[$F_{i,k}^\ell$] Volumetric Fourier flux in the outward normal
+  direction on $\partial\Omega_{i,j}$.
+  $\left[\meter\cubed\per\second\right]$
+\item[$r_i$] Residual in control volume $i$.
+\item[$L_{i,j}$] Distance between control volume $i$ and $j$.
+\end{description}
+

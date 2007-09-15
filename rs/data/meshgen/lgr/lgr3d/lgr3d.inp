@@ -1,0 +1,180 @@
+begin MeshDescription
+
+	type LGRMeshDescription
+	
+	begin Transform 
+		type IdentityTransform
+	end
+	
+	begin Coarse
+
+		begin CoarseGeometry
+		
+			% Origin
+			X0	0.0 
+			Y0	0.0 
+			Z0	0.0
+		
+			% X-parts specification	
+			array Nx
+				1
+			end
+
+			array Dx
+				1
+			end
+
+			% Y-parts specification	
+			array Ny
+				2
+			end
+
+			array Dy
+				1
+			end
+		
+			array Nz
+				1
+			end
+		
+			array Dz
+				-1
+			end
+			
+		end		% end CoarseGeometry
+		
+	end		% end Coarse
+
+	begin Refinements
+	
+		begin DamageZoneHW
+		
+			array CoarseElementIJK
+				1 1 1
+			end
+			
+			begin FineGeometry
+			
+				array Nx
+					1
+				end
+				
+				array Dx
+					1
+				end
+				
+				array Ny
+					1
+				end
+				
+				array Dy
+					1
+				end
+				
+				array Nz
+					2
+				end
+				
+				array Dz
+					-1
+				end
+				
+				RegionMappingType Uniform
+				
+			end
+			
+			begin RockRegionMap
+				array Sandstone
+		   			1   
+				end
+			end
+			
+			begin RockData
+				type Global
+
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+		
+				array permy
+					1.0 
+				end
+		
+				array permz 
+					1.0 
+				end
+			end
+			
+		end
+		
+		begin FaultCore
+		
+			array CoarseElementIJK
+				1 2 1
+			end
+			
+			begin FineGeometry
+			
+				array Nx
+					1
+				end
+				
+				array Dx
+					1.0
+				end
+				
+				array Ny
+					1
+				end
+				
+				array Dy
+					1
+				end
+				
+				array Nz
+					1
+				end
+				
+				array Dz
+					-1
+				end
+				
+				RegionMappingType Uniform
+				
+			end
+			
+			begin RockRegionMap
+				array Chalk
+		   			1   
+				end
+			end
+			
+			begin RockData
+				type Global
+
+				array poro
+					0.2
+				end
+				array permx 
+					1.0
+				end
+		
+				array permy
+					1.0 
+				end
+		
+				array permz 
+					1.0 
+				end
+			end
+			
+		end
+	
+	end
+		
+end
+
+

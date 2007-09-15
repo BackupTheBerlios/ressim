@@ -1,0 +1,72 @@
+begin MeshGenerator
+
+	type LGRMeshGenerator
+
+
+	begin Transform
+		type RotateYTransZTransform
+		
+		Theta  0.5236
+		
+		Dz     -14.0
+	end
+
+	
+
+	begin CoarseGeometry
+
+		X0	0.0 
+		Y0	0.0 
+		Z0	0.0 
+
+		array Nx
+			2 1 2
+		end
+
+		array Dx
+			3.0 2.0 3.0
+		end
+
+		array Ny
+			1
+		end
+
+		array Dy
+			1.0
+		end
+
+		array Nz
+			1 1 1
+		end
+
+		array Dz
+			-7.0 -4.0 -7.0
+		end
+		
+	end
+
+	begin Refinements
+	
+		include lgr1
+		include lgr2
+		include lgr3
+		
+		include lgr4
+		include lgr5
+		include lgr6
+		
+		include lgr7
+		include lgr8
+		include lgr9
+		
+		include lgr10
+		include lgr11
+		include lgr12
+		
+		include lgr13
+		include lgr14
+		include lgr15
+		
+	end
+
+end

@@ -1,0 +1,30 @@
+#!./triangle -pq simple.poly
+# Vertices. First comes the number of points that follow, then
+# comes the dimension for each point. We have 0 attributes
+# that we would like to pass on to the output. We don't have to
+# name the boundary points in the input file (triangle will 
+# identify them for us in the output).
+# For each data point comes first the index of the number, which
+# is here a running counter from one and up, and then the coordinates.
+6 2 0 0
+1 2 2 # A
+2 3 3 # B
+3 1 1 # C
+4 4 1 # D
+5 4 4 # E
+6 1 4 # F
+
+# Edges. First is the number of edges, then a flag that determines
+# whether we have boundaries or not (we don't).
+# For each data point there is first the index of the edge (one-based)
+# and then the indices into the array above of the two end-points.
+# The last four points are the boundaries of the box in this example.
+5 0
+1 1 2 # AB
+2 3 4 # CD
+3 4 5 # DE
+4 5 6 # EF
+5 6 3 # FC
+
+# Holes
+0

@@ -1,0 +1,98 @@
+% Diagonal qfive problem
+
+begin MeshGenerator
+	type StructuredMeshGenerator
+
+	dimension 3
+
+	begin Geometry
+
+		X0	0.0
+		Y0	0.0
+		Z0	0.0
+
+		array Nx 16 end
+
+		array Dx .06250000 end
+
+		array Ny 16 end
+
+		array Dy .06250000 end
+		
+		array Nz 16 end
+		
+		array Dz -.06250000 end
+
+		RegionMappingType uniform
+
+		
+		%Mesh transformation
+%		begin StructuredTransform
+%			type RandomPerturbationTransform
+%			seed 2000
+%			dh 0.125
+%		end
+
+%		begin StructuredTransform
+%			type SmoothUnitCubeTransform
+%			scale 0.1
+%		end
+
+		begin StructuredTransform
+			type ParallelogramTransform
+			a1 1
+		end
+		
+	end
+	
+	begin RockRegionMap
+
+		array Rock
+			1
+		end
+
+	end
+	
+	begin RockData
+
+		type Global
+
+		array poro
+			0.2
+		end
+
+		array permx 
+			1e-0
+		end
+
+		array permy
+			1e-0
+		end
+
+		array permz 
+			1e-0
+		end
+		
+	end
+end
+
+
+%-------------------------------------------------------------------------------
+
+begin TransmissibilityMethod
+	type L_MPFA
+	
+%	test true
+	quadArea true
+end
+
+%-------------------------------------------------------------------------------
+
+begin Sources
+
+	begin Boundary
+		type BoundaryCellPicker
+	end
+	
+end
+

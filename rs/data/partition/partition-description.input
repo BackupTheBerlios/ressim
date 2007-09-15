@@ -1,0 +1,36 @@
+begin PartitionDescription
+
+	type SubdomainPartition
+
+	% width of border region
+	Border	0.125
+	
+	% the target coarse domains (only 2D for the moment)
+	begin Domains
+		
+		X0	0.25
+		Y0 	0.25
+		
+		array Nx
+			2
+		end
+		
+		array Dx
+			0.25
+		end
+		
+		array Ny
+			2
+		end
+		
+		array Dy
+			0.25
+		end
+		
+	end
+		
+	
+	% the underlying fine mesh
+	include mesh.input
+		
+end

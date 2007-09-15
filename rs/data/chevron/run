@@ -1,0 +1,45 @@
+begin RunSpec
+	TimeUnit	Days
+	EndTime		5e+2
+	ReportEvery	5e+0
+	TimeStepMaximum	1e-2
+	TimeStepMinimum 1e-10
+end
+
+%--------------------------------------------------------------------
+begin InitialValues
+	DatumDepth	-1500
+	DatumPressure	3e+7
+
+	Temperature	350
+	C10		1.0
+end
+
+%--------------------------------------------------------------------
+begin Sources
+	begin Regular
+		begin Injector
+			H2O	 1.0e+3
+		end
+%		% at T=350 and p=1e+7, H20 is 54'300 and C10 is 4'600
+%		begin Producer
+%		        C10	11.8e+3
+%		end
+	end
+	begin Fixed
+	        begin Producer
+		         Temperature	350
+			 C10		1
+		end
+	end
+end
+
+%--------------------------------------------------------------------
+include ../../ex/pvt/two
+
+%--------------------------------------------------------------------
+begin RockFluid
+	begin Rock
+	end
+end
+

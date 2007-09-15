@@ -1,0 +1,8 @@
+%boundary 1
+begin boundary
+	type no.uib.cipr.rs.numerics.analytical.Function1
+end
+
+begin AnalyticalSolution
+	type no.uib.cipr.rs.numerics.analytical.Function1
+end

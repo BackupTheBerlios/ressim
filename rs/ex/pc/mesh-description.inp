@@ -1,0 +1,87 @@
+begin MeshDescription
+
+	type StructuredMeshDescription
+
+	dimension 3
+
+	begin Geometry
+
+		% Origin
+		X0	0.0 
+		Y0	0.0 
+		Z0	1e-2
+
+		array Nx
+			10
+		end
+
+		array Dx
+			1e-1
+		end
+
+		array Ny
+			1 1
+		end
+
+		array Dy
+			0.5 0.5
+		end
+
+		array Nz
+			1
+		end
+
+		array Dz
+			-1e-1
+		end
+
+		%uniform, layer or domain
+		RegionMappingType uniform
+
+	end
+
+	begin Boxes
+		array pores
+			1 10 2 2 1 1
+		end
+	end
+
+	begin RockRegionMap
+
+		% Names must match RockRegion input data
+		array Matrix
+		   1     % indices must match those produced by RegionMappingType above
+		end
+
+	end
+
+	begin RockRegionBoxed
+
+		begin pores
+			RockRegion Pores
+		end
+
+	end
+
+	begin RockData
+
+		type Global
+
+		array poro
+			0.2
+		end
+
+		array permx
+			1e-12
+		end
+
+		array permy
+			1e-12
+		end
+
+		array permz
+			1e-12
+		end
+
+	end
+end

@@ -1,0 +1,88 @@
+% Testing of the MPFA U-method on a uniform grid
+
+begin CouplingCoefficients
+	type U_MPFA
+end
+
+%--------------------------------------------------------------------
+
+begin RockRegions
+
+	begin Rock
+	end
+
+end
+
+%--------------------------------------------------------------------
+
+begin Mesh
+
+	type StructuredMesh
+
+	dimension 3
+
+	begin domains
+
+		x0	0
+		y0	0
+		z0	0
+
+		array Nx
+			5
+		end
+
+		array Dx
+			0.2
+		end
+
+		array Ny
+			6
+		end
+
+		array Dy
+			0.3
+		end
+
+		array Nz
+			3
+		end
+
+		array Dz
+			-0.5
+		end
+
+		RegionMappingType uniform
+
+	end
+
+	begin RockRegionMap
+
+		array Rock
+		   1
+		end
+
+	end
+
+	begin RockData
+
+		type Global
+
+		array poro
+			1
+        end
+
+		array permx
+			1
+		end
+
+		array permy
+			1
+		end
+
+		array permz
+			1
+		end
+
+	end
+
+end

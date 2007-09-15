@@ -1,0 +1,65 @@
+\chapter{Domain decomposition}
+
+\minitoc
+
+The solution of the linear equations is done in parallel using a
+two-level overlapping domain decomposition method. First, let the grid
+$U$ be split into the non-overlapping subgrids $U^i$. A small amount
+of overlap between the subgrids is added, yielding $\hat U^i$.
+Furthermore, $U^0$ is the coarse mesh with one cell for each subgrid
+$U^i$.
+
+$N_j^i$ is the set of local cellindices in $\hat U^i$ which overlap
+with $U^j$. Hence $N_i^i$ are the local cellindices of $U^i$, and it
+can be abbreviated as $N_i$. A piecewise constant restriction operator
+$R_i$ taking a vector $x^i$ on $\hat U^i$ to cell $i$ in $U^0$ is
+\begin{equation}
+  R_i x^i = \sum_{I\in N_i^i} x_I^i.
+\end{equation}
+Likewise, the prolongation from cell $i$ in $U^0$ to $\hat U^i$ is
+\begin{equation}
+  P_i x^0 = x_i^0.
+\end{equation}
+
+%======================================================================
+
+\csection{System setup}
+
+On subdomain $i$, the local system
+\begin{equation}
+  A^i x^i = b^i
+\end{equation}
+is assembled. From this, row $i$ of the coarse system $A^0 x^0 = b^0$
+is created as follows:
+\begin{eqnarray}
+  A_{ij}^0 & = & R_i A^i P_i = \sum_{I\in N_i^i} \sum_{J\in N_j^i} A_{IJ}^i, \\
+  x_i^0 & = & R_i x^i = \sum_{I\in N_i^i} x_I^i, \\
+  b_i^0 & = & R_i b^i = \sum_{I\in N_i^i} b_I^i.
+\end{eqnarray}
+This corresponds to piecewise constant interpolation. The two-level
+iteration now proceeds:
+\begin{enumerate}
+\item Build the local matrices $A^i$ and vectors $b^i$, for all $i\geq
+  1$.
+\item Assemble the coarse matrix $A^0$ and vector $b^0$.
+\item Initialize $x^i=0,i\geq 0$.
+\item While $\|A^i x_{(k)}^i - b^i\|>\epsilon,\forall i\geq 1$, iterate:
+  \begin{enumerate}
+  \item Solve for $x_{(k+1)}^0$:
+    \begin{equation}
+      A^0 x_{(k+1)}^0 = b^0 - \sum_i R_i A^i x_{(k)}^i.
+    \end{equation}
+  \item Solve in parallel for $x_{(k+1)}^i$:
+    \begin{equation}
+      A^i x_{(k+1)}^i = b^i - A^i P_i x_{(k+1)}^0.
+    \end{equation}
+  \item Exchange information in the halo-region between the
+    subdomains.
+  \item Update $k\leftarrow k+1$.
+  \end{enumerate}
+\end{enumerate}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "td"
+%%% End: 

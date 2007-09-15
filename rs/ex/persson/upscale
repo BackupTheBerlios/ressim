@@ -1,0 +1,16 @@
+begin UpscalingMethod
+        % this method can only be used for quadrilaterals
+        % type LocalVolumeAverage
+	
+        type LocalFlowRateAverage
+	
+	% type PowerAverage
+	%	
+	% % Omega = -1 : harmonic average
+	% % Omega = 1 : arithmetic average
+	%
+	% OmegaX -1     
+	%	
+	% OmegaY 1
+
+end

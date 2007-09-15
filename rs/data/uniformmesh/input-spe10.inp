@@ -1,0 +1,13 @@
+% Input file for testing the geometry
+
+begin RockRegions
+	begin Stone
+	end
+
+	begin Granite
+	end
+
+	begin Mud
+	end
+end
+
