@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/*.html|LICENSE|Makefile|README|no_uib_cipr_matrix_nni_BLAS.c|no_uib_cipr_matrix_nni_LAPACK.c" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jlapack.jar"/>
+	<classpathentry sourcepath="lib/junitsrc.zip" kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

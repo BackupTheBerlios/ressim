@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="Matrix Toolkits for Java">
+
+    <property name="src.dir" location="src" />
+    <property name="lib.dir" location="lib" />
+    <property name="bin.dir" location="bin" />
+    <property name="dist.dir" location="dist" />
+    <property name="doc.dir" location="dist/doc" />
+
+    <path id="project.classpath">
+        <pathelement location="${bin.dir}" />
+        <fileset dir="${lib.dir}">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${bin.dir}" />
+        <mkdir dir="${dist.dir}" />
+        <mkdir dir="${doc.dir}" />
+    </target>
+
+    <target name="clean">
+        <delete dir="${bin.dir}" />
+        <delete dir="${doc.dir}" />
+        <delete dir="${dist.dir}" />
+    </target>
+
+    <target name="build" depends="init">
+        <javac destdir="${bin.dir}" srcdir="${src.dir}" classpathref="project.classpath" debug="on" />
+    </target>
+
+    <target name="test" depends="build">
+        <junit printsummary="on">
+            <classpath refid="project.classpath" />
+            <formatter type="brief" usefile="false" />
+            <test name="no.uib.cipr.matrix.test.AllTests" />
+            <test name="no.uib.cipr.matrix.sparse.test.AllTests" />
+            <test name="no.uib.cipr.matrix.distributed.test.AllTests" />
+        </junit>
+    </target>
+
+    <target name="jar" depends="build">
+        <jar destfile="${dist.dir}/mtj.jar" basedir="${bin.dir}" excludes="no/uib/cipr/matrix/test, no/uib/cipr/matrix/sparse/test,
+              no/uib/cipr/matrix/test/*, no/uib/cipr/matrix/sparse/test/*">
+            <zipgroupfileset dir="${lib.dir}" includes="jlapack.jar" />
+        </jar>
+    </target>
+
+    <target name="source" depends="init">
+        <zip destfile="${dist.dir}/mtjsrc.zip" basedir="${src.dir}" />
+    </target>
+
+    <target name="package" depends="jar,source" />
+
+    <target name="javadoc" depends="init">
+        <javadoc sourcepath="${src.dir}" destdir="${doc.dir}"
+            packagenames="no.uib.cipr.matrix, no.uib.cipr.matrix.sparse,
+            no.uib.cipr.matrix.distributed, no.uib.cipr.matrix.io,
+            no.uib.cipr.matrix.nni"
+            classpathref="project.classpath" windowtitle="${ant.project.name}"
+            doctitle="${ant.project.name}" header="${ant.project.name}"
+            overview="src/no/uib/cipr/matrix/overview.html" source="1.5"
+            link="http://java.sun.com/j2se/1.5.0/docs/api/">
+        </javadoc>
+    </target>
+
+    <target name="all" depends="test,jar,source,javadoc" />
+</project>
