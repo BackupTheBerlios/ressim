@@ -1,4 +1,5 @@
 include Makefile.incl
+CLASSPATH=../jlapack_jni-071118.jar
 
 all: jniblas jnilapack jniarpack
 
@@ -28,13 +29,13 @@ arpack.a:
 	$(CC) $(CPPFLAGS) $(LAPACK_INCLUDES) $(CFLAGS) -c $*.c
 
 org_netlib_blas_NativeBLAS.h:
-	javah -classpath ../bin -jni org.netlib.blas.NativeBLAS
+	javah -classpath ${CLASSPATH} -jni org.netlib.blas.NativeBLAS
 
 org_netlib_lapack_NativeLAPACK.h:
-	javah -classpath ../bin -jni org.netlib.lapack.NativeLAPACK
+	javah -classpath ${CLASSPATH} -jni org.netlib.lapack.NativeLAPACK
 
 org_netlib_arpack_NativeARPACK.h:
-	javah -classpath ../bin -jni org.netlib.arpack.NativeARPACK
+	javah -classpath ${CLASSPATH} -jni org.netlib.arpack.NativeARPACK
 
 clean:
 	rm -f *.o ARPACK/UTIL/*.o ARPACK/SRC/*.o arpack.a org_*.h
