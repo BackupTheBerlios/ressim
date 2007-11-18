@@ -20,8 +20,8 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.LAPACKkernel.JobEig;
-import no.uib.cipr.matrix.LAPACKkernel.JobEigRange;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
 
 /**
  * Computes eigenvalues of symmetrical, tridiagonal matrices
@@ -89,7 +89,7 @@ public class SymmTridiagEVD extends SymmEVD {
      *            eigenvalues
      */
     public SymmTridiagEVD(int n, boolean vectors) {
-        this(n, vectors, Interface.lapack().lamch("Safe minimum"));
+        this(n, vectors, LAPACK.getInstance().dlamch("Safe minimum"));
     }
 
     /**
@@ -113,13 +113,14 @@ public class SymmTridiagEVD extends SymmEVD {
         // Find the needed workspace
         double[] worksize = new double[1];
         int[] iworksize = new int[1];
-        int info = Interface.lapack().stevr(job, range, n, new double[0],
-                new double[0], 0, 0, 0, 0, abstol, new int[1], new double[0],
-                new double[0], isuppz, worksize, -1, iworksize, -1);
+        intW info = new intW(0);
+        LAPACK.getInstance().dstevr(job.netlib(), range.netlib(), n, new double[0],
+                new double[0], 0, 0, 0, 0, abstol, new intW(1), new double[0],
+                new double[0], Matrices.ld(n), isuppz, worksize, -1, iworksize, -1, info);
 
         // Allocate workspace
         int lwork = 0, liwork = 0;
-        if (info != 0) {
+        if (info.val != 0) {
             lwork = 20 * n;
             liwork = 10 * n;
         } else {
@@ -161,15 +162,16 @@ public class SymmTridiagEVD extends SymmEVD {
         if (A.numRows() != n)
             throw new IllegalArgumentException("A.numRows() != n");
 
-        int info = Interface.lapack().stevr(job, range, n, A.getDiagonal(),
-                A.getOffDiagonal(), 0, 0, 0, 0, abstol, new int[1], w,
-                job == JobEig.All ? Z.getData() : new double[0], isuppz, work,
-                work.length, iwork, iwork.length);
+        intW info = new intW(0);
+        LAPACK.getInstance().dstevr(job.netlib(), range.netlib(), n, A.getDiagonal(),
+                A.getOffDiagonal(), 0, 0, 0, 0, abstol, new intW(1), w,
+                job == JobEig.All ? Z.getData() : new double[0], Matrices.ld(n), isuppz, work,
+                work.length, iwork, iwork.length, info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new NotConvergedException(
                     NotConvergedException.Reason.Iterations);
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return this;

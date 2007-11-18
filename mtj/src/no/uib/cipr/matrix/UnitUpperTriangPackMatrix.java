@@ -20,7 +20,6 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.Diag;
 
 /**
  * Unit upper triangular packed matrix. Same storage as

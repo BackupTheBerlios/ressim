@@ -483,7 +483,7 @@ public abstract class AbstractMatrix implements Matrix {
                     + B.numRows() + " != " + C.numColumns() + ")");
     }
 
-    public Matrix solve(Matrix B, Matrix X) {
+    public Matrix solve(Matrix B, Matrix X) {    	
         throw new UnsupportedOperationException();
     }
 

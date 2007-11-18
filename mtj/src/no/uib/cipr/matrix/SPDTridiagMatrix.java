@@ -20,6 +20,9 @@
 
 package no.uib.cipr.matrix;
 
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 /**
  * Symmetrical positive definite tridiagonal matrix. Same as
  * {@link no.uib.cipr.matrix.SymmTridiagMatrix SymmTridiagMatrix}, and is used
@@ -79,12 +82,13 @@ public class SPDTridiagMatrix extends SymmTridiagMatrix {
 
         X.set(B);
 
-        int info = Interface.lapack().ptsv(numRows, X.numColumns(),
-                diag.clone(), offDiag.clone(), Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dptsv(numRows, X.numColumns(),
+                diag.clone(), offDiag.clone(), Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixNotSPDException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

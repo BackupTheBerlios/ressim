@@ -20,7 +20,8 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.LAPACKkernel.JobSVD;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
 
 /**
  * Computes singular value decompositions
@@ -105,13 +106,15 @@ public class SVD {
 
         // Query optimal workspace
         double[] worksize = new double[1];
-        int info = Interface.lapack().gesdd(job, m, n, new double[0],
-                new double[0], new double[0], new double[0], worksize, -1,
-                iwork);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgesdd(job.netlib(), m, n, new double[0],
+                Matrices.ld(m), new double[0], new double[0], Matrices.ld(m),
+                new double[0], Matrices.ld(n), worksize, -1,
+                iwork, info);
 
         // Allocate workspace
         int lwork = -1;
-        if (info != 0) {
+        if (info.val != 0) {
             if (vectors)
                 lwork = 3
                         * Math.min(m, n)
@@ -158,15 +161,16 @@ public class SVD {
         else if (A.numColumns() != n)
             throw new IllegalArgumentException("A.numColumns() != n");
 
-        int info = Interface.lapack().gesdd(job, m, n, A.getData(), S,
-                vectors ? U.getData() : new double[0],
-                vectors ? Vt.getData() : new double[0], work, work.length,
-                iwork);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgesdd(job.netlib(), m, n, A.getData(), Matrices.ld(m), S,
+                vectors ? U.getData() : new double[0], Matrices.ld(m),
+                vectors ? Vt.getData() : new double[0], Matrices.ld(n), work, work.length,
+                iwork, info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new NotConvergedException(
                     NotConvergedException.Reason.Iterations);
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return this;

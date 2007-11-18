@@ -20,6 +20,9 @@
 
 package no.uib.cipr.matrix;
 
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 /**
  * Computes RQ decompositions
  */
@@ -40,15 +43,16 @@ public class RQ extends OrthogonalComputer {
         if (n < m)
             throw new IllegalArgumentException("n < m");
 
-        int info, lwork;
+        int lwork;
 
         // Query optimal workspace. First for computing the factorization
         {
             work = new double[1];
-            info = Interface.lapack().gerqf(m, n, new double[0], new double[0],
-                    work, -1);
+            intW info = new intW(0);
+            LAPACK.getInstance().dgerqf(m, n, new double[0], Matrices.ld(m), new double[0],
+                    work, -1, info);
 
-            if (info != 0)
+            if (info.val != 0)
                 lwork = m;
             else
                 lwork = (int) work[0];
@@ -59,10 +63,11 @@ public class RQ extends OrthogonalComputer {
         // Workspace needed for generating an explicit orthogonal matrix
         {
             workGen = new double[1];
-            info = Interface.lapack().orgrq(m, n, m, new double[0],
-                    new double[0], workGen, -1);
+            intW info = new intW(0);
+            LAPACK.getInstance().dorgrq(m, n, m, new double[0],Matrices.ld(m),
+                    new double[0], workGen, -1, info);
 
-            if (info != 0)
+            if (info.val != 0)
                 lwork = m;
             else
                 lwork = (int) workGen[0];
@@ -94,16 +99,14 @@ public class RQ extends OrthogonalComputer {
         else if (R == null)
             throw new IllegalArgumentException("R == null");
 
-        int info;
-
         /*
          * Calculate factorisation, and extract the triangular factor
          */
+        intW info = new intW(0);
+        LAPACK.getInstance().dgerqf(m, n, A.getData(), Matrices.ld(m), tau, work,
+                work.length, info);
 
-        info = Interface.lapack().gerqf(m, n, A.getData(), tau, work,
-                work.length);
-
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
         R.zero();
@@ -114,11 +117,11 @@ public class RQ extends OrthogonalComputer {
         /*
          * Generate the orthogonal matrix
          */
+        info.val = 0;
+        LAPACK.getInstance().dorgrq(m, n, k, A.getData(), Matrices.ld(m), tau, workGen,
+                workGen.length, info);
 
-        info = Interface.lapack().orgrq(m, n, k, A.getData(), tau, workGen,
-                workGen.length);
-
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
         Q.set(A);

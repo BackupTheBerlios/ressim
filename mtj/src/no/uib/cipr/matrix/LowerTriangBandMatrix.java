@@ -20,8 +20,6 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.Diag;
-import no.uib.cipr.matrix.BLASkernel.UpLo;
 
 /**
  * Lower triangular banded matrix. The same storage as

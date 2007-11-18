@@ -20,6 +20,9 @@
 
 package no.uib.cipr.matrix;
 
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 /**
  * Computes LQ decompositions
  */
@@ -40,15 +43,16 @@ public class LQ extends OrthogonalComputer {
         if (n < m)
             throw new IllegalArgumentException("n < m");
 
-        int info, lwork;
+        int lwork;
 
         // Query optimal workspace. First for computing the factorization
         {
             work = new double[1];
-            info = Interface.lapack().gelqf(m, n, new double[0], new double[0],
-                    work, -1);
+            intW info = new intW(0);
+            LAPACK.getInstance().dgelqf(m, n, new double[0], Matrices.ld(m), new double[0],
+                    work, -1, info);
 
-            if (info != 0)
+            if (info.val != 0)
                 lwork = m;
             else
                 lwork = (int) work[0];
@@ -59,10 +63,11 @@ public class LQ extends OrthogonalComputer {
         // Workspace needed for generating an explicit orthogonal matrix
         {
             workGen = new double[1];
-            info = Interface.lapack().orglq(m, n, m, new double[0],
-                    new double[0], workGen, -1);
+            intW info = new intW(0);
+            LAPACK.getInstance().dorglq(m, n, m, new double[0],
+            	Matrices.ld(m), new double[0], workGen, -1, info);
 
-            if (info != 0)
+            if (info.val != 0)
                 lwork = m;
             else
                 lwork = (int) workGen[0];
@@ -94,16 +99,14 @@ public class LQ extends OrthogonalComputer {
         else if (L == null)
             throw new IllegalArgumentException("L == null");
 
-        int info;
-
         /*
          * Calculate factorisation, and extract the triangular factor
          */
+        intW info = new intW(0);
+        LAPACK.getInstance().dgelqf(m, n, A.getData(), Matrices.ld(m), tau, work,
+                work.length, info);
 
-        info = Interface.lapack().gelqf(m, n, A.getData(), tau, work,
-                work.length);
-
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
         L.zero();
@@ -114,11 +117,11 @@ public class LQ extends OrthogonalComputer {
         /*
          * Generate the orthogonal matrix
          */
+        info.val = 0;
+        LAPACK.getInstance().dorglq(m, n, k, A.getData(), Matrices.ld(m), tau, workGen,
+                workGen.length, info);
 
-        info = Interface.lapack().orglq(m, n, k, A.getData(), tau, workGen,
-                workGen.length);
-
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
         Q.set(A);

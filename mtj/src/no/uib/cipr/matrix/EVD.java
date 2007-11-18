@@ -20,7 +20,8 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.LAPACKkernel.JobEig;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
 
 /**
  * Computes eigenvalue decompositions of general matrices
@@ -94,13 +95,14 @@ public class EVD {
 
         // Find the needed workspace
         double[] worksize = new double[1];
-        int info = Interface.lapack().geev(jobLeft, jobRight, n, new double[0],
-                new double[0], new double[0], new double[0], new double[0],
-                worksize, -1);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgeev(jobLeft.netlib(), jobRight.netlib(), n, new double[0],
+                Matrices.ld(n), new double[0], new double[0], new double[0], Matrices.ld(n),
+                new double[0], Matrices.ld(n), worksize, -1, info);
 
         // Allocate workspace
         int lwork = 0;
-        if (info != 0) {
+        if (info.val != 0) {
             if (jobLeft == JobEig.All || jobRight == JobEig.All)
                 lwork = 4 * n;
             else
@@ -139,15 +141,16 @@ public class EVD {
         else if (A.numRows() != n)
             throw new IllegalArgumentException("A.numRows() != n");
 
-        int info = Interface.lapack().geev(jobLeft, jobRight, n, A.getData(),
-                Wr, Wi, jobLeft == JobEig.All ? Vl.getData() : new double[0],
-                jobRight == JobEig.All ? Vr.getData() : new double[0], work,
-                work.length);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgeev(jobLeft.netlib(), jobRight.netlib(), n, A.getData(),
+                Matrices.ld(n), Wr, Wi, jobLeft == JobEig.All ? Vl.getData() : new double[0],
+                Matrices.ld(n), jobRight == JobEig.All ? Vr.getData() : new double[0], Matrices.ld(n),
+                work, work.length, info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new NotConvergedException(
                     NotConvergedException.Reason.Iterations);
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return this;

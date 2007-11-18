@@ -20,9 +20,9 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.Side;
-import no.uib.cipr.matrix.BLASkernel.Transpose;
-import no.uib.cipr.matrix.BLASkernel.UpLo;
+import org.netlib.blas.BLAS;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
 
 /**
  * Partial implementation of a symmetrical, dense matrix
@@ -70,7 +70,7 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
         double[] Bd = ((DenseMatrix) B).getData(), Cd = ((DenseMatrix) C)
                 .getData();
 
-        Interface.blas().symm(Side.Left, uplo, C.numRows(), C.numColumns(),
+        BLAS.getInstance().dsymm(Side.Left.netlib(), uplo.netlib(), C.numRows(), C.numColumns(),
                 alpha, data, Math.max(1, C.numRows()), Bd,
                 Math.max(1, C.numRows()), 1, Cd, Math.max(1, C.numRows()));
 
@@ -93,7 +93,7 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
 
         double[] xd = ((DenseVector) x).getData();
 
-        Interface.blas().syr(uplo, numRows, alpha, xd, data,
+        BLAS.getInstance().dsyr(uplo.netlib(), numRows, alpha, xd, 1, data,
                 Math.max(1, numRows));
 
         return this;
@@ -109,7 +109,7 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas().syr2(uplo, numRows, alpha, xd, yd, data,
+        BLAS.getInstance().dsyr2(uplo.netlib(), numRows, alpha, xd, 1, yd, 1, data,
                 Math.max(1, numRows));
 
         return this;
@@ -125,8 +125,8 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas().symv(uplo, numRows, alpha, data, Math.max(1, numRows),
-                xd, 1, yd);
+        BLAS.getInstance().dsymv(uplo.netlib(), numRows, alpha, data, Math.max(1, numRows),
+                xd, 1, 1, yd, 1);
 
         return y;
     }
@@ -145,7 +145,7 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
 
         double[] Cd = ((DenseMatrix) C).getData();
 
-        Interface.blas().syrk(uplo, Transpose.NoTranspose, numRows,
+        BLAS.getInstance().dsyrk(uplo.netlib(), Transpose.NoTranspose.netlib(), numRows,
                 C.numColumns(), alpha, Cd, Math.max(1, numRows), 1, data,
                 Math.max(1, numRows));
 
@@ -161,7 +161,7 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
 
         double[] Cd = ((DenseMatrix) C).getData();
 
-        Interface.blas().syrk(uplo, Transpose.Transpose, numRows, numRows,
+        BLAS.getInstance().dsyrk(uplo.netlib(), Transpose.Transpose.netlib(), numRows, numRows,
                 alpha, Cd, Math.max(1, numRows), 1, data, Math.max(1, numRows));
 
         return this;
@@ -177,7 +177,7 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
         double[] Bd = ((DenseMatrix) B).getData(), Cd = ((DenseMatrix) C)
                 .getData();
 
-        Interface.blas().syr2k(uplo, Transpose.NoTranspose, numRows,
+        BLAS.getInstance().dsyr2k(uplo.netlib(), Transpose.NoTranspose.netlib(), numRows,
                 B.numColumns(), alpha, Bd, Math.max(1, numRows), Cd,
                 Math.max(1, numRows), 1, data, Math.max(1, numRows));
 
@@ -194,7 +194,7 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
         double[] Bd = ((DenseMatrix) B).getData(), Cd = ((DenseMatrix) C)
                 .getData();
 
-        Interface.blas().syr2k(uplo, Transpose.Transpose, numRows, B.numRows(),
+        BLAS.getInstance().dsyr2k(uplo.netlib(), Transpose.Transpose.netlib(), numRows, B.numRows(),
                 alpha, Bd, Math.max(1, B.numRows()), Cd,
                 Math.max(1, B.numRows()), 1, data, Math.max(1, numRows));
 
@@ -218,24 +218,27 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
 
         // Query optimal workspace
         double[] work = new double[1];
-        int info = Interface.lapack().sysv(uplo, numRows, X.numColumns(),
-                newData, ipiv, Xd, work, -1);
+        intW info = new intW(0);
+        LAPACK.getInstance().dsysv(uplo.netlib(), numRows, X.numColumns(),
+                newData, Matrices.ld(numRows), ipiv, Xd, Matrices.ld(numRows),
+                work, -1, info);
 
         // Allocate workspace
         int lwork = -1;
-        if (info != 0)
+        if (info.val != 0)
             lwork = 1;
         else
             lwork = Math.max((int) work[0], 1);
         work = new double[lwork];
 
         // Solve
-        info = Interface.lapack().sysv(uplo, numRows, X.numColumns(), newData,
-                ipiv, Xd, work, lwork);
+        info.val = 0;
+        LAPACK.getInstance().dsysv(uplo.netlib(), numRows, X.numColumns(), newData,
+                Matrices.ld(numRows), ipiv, Xd, Matrices.ld(numRows), work, lwork, info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;
@@ -268,12 +271,13 @@ abstract class AbstractSymmDenseMatrix extends AbstractDenseMatrix {
 
         X.set(B);
 
-        int info = Interface.lapack().posv(uplo, numRows, X.numColumns(),
-                data.clone(), Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dposv(uplo.netlib(), numRows, X.numColumns(),
+                data.clone(), Matrices.ld(numRows), Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixNotSPDException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

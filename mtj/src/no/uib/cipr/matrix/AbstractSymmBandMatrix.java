@@ -22,7 +22,10 @@ package no.uib.cipr.matrix;
 
 import java.util.Iterator;
 
-import no.uib.cipr.matrix.BLASkernel.UpLo;
+import org.netlib.blas.BLAS;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 
 /**
  * Partial implementation of a symmetrical, banded matrix
@@ -74,8 +77,7 @@ abstract class AbstractSymmBandMatrix extends AbstractBandMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas()
-                .sbmv(uplo, numRows, kd, alpha, data, kd + 1, xd, 1, yd);
+        BLAS.getInstance().dsbmv(uplo.netlib(), numRows, kd, alpha, data, kd + 1, xd, 1, 1, yd, 1);
 
         return y;
     }
@@ -106,12 +108,14 @@ abstract class AbstractSymmBandMatrix extends AbstractBandMatrix {
         BandMatrix Af = new BandMatrix(this, kd, kd + kd);
         int[] ipiv = new int[numRows];
 
-        int info = Interface.lapack().gbsv(numRows, kd, kd, X.numColumns(),
-                Af.getData(), ipiv, Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgbsv(numRows, kd, kd, X.numColumns(),
+                Af.getData(), Matrices.ld(2 * kl + ku + 1), ipiv, Xd,
+                Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;
@@ -144,12 +148,13 @@ abstract class AbstractSymmBandMatrix extends AbstractBandMatrix {
 
         X.set(B);
 
-        int info = Interface.lapack().pbsv(uplo, numRows, kd, X.numColumns(),
-                data.clone(), Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dpbsv(uplo.netlib(), numRows, kd, X.numColumns(),
+                data.clone(), Matrices.ld(kd + 1), Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixNotSPDException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

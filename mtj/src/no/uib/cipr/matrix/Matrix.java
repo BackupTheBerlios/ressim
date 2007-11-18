@@ -733,7 +733,23 @@ public interface Matrix extends Iterable<MatrixEntry> {
         /**
          * Largest entry in absolute value. Not a proper matrix norm
          */
-        Maxvalue
+        Maxvalue;
+
+		/**
+		 * @param norm
+		 * @return the String as required by the netlib libraries to represent this norm.
+		 */
+		public String netlib() {
+			// TODO: this is a bit of a hack
+			// shouldn't need to know about the internals of netlib
+		    if (this == One)
+		        return "1";
+		    else if (this == Infinity)
+		        return "I";
+		    else
+		        throw new IllegalArgumentException(
+		                "Norm must be the 1 or the Infinity norm");
+		}
 
     }
 

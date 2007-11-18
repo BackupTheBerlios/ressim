@@ -20,8 +20,11 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.UpLo;
 import no.uib.cipr.matrix.Matrix.Norm;
+
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.doubleW;
+import org.netlib.util.intW;
 
 /**
  * Banded Cholesky decomposition
@@ -142,15 +145,17 @@ public class BandCholesky {
 
         notspd = false;
 
-        int info = 0;
+        intW info = new intW(0);
         if (upper)
-            info = Interface.lapack().pbtrf(UpLo.Upper, n, kd, A.getData());
+            LAPACK.getInstance().dpbtrf(UpLo.Upper.netlib(), n, kd, A.getData(),
+            	Matrices.ld(kd + 1), info);
         else
-            info = Interface.lapack().pbtrf(UpLo.Lower, n, kd, A.getData());
+            LAPACK.getInstance().dpbtrf(UpLo.Lower.netlib(), n, kd, A.getData(),
+            	Matrices.ld(kd + 1), info);
 
-        if (info > 0)
+        if (info.val > 0)
             notspd = true;
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         if (upper)
@@ -209,19 +214,19 @@ public class BandCholesky {
         double[] work = new double[3 * n];
         int[] lwork = new int[n];
 
-        double[] rcond = new double[1];
-        int info = 0;
+        intW info = new intW(0);
+        doubleW rcond = new doubleW(0);
         if (upper)
-            info = Interface.lapack().pbcon(UpLo.Upper, n, kd, Cu.getData(),
-                    anorm, rcond, work, lwork);
+            LAPACK.getInstance().dpbcon(UpLo.Upper.netlib(), n, kd, Cu.getData(),
+            	Matrices.ld(kd + 1), anorm, rcond, work, lwork, info);
         else
-            info = Interface.lapack().pbcon(UpLo.Lower, n, kd, Cl.getData(),
-                    anorm, rcond, work, lwork);
+            LAPACK.getInstance().dpbcon(UpLo.Lower.netlib(), n, kd, Cl.getData(),
+            	Matrices.ld(kd + 1), anorm, rcond, work, lwork, info);
 
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
-        return rcond[0];
+        return rcond.val;
     }
 
     /**
@@ -233,15 +238,15 @@ public class BandCholesky {
         if (B.numRows() != n)
             throw new IllegalArgumentException("B.numRows() != n");
 
-        int info = 0;
+        intW info = new intW(0);
         if (upper)
-            info = Interface.lapack().pbtrs(UpLo.Upper, n, kd, B.numColumns(),
-                    Cu.getData(), B.getData());
+            LAPACK.getInstance().dpbtrs(UpLo.Upper.netlib(), n, kd, B.numColumns(),
+                    Cu.getData(), Matrices.ld(kd + 1), B.getData(), Matrices.ld(n), info);
         else
-            info = Interface.lapack().pbtrs(UpLo.Lower, n, kd, B.numColumns(),
-                    Cl.getData(), B.getData());
+            LAPACK.getInstance().dpbtrs(UpLo.Lower.netlib(), n, kd, B.numColumns(),
+                    Cl.getData(), Matrices.ld(kd + 1), B.getData(), Matrices.ld(n), info);
 
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
         return B;

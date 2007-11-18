@@ -20,8 +20,11 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.Transpose;
 import no.uib.cipr.matrix.Matrix.Norm;
+
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.doubleW;
+import org.netlib.util.intW;
 
 /**
  * Banded LU decomposition
@@ -121,11 +124,12 @@ public class BandLU {
 
         singular = false;
 
-        int info = Interface.lapack().gbtrf(n, n, kl, ku, A.getData(), ipiv);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgbtrf(n, n, kl, ku, A.getData(), 2 * kl + ku + 1, ipiv, info);
 
-        if (info > 0)
+        if (info.val > 0)
             singular = true;
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         LU.set(A);
@@ -193,14 +197,15 @@ public class BandLU {
         double[] work = new double[3 * n];
         int[] lwork = new int[n];
 
-        double[] rcond = new double[1];
-        int info = Interface.lapack().gbcon(norm, n, kl, ku, LU.getData(),
-                ipiv, anorm, rcond, work, lwork);
+        intW info = new intW(0);
+        doubleW rcond = new doubleW(0);
+        LAPACK.getInstance().dgbcon(norm.netlib(), n, kl, ku, LU.getData(),
+        	 Matrices.ld(2 * kl + ku + 1), ipiv, anorm, rcond, work, lwork, info);
 
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
-        return rcond[0];
+        return rcond.val;
     }
 
     /**
@@ -224,10 +229,11 @@ public class BandLU {
         if (B.numRows() != n)
             throw new IllegalArgumentException("B.numRows() != n");
 
-        int info = Interface.lapack().gbtrs(trans, n, kl, ku, B.numColumns(),
-                LU.getData(), ipiv, B.getData());
+        intW info = new intW(0);
+        LAPACK.getInstance().dgbtrs(trans.netlib(), n, kl, ku, B.numColumns(),
+                LU.getData(), 2 * kl + ku + 1, ipiv, B.getData(), Matrices.ld(n), info);
 
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
         return B;

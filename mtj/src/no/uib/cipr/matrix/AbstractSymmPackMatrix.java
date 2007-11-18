@@ -20,7 +20,9 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.UpLo;
+import org.netlib.blas.BLAS;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
 
 /**
  * Partial implementation of a symmetrical, packed matrix
@@ -65,7 +67,7 @@ abstract class AbstractSymmPackMatrix extends AbstractPackMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas().spmv(uplo, numRows, alpha, data, xd, 1, yd);
+        BLAS.getInstance().dspmv(uplo.netlib(), numRows, alpha, data, xd, 1, 1, yd, 1);
 
         return y;
     }
@@ -86,7 +88,7 @@ abstract class AbstractSymmPackMatrix extends AbstractPackMatrix {
 
         double[] xd = ((DenseVector) x).getData();
 
-        Interface.blas().spr(uplo, numRows, alpha, xd, data);
+        BLAS.getInstance().dspr(uplo.netlib(), numRows, alpha, xd, 1, data);
 
         return this;
     }
@@ -101,7 +103,7 @@ abstract class AbstractSymmPackMatrix extends AbstractPackMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas().spr2(uplo, numRows, alpha, xd, yd, data);
+        BLAS.getInstance().dspr2(uplo.netlib(), numRows, alpha, xd, 1, yd, 1, data);
 
         return this;
     }
@@ -119,12 +121,13 @@ abstract class AbstractSymmPackMatrix extends AbstractPackMatrix {
 
         int[] ipiv = new int[numRows];
 
-        int info = Interface.lapack().spsv(uplo, numRows, X.numColumns(),
-                data.clone(), ipiv, Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dspsv(uplo.netlib(), numRows, X.numColumns(),
+                data.clone(), ipiv, Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;
@@ -157,12 +160,13 @@ abstract class AbstractSymmPackMatrix extends AbstractPackMatrix {
 
         X.set(B);
 
-        int info = Interface.lapack().ppsv(uplo, numRows, X.numColumns(),
-                data.clone(), Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dppsv(uplo.netlib(), numRows, X.numColumns(),
+                data.clone(), Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixNotSPDException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

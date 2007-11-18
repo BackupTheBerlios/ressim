@@ -21,6 +21,7 @@
 package no.uib.cipr.matrix;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 
 import no.uib.cipr.matrix.io.MatrixVectorReader;
@@ -32,12 +33,15 @@ import no.uib.cipr.matrix.io.VectorInfo.VectorField;
  * Dense vector. Stored by a <code>double[]</code> array of the same length as
  * the vector itself.
  */
-public class DenseVector extends AbstractVector {
+public class DenseVector extends AbstractVector implements Serializable {
 
-    /**
+    /** just the private data */
+	private static final long serialVersionUID = 5358813524094629362L;
+	
+	/**
      * Vector data
      */
-    private double[] data;
+    private final double[] data;
 
     /**
      * Constructor for DenseVector

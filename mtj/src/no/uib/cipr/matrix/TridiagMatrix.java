@@ -23,6 +23,9 @@ package no.uib.cipr.matrix;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 /**
  * Tridiagonal matrix. Stored in three arrays, one of length <code>n</code>
  * for the diagonal, two of length <code>n-1</code> for the superdiagonal and
@@ -190,12 +193,13 @@ public class TridiagMatrix extends AbstractMatrix {
 
         X.set(B);
 
-        int info = Interface.lapack().gtsv(numRows, X.numColumns(),
-                subDiag.clone(), diag.clone(), superDiag.clone(), Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgtsv(numRows, X.numColumns(),
+                subDiag.clone(), diag.clone(), superDiag.clone(), Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

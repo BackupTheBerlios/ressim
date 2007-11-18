@@ -22,7 +22,10 @@ package no.uib.cipr.matrix;
 
 import java.util.Arrays;
 
-import no.uib.cipr.matrix.BLASkernel.Transpose;
+import org.netlib.blas.BLAS;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 
 /**
  * Banded matrix. The banded matrix is a useful sparse structure for many kinds
@@ -79,7 +82,7 @@ import no.uib.cipr.matrix.BLASkernel.Transpose;
  * <td>a<sub>11</sub></td>
  * <td>a<sub>21</sub></td>
  * <td>a<sub>31</sub></td>
- * <td>a<sub>12</sub></td>
+ * <td>a<sub>21</sub></td>
  * <td>a<sub>22</sub></td>
  * <td>a<sub>32</sub></td>
  * <td>a<sub>42</sub></td>
@@ -175,8 +178,8 @@ public class BandMatrix extends AbstractBandMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas().gbmv(Transpose.NoTranspose, numRows, numColumns, kl,
-                ku, alpha, data, kl + ku + 1, xd, 1, yd);
+        BLAS.getInstance().dgbmv(Transpose.NoTranspose.netlib(), numRows, numColumns, kl,
+                ku, alpha, data, kl + ku + 1, xd, 1, 1, yd, 1);
 
         return y;
     }
@@ -191,8 +194,8 @@ public class BandMatrix extends AbstractBandMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas().gbmv(Transpose.Transpose, numRows, numColumns, kl, ku,
-                alpha, data, kl + ku + 1, xd, 1, yd);
+        BLAS.getInstance().dgbmv(Transpose.Transpose.netlib(), numRows, numColumns, kl, ku,
+                alpha, data, kl + ku + 1, xd, 1, 1, yd, 1);
 
         return y;
     }
@@ -213,12 +216,13 @@ public class BandMatrix extends AbstractBandMatrix {
         BandMatrix Af = new BandMatrix(this, kl, ku + kl);
         int[] ipiv = new int[numRows];
 
-        int info = Interface.lapack().gbsv(numRows, kl, ku, X.numColumns(),
-                Af.getData(), ipiv, Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgbsv(numRows, kl, ku, X.numColumns(),
+                Af.getData(), Matrices.ld(2 * kl + ku + 1), ipiv, Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

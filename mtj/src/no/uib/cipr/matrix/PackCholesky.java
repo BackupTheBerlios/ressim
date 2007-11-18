@@ -20,8 +20,11 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.UpLo;
 import no.uib.cipr.matrix.Matrix.Norm;
+
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.doubleW;
+import org.netlib.util.intW;
 
 /**
  * Packed Cholesky decomposition
@@ -120,17 +123,17 @@ public class PackCholesky {
 
         notspd = false;
 
-        int info = 0;
+        intW info = new intW(0);
         if (upper)
-            info = Interface.lapack().pptrf(UpLo.Upper, A.numRows(),
-                    A.getData());
+            LAPACK.getInstance().dpptrf(UpLo.Upper.netlib(), A.numRows(),
+                    A.getData(), info);
         else
-            info = Interface.lapack().pptrf(UpLo.Lower, A.numRows(),
-                    A.getData());
+            LAPACK.getInstance().dpptrf(UpLo.Lower.netlib(), A.numRows(),
+                    A.getData(), info);
 
-        if (info > 0)
+        if (info.val > 0)
             notspd = true;
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         if (upper)
@@ -179,15 +182,15 @@ public class PackCholesky {
         if (B.numRows() != n)
             throw new IllegalArgumentException("B.numRows() != n");
 
-        int info = 0;
+        intW info = new intW(0);
         if (upper)
-            info = Interface.lapack().pptrs(UpLo.Upper, Cu.numRows(),
-                    B.numColumns(), Cu.getData(), B.getData());
+            LAPACK.getInstance().dpptrs(UpLo.Upper.netlib(), Cu.numRows(),
+                    B.numColumns(), Cu.getData(), B.getData(), Matrices.ld(Cu.numRows()), info);
         else
-            info = Interface.lapack().pptrs(UpLo.Lower, Cl.numRows(),
-                    B.numColumns(), Cl.getData(), B.getData());
+            LAPACK.getInstance().dpptrs(UpLo.Lower.netlib(), Cl.numRows(),
+                    B.numColumns(), Cl.getData(), B.getData(), Matrices.ld(Cu.numRows()), info);
 
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
         return B;
@@ -212,19 +215,19 @@ public class PackCholesky {
         double[] work = new double[3 * n];
         int[] iwork = new int[n];
 
-        double[] rcond = new double[1];
-        int info = 0;
+        intW info = new intW(0);
+        doubleW rcond = new doubleW(0);
         if (upper)
-            info = Interface.lapack().ppcon(UpLo.Upper, n, Cu.getData(), anorm,
-                    rcond, work, iwork);
+            LAPACK.getInstance().dppcon(UpLo.Upper.netlib(), n, Cu.getData(), anorm,
+                    rcond, work, iwork, info);
         else
-            info = Interface.lapack().ppcon(UpLo.Lower, n, Cl.getData(), anorm,
-                    rcond, work, iwork);
+            LAPACK.getInstance().dppcon(UpLo.Lower.netlib(), n, Cl.getData(), anorm,
+                    rcond, work, iwork, info);
 
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
-        return rcond[0];
+        return rcond.val;
     }
 
 }

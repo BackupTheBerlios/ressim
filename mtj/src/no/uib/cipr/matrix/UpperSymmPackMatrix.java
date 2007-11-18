@@ -20,7 +20,6 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.UpLo;
 
 /**
  * Upper symmetric packed matrix. Same storage as

@@ -22,9 +22,10 @@ package no.uib.cipr.matrix;
 
 import java.util.Iterator;
 
-import no.uib.cipr.matrix.BLASkernel.Diag;
-import no.uib.cipr.matrix.BLASkernel.Transpose;
-import no.uib.cipr.matrix.BLASkernel.UpLo;
+import org.netlib.blas.BLAS;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 
 /**
  * Partial implementation of a triangular, packed matrix
@@ -79,8 +80,8 @@ abstract class AbstractTriangPackMatrix extends AbstractPackMatrix {
         y.set(alpha, x);
 
         // y = A*z
-        Interface.blas().tpmv(uplo, Transpose.NoTranspose, diag, numRows, data,
-                yd);
+        BLAS.getInstance().dtpmv(uplo.netlib(), Transpose.NoTranspose.netlib(), diag.netlib(),
+        	numRows, data, yd, 1);
 
         return y;
     }
@@ -98,8 +99,8 @@ abstract class AbstractTriangPackMatrix extends AbstractPackMatrix {
         y.set(alpha, x);
 
         // y = A*z
-        Interface.blas().tpmv(uplo, Transpose.Transpose, diag, numRows, data,
-                yd);
+        BLAS.getInstance().dtpmv(uplo.netlib(), Transpose.Transpose.netlib(), diag.netlib(),
+        	numRows, data, yd, 1);
 
         return y;
     }
@@ -138,12 +139,13 @@ abstract class AbstractTriangPackMatrix extends AbstractPackMatrix {
 
         X.set(B);
 
-        int info = Interface.lapack().tptrs(uplo, trans, diag, numRows,
-                X.numColumns(), data, Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dtptrs(uplo.netlib(), trans.netlib(), diag.netlib(), numRows,
+                X.numColumns(), data, Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

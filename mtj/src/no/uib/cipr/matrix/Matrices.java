@@ -31,6 +31,26 @@ public final class Matrices {
         // No need to instantiate
     }
 
+	/**
+	 * <code>max(1, M)</code> provided as a convenience for 'leading dimension' calculations.
+	 * 
+	 * @param n
+	 */
+	static int ld(int n) {
+		return Math.max(1, n);
+	}
+
+	/**
+	 * <code>max(1, max(M, N))</code> provided as a convenience for 'leading dimension'
+	 * calculations.
+	 * 
+	 * @param m
+	 * @param n
+	 */
+	static int ld(int m, int n) {
+		return Math.max(1, Math.max(m, n));
+	}
+    
     /**
      * Returns the number of non-zero entries in the given vector
      */

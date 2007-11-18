@@ -23,6 +23,9 @@ package no.uib.cipr.matrix;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 /**
  * Symmetrical tridiagonal matrix. Storage as for
  * {@link no.uib.cipr.matrix.TridiagMatrix TridiagMatrix}, but only one
@@ -217,13 +220,13 @@ public class SymmTridiagMatrix extends AbstractMatrix {
         double[] Xd = ((DenseMatrix) X).getData();
 
         X.set(B);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgtsv(numRows, X.numColumns(),
+                offDiag.clone(), diag.clone(), offDiag.clone(), Xd, Matrices.ld(numRows), info);
 
-        int info = Interface.lapack().gtsv(numRows, X.numColumns(),
-                offDiag.clone(), diag.clone(), offDiag.clone(), Xd);
-
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

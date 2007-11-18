@@ -20,7 +20,6 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.LAPACKkernel.JobEig;
 
 /**
  * Symmetric eigenvalue decomposition

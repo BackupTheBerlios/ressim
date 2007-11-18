@@ -20,11 +20,16 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.Transpose;
 import no.uib.cipr.matrix.Matrix.Norm;
+
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.doubleW;
+import org.netlib.util.intW;
 
 /**
  * Dense LU decomposition
+ * 
+ * FIXME: DenseLU is broken! Fix it
  */
 public class DenseLU {
 
@@ -78,12 +83,13 @@ public class DenseLU {
     public DenseLU factor(DenseMatrix A) {
         singular = false;
 
-        int info = Interface.lapack().getrf(A.numRows(), A.numColumns(),
-                A.getData(), piv);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgetrf(A.numRows(), A.numColumns(),
+                A.getData(), Matrices.ld(A.numRows()), piv, info);
 
-        if (info > 0)
+        if (info.val > 0)
             singular = true;
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         LU.set(A);
@@ -132,14 +138,15 @@ public class DenseLU {
 
         int n = A.numRows();
 
-        double[] rcond = new double[1];
-        int info = Interface.lapack().gecon(norm, n, LU.getData(), anorm,
-                rcond, new double[4 * n], new int[n]);
+        intW info = new intW(0);
+        doubleW rcond = new doubleW(0);
+        LAPACK.getInstance().dgecon(norm.netlib(), n, LU.getData(), Matrices.ld(n), anorm,
+                rcond, new double[4 * n], new int[n], info);
 
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
-        return rcond[0];
+        return rcond.val;
     }
 
     /**
@@ -177,10 +184,12 @@ public class DenseLU {
         if (B.numRows() != LU.numRows())
             throw new IllegalArgumentException("B.numRows() != LU.numRows()");
 
-        int info = Interface.lapack().getrs(trans, LU.numRows(),
-                B.numColumns(), LU.getData(), piv, B.getData());
+        intW info = new intW(0);
+        LAPACK.getInstance().dgetrs(trans.netlib(), LU.numRows(),
+                B.numColumns(), LU.getData(), Matrices.ld(LU.numRows()),
+                piv, B.getData(), Matrices.ld(LU.numRows()), info);
 
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
         return B;

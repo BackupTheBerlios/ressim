@@ -22,10 +22,13 @@ package no.uib.cipr.matrix;
 
 import java.io.IOException;
 
-import no.uib.cipr.matrix.BLASkernel.Transpose;
 import no.uib.cipr.matrix.io.MatrixInfo;
 import no.uib.cipr.matrix.io.MatrixSize;
 import no.uib.cipr.matrix.io.MatrixVectorReader;
+
+import org.netlib.blas.BLAS;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
 
 /**
  * Dense matrix. It is a good all-round matrix structure, with fast access and
@@ -284,7 +287,7 @@ public class DenseMatrix extends AbstractDenseMatrix {
         double[] Bd = ((DenseMatrix) B).getData(), Cd = ((DenseMatrix) C)
                 .getData();
 
-        Interface.blas().gemm(Transpose.NoTranspose, Transpose.NoTranspose,
+        BLAS.getInstance().dgemm(Transpose.NoTranspose.netlib(), Transpose.NoTranspose.netlib(),
                 C.numRows(), C.numColumns(), numColumns, alpha, data,
                 Math.max(1, numRows), Bd, Math.max(1, B.numRows()), 1, Cd,
                 Math.max(1, C.numRows()));
@@ -302,7 +305,7 @@ public class DenseMatrix extends AbstractDenseMatrix {
         double[] Bd = ((DenseMatrix) B).getData(), Cd = ((DenseMatrix) C)
                 .getData();
 
-        Interface.blas().gemm(Transpose.Transpose, Transpose.NoTranspose,
+        BLAS.getInstance().dgemm(Transpose.Transpose.netlib(), Transpose.NoTranspose.netlib(),
                 C.numRows(), C.numColumns(), numRows, alpha, data,
                 Math.max(1, numRows), Bd, Math.max(1, B.numRows()), 1, Cd,
                 Math.max(1, C.numRows()));
@@ -320,7 +323,7 @@ public class DenseMatrix extends AbstractDenseMatrix {
         double[] Bd = ((DenseMatrix) B).getData(), Cd = ((DenseMatrix) C)
                 .getData();
 
-        Interface.blas().gemm(Transpose.NoTranspose, Transpose.Transpose,
+        BLAS.getInstance().dgemm(Transpose.NoTranspose.netlib(), Transpose.Transpose.netlib(),
                 C.numRows(), C.numColumns(), numColumns, alpha, data,
                 Math.max(1, numRows), Bd, Math.max(1, B.numRows()), 1, Cd,
                 Math.max(1, C.numRows()));
@@ -338,7 +341,7 @@ public class DenseMatrix extends AbstractDenseMatrix {
         double[] Bd = ((DenseMatrix) B).getData(), Cd = ((DenseMatrix) C)
                 .getData();
 
-        Interface.blas().gemm(Transpose.Transpose, Transpose.Transpose,
+        BLAS.getInstance().dgemm(Transpose.Transpose.netlib(), Transpose.Transpose.netlib(),
                 C.numRows(), C.numColumns(), numRows, alpha, data,
                 Math.max(1, numRows), Bd, Math.max(1, B.numRows()), 1, Cd,
                 Math.max(1, C.numRows()));
@@ -356,7 +359,7 @@ public class DenseMatrix extends AbstractDenseMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas().ger(numRows, numColumns, alpha, xd, yd, data,
+        BLAS.getInstance().dger(numRows, numColumns, alpha, xd, 1, yd, 1, data,
                 Math.max(1, numRows));
 
         return this;
@@ -372,8 +375,8 @@ public class DenseMatrix extends AbstractDenseMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas().gemv(Transpose.NoTranspose, numRows, numColumns,
-                alpha, data, Math.max(numRows, 1), xd, 1, yd);
+        BLAS.getInstance().dgemv(Transpose.NoTranspose.netlib(), numRows, numColumns,
+                alpha, data, Math.max(numRows, 1), xd, 1, 1, yd, 1);
 
         return y;
     }
@@ -388,8 +391,8 @@ public class DenseMatrix extends AbstractDenseMatrix {
         double[] xd = ((DenseVector) x).getData(), yd = ((DenseVector) y)
                 .getData();
 
-        Interface.blas().gemv(Transpose.Transpose, numRows, numColumns, alpha,
-                data, Math.max(numRows, 1), xd, 1, yd);
+        BLAS.getInstance().dgemv(Transpose.Transpose.netlib(), numRows, numColumns, alpha,
+                data, Math.max(numRows, 1), xd, 1, 1, yd, 1);
 
         return y;
     }
@@ -455,12 +458,13 @@ public class DenseMatrix extends AbstractDenseMatrix {
 
         int[] piv = new int[numRows];
 
-        int info = Interface.lapack().gesv(numRows, B.numColumns(),
-                data.clone(), piv, Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgesv(numRows, B.numColumns(),
+                data.clone(), Matrices.ld(numRows), piv, Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;
@@ -479,12 +483,14 @@ public class DenseMatrix extends AbstractDenseMatrix {
 
         // Query optimal workspace
         double[] work = new double[1];
-        int info = Interface.lapack().gels(trans, numRows, numColumns, nrhs,
-                newData, Xtmp.getData(), work, -1);
+        intW info = new intW(0);
+        LAPACK.getInstance().dgels(trans.netlib(), numRows, numColumns, nrhs,
+                newData, Matrices.ld(numRows), Xtmp.getData(), Matrices.ld(numRows, numColumns),
+                work, -1, info);
 
         // Allocate workspace
         int lwork = -1;
-        if (info != 0)
+        if (info.val != 0)
             lwork = Math.max(1, Math.min(numRows, numColumns)
                     + Math.max(Math.min(numRows, numColumns), nrhs));
         else
@@ -492,10 +498,12 @@ public class DenseMatrix extends AbstractDenseMatrix {
         work = new double[lwork];
 
         // Compute the factorization
-        info = Interface.lapack().gels(trans, numRows, numColumns, nrhs,
-                newData, Xtmp.getData(), work, lwork);
+        info.val = 0;
+        LAPACK.getInstance().dgels(trans.netlib(), numRows, numColumns, nrhs,
+                newData, Matrices.ld(numRows), Xtmp.getData(), Matrices.ld(numColumns),
+                work, lwork, info);
 
-        if (info < 0)
+        if (info.val < 0)
             throw new IllegalArgumentException();
 
         // Extract the solution

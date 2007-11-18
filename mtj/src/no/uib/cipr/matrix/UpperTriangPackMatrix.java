@@ -20,8 +20,6 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.Diag;
-import no.uib.cipr.matrix.BLASkernel.UpLo;
 
 /**
  * Upper triangular packed matrix. In contrast with

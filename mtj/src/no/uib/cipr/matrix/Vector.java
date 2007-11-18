@@ -20,6 +20,8 @@
 
 package no.uib.cipr.matrix;
 
+import java.io.Serializable;
+
 /**
  * Basic vector interface. It holds <code>double</code>s in an array, and is
  * used alongside <code>Matrix</code> in numerical computations. Implementing
@@ -69,7 +71,7 @@ package no.uib.cipr.matrix;
  * supported</dd>
  * </dl>
  */
-public interface Vector extends Iterable<VectorEntry> {
+public interface Vector extends Iterable<VectorEntry>, Serializable {
 
     /**
      * Size of the vector

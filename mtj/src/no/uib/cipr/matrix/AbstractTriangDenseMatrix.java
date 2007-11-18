@@ -22,10 +22,10 @@ package no.uib.cipr.matrix;
 
 import java.util.Iterator;
 
-import no.uib.cipr.matrix.BLASkernel.Diag;
-import no.uib.cipr.matrix.BLASkernel.Side;
-import no.uib.cipr.matrix.BLASkernel.Transpose;
-import no.uib.cipr.matrix.BLASkernel.UpLo;
+import org.netlib.blas.BLAS;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 
 /**
  * Partial implementation of a triangular, dense matrix
@@ -137,8 +137,8 @@ abstract class AbstractTriangDenseMatrix extends AbstractDenseMatrix {
         y.set(alpha, x);
 
         // y = A*z
-        Interface.blas().trmv(uplo, Transpose.NoTranspose, diag, numRows, data,
-                Math.max(1, ld), yd);
+        BLAS.getInstance().dtrmv(uplo.netlib(), Transpose.NoTranspose.netlib(), diag.netlib(),
+        	numRows, data, Math.max(1, ld), yd, 1);
 
         return y;
     }
@@ -156,8 +156,8 @@ abstract class AbstractTriangDenseMatrix extends AbstractDenseMatrix {
         y.set(alpha, x);
 
         // y = A'*y
-        Interface.blas().trmv(uplo, Transpose.Transpose, diag, numRows, data,
-                Math.max(1, ld), yd);
+        BLAS.getInstance().dtrmv(uplo.netlib(), Transpose.Transpose.netlib(), diag.netlib(),
+        	numRows, data, Math.max(1, ld), yd, 1);
 
         return y;
     }
@@ -174,9 +174,9 @@ abstract class AbstractTriangDenseMatrix extends AbstractDenseMatrix {
         C.set(B);
 
         // C = alpha*A*C
-        Interface.blas().trmm(Side.Left, uplo, Transpose.NoTranspose, diag,
-                C.numRows(), C.numColumns(), alpha, data, Math.max(1, ld), Cd,
-                Math.max(1, C.numRows()));
+        BLAS.getInstance().dtrmm(Side.Left.netlib(), uplo.netlib(), Transpose.NoTranspose.netlib(),
+        	diag.netlib(), C.numRows(), C.numColumns(), alpha, data, Math.max(1, ld), Cd,
+        	Math.max(1, C.numRows()));
 
         return C;
     }
@@ -193,9 +193,9 @@ abstract class AbstractTriangDenseMatrix extends AbstractDenseMatrix {
         C.set(B);
 
         // C = alpha*A'*C
-        Interface.blas().trmm(Side.Left, uplo, Transpose.Transpose, diag,
-                C.numRows(), C.numColumns(), alpha, data, Math.max(1, ld), Cd,
-                Math.max(1, C.numRows()));
+        BLAS.getInstance().dtrmm(Side.Left.netlib(), uplo.netlib(), Transpose.Transpose.netlib(),
+        	diag.netlib(), C.numRows(), C.numColumns(), alpha, data, Math.max(1, ld), Cd,
+        	Math.max(1, C.numRows()));
 
         return C;
     }
@@ -242,12 +242,13 @@ abstract class AbstractTriangDenseMatrix extends AbstractDenseMatrix {
 
         X.set(B);
 
-        int info = Interface.lapack().trtrs(uplo, trans, diag, numRows,
-                X.numColumns(), data, Math.max(1, ld), Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dtrtrs(uplo.netlib(), trans.netlib(), diag.netlib(), numRows,
+                X.numColumns(), data, Math.max(1, ld), Xd, Matrices.ld(numRows), info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

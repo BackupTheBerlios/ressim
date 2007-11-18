@@ -20,9 +20,9 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.Diag;
-import no.uib.cipr.matrix.BLASkernel.Transpose;
-import no.uib.cipr.matrix.BLASkernel.UpLo;
+import org.netlib.blas.BLAS;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
 
 /**
  * Partial implementation of a triangular, banded matrix
@@ -85,8 +85,8 @@ abstract class AbstractTriangBandMatrix extends AbstractBandMatrix {
         y.set(alpha, x);
 
         // y = A*y
-        Interface.blas().tbmv(uplo, Transpose.NoTranspose, diag, numRows, kd,
-                data, kd + 1, yd);
+        BLAS.getInstance().dtbmv(uplo.netlib(), Transpose.NoTranspose.netlib(), diag.netlib(),
+        	numRows, kd, data, kd + 1, yd, 1);
 
         return y;
     }
@@ -104,8 +104,8 @@ abstract class AbstractTriangBandMatrix extends AbstractBandMatrix {
         y.set(alpha, x);
 
         // y = A*y
-        Interface.blas().tbmv(uplo, Transpose.Transpose, diag, numRows, kd,
-                data, kd + 1, yd);
+        BLAS.getInstance().dtbmv(uplo.netlib(), Transpose.Transpose.netlib(), diag.netlib(),
+        	numRows, kd, data, kd + 1, yd, 1);
 
         return y;
     }
@@ -144,12 +144,14 @@ abstract class AbstractTriangBandMatrix extends AbstractBandMatrix {
 
         X.set(B);
 
-        int info = Interface.lapack().tbtrs(uplo, trans, diag, numRows, kd,
-                X.numColumns(), data, Xd);
+        intW info = new intW(0);
+        LAPACK.getInstance().dtbtrs(uplo.netlib(), trans.netlib(), diag.netlib(),
+        	numRows, kd, X.numColumns(), data, Matrices.ld(kd + 1), Xd, Matrices.ld(n),
+        	info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new MatrixSingularException();
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return X;

@@ -20,8 +20,9 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.UpLo;
-import no.uib.cipr.matrix.LAPACKkernel.JobEig;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 
 /**
  * Computes eigenvalues of symmetrical, banded matrices
@@ -77,12 +78,13 @@ public class SymmBandEVD extends SymmEVD {
         // Find the needed workspace
         double[] worksize = new double[1];
         int[] iworksize = new int[1];
-        int info = Interface.lapack().sbevd(job, uplo, n, 0, new double[0],
-                new double[0], new double[0], worksize, -1, iworksize, -1);
+        intW info = new intW(0);
+        LAPACK.getInstance().dsbevd(job.netlib(), uplo.netlib(), n, 0, new double[0],
+        	1, new double[0], new double[0], Matrices.ld(n), worksize, -1, iworksize, -1, info);
 
         // Allocate workspace
         int lwork = 0, liwork = 0;
-        if (info != 0) {
+        if (info.val != 0) {
             if (job == JobEig.All) {
                 lwork = 1 + 6 * n + 2 * n * n;
                 liwork = 3 + 5 * n;
@@ -158,14 +160,15 @@ public class SymmBandEVD extends SymmEVD {
         if (A.numRows() != n)
             throw new IllegalArgumentException("A.numRows() != n");
 
-        int info = Interface.lapack().sbevd(job, uplo, n, kd, data, w,
-                job == JobEig.All ? Z.getData() : new double[0], work,
-                work.length, iwork, iwork.length);
+        intW info = new intW(0);
+        LAPACK.getInstance().dsbevd(job.netlib(), uplo.netlib(), n, kd, data, Matrices.ld(kd + 1),
+        	w, job == JobEig.All ? Z.getData() : new double[0], Matrices.ld(n), work,
+            work.length, iwork, iwork.length, info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new NotConvergedException(
                     NotConvergedException.Reason.Iterations);
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return this;

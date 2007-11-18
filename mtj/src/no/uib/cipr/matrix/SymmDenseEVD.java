@@ -20,9 +20,9 @@
 
 package no.uib.cipr.matrix;
 
-import no.uib.cipr.matrix.BLASkernel.UpLo;
-import no.uib.cipr.matrix.LAPACKkernel.JobEig;
-import no.uib.cipr.matrix.LAPACKkernel.JobEigRange;
+import org.netlib.lapack.LAPACK;
+import org.netlib.util.intW;
+
 
 /**
  * Computes eigenvalues of symmetrical, dense matrices
@@ -71,7 +71,7 @@ public class SymmDenseEVD extends SymmEVD {
      *            the lower part of the matrix is stored instead
      */
     public SymmDenseEVD(int n, boolean upper) {
-        this(n, upper, true, Interface.lapack().lamch("Safe minimum"));
+        this(n, upper, true, LAPACK.getInstance().dlamch("Safe minimum"));
     }
 
     /**
@@ -104,7 +104,7 @@ public class SymmDenseEVD extends SymmEVD {
      *            eigenvalues
      */
     public SymmDenseEVD(int n, boolean upper, boolean vectors) {
-        this(n, upper, vectors, Interface.lapack().lamch("Safe minimum"));
+        this(n, upper, vectors, LAPACK.getInstance().dlamch("Safe minimum"));
     }
 
     /**
@@ -132,13 +132,14 @@ public class SymmDenseEVD extends SymmEVD {
         // Find the needed workspace
         double[] worksize = new double[1];
         int[] iworksize = new int[1];
-        int info = Interface.lapack().syevr(job, range, uplo, n, new double[0],
-                0, 0, 0, 0, abstol, new int[1], new double[0], new double[0],
-                isuppz, worksize, -1, iworksize, -1);
+        intW info = new intW(0);
+        LAPACK.getInstance().dsyevr(job.netlib(), range.netlib(), uplo.netlib(), n,
+        	new double[0], Matrices.ld(n), 0, 0, 0, 0, abstol, new intW(1), new double[0], new double[0],
+        	Matrices.ld(n), isuppz, worksize, -1, iworksize, -1, info);
 
         // Allocate workspace
         int lwork = 0, liwork = 0;
-        if (info != 0) {
+        if (info.val != 0) {
             lwork = 26 * n;
             liwork = 10 * n;
         } else {
@@ -206,15 +207,16 @@ public class SymmDenseEVD extends SymmEVD {
         if (A.numRows() != n)
             throw new IllegalArgumentException("A.numRows() != n");
 
-        int info = Interface.lapack().syevr(job, range, uplo, n, data, 0, 0, 0,
-                0, abstol, new int[1], w,
-                job == JobEig.All ? Z.getData() : new double[0], isuppz, work,
-                work.length, iwork, iwork.length);
+        intW info = new intW(0);
+        LAPACK.getInstance().dsyevr(job.netlib(), range.netlib(), uplo.netlib(), n, data,
+        	Matrices.ld(n), 0, 0, 0, 0, abstol, new intW(1), w,
+                job == JobEig.All ? Z.getData() : new double[0], Matrices.ld(n), isuppz, work,
+                work.length, iwork, iwork.length, info);
 
-        if (info > 0)
+        if (info.val > 0)
             throw new NotConvergedException(
                     NotConvergedException.Reason.Iterations);
-        else if (info < 0)
+        else if (info.val < 0)
             throw new IllegalArgumentException();
 
         return this;

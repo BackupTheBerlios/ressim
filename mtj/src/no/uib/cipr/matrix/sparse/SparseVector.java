@@ -31,7 +31,7 @@ import no.uib.cipr.matrix.VectorEntry;
 /**
  * Sparse vector
  */
-public class SparseVector extends AbstractVector {
+public class SparseVector extends AbstractVector implements ISparseVector {
 
     /**
      * Data
@@ -157,6 +157,8 @@ public class SparseVector extends AbstractVector {
     public void set(int index, double value) {
         check(index);
 
+        // TODO: should we check against zero when setting zeros?
+        
         int i = getIndex(index);
         data[i] = value;
     }
@@ -315,7 +317,16 @@ public class SparseVector extends AbstractVector {
      * Returns the indices
      */
     public int[] getIndex() {
-        return index;
+    	if (used == index.length)
+    		return index;
+    	
+    	// could run compact, or return subarray
+    	// compact();
+    	int [] indices = new int[used];
+    	for (int i = 0 ; i < used; i++) {
+    		indices[i] = index[i];
+    	}
+    	return indices;
     }
 
     /**
@@ -329,7 +340,9 @@ public class SparseVector extends AbstractVector {
      * Compacts the vector
      */
     public void compact() {
-        int nz = Matrices.cardinality(this);
+        int nz = used;
+        // ??: why was this originally using cardinality?
+        // int nz = Matrices.cardinality(this);
 
         if (nz < data.length) {
             int[] newIndex = new int[nz];

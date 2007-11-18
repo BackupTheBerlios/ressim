@@ -20,6 +20,7 @@
 
 package no.uib.cipr.matrix;
 
+import java.io.Serializable;
 import java.util.Formatter;
 import java.util.Iterator;
 
@@ -48,7 +49,7 @@ import java.util.Iterator;
  * subclasses.
  * </ul>
  */
-public abstract class AbstractVector implements Vector {
+public abstract class AbstractVector implements Vector, Serializable {
 
     /**
      * Size of the vector
