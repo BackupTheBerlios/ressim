@@ -515,7 +515,7 @@ public class L4_MPFA extends MPFA {
          * 
          * @param ep
          * @param is
-         *                row index, current flux
+         *            row index, current flux
          */
         private void assembleFullPotentialContribution(Matrix A, Matrix B,
                 Matrix C, Matrix D, double f, Point3D cp,
@@ -624,16 +624,14 @@ public class L4_MPFA extends MPFA {
          * question.
          * 
          * @param p
-         *                Centerpoint this interaction region is constructed
-         *                around
+         *            Centerpoint this interaction region is constructed around
          * @param elements
-         *                First element is here, second is there, then a
-         *                neighbour of here, and finally a neighbour of there
-         *                which isn't connected to the previous element (yep)
+         *            First element is here, second is there, then a neighbour
+         *            of here, and finally a neighbour of there which isn't
+         *            connected to the previous element (yep)
          * @param elIntfMap
-         *                For each element in the region, this yields the
-         *                interfaces of that element which also are in the
-         *                region
+         *            For each element in the region, this yields the interfaces
+         *            of that element which also are in the region
          */
         public L4methodInteractionRegion(CornerPoint p, List<Element> elements,
                 Map<Element, List<Interface>> elIntfMap) {
@@ -1396,7 +1394,7 @@ public class L4_MPFA extends MPFA {
                     candidateT, c);
 
             // Store the computed transmissibilities for the current connection
-            storeTransmissibilities(chosenT.getKey(), chosenT.getValue(), c, M
+            storeTransmissibilities(chosenT.getKey(), chosenT.getValue(), M
                     .get(c.index));
         }
     }
@@ -1446,7 +1444,7 @@ public class L4_MPFA extends MPFA {
      * Stores the calculated transmissibilities into the given set
      */
     private void storeTransmissibilities(Matrix T, InteractionRegion region,
-            NeighbourConnection c, List<Transmissibility> Mi) {
+            List<Transmissibility> Mi) {
         for (Element el : region.elements()) {
             int i = region.index(el);
 

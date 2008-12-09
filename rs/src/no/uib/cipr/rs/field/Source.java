@@ -7,20 +7,19 @@ import java.util.Map;
 import no.uib.cipr.rs.fluid.Component;
 import no.uib.cipr.rs.fluid.Components;
 import no.uib.cipr.rs.fluid.Composition;
-import no.uib.cipr.rs.fluid.EquationOfState;
-import no.uib.cipr.rs.fluid.EquationOfStateData;
 import no.uib.cipr.rs.fluid.Phase;
 import no.uib.cipr.rs.fluid.PhaseData;
 import no.uib.cipr.rs.fluid.PhaseDataDouble;
 import no.uib.cipr.rs.geometry.Element;
 import no.uib.cipr.rs.geometry.Mesh;
 import no.uib.cipr.rs.util.Configuration;
-import no.uib.cipr.rs.util.Tolerances;
 
 /**
  * Source (pressure, mass, and energy).
  */
 public abstract class Source implements Serializable {
+
+    private static final long serialVersionUID = 5048574447895373793L;
 
     /**
      * Types of sources
@@ -156,38 +155,8 @@ public abstract class Source implements Serializable {
         private double qe;
 
         public RegularSource(Configuration config, String name,
-                Components components, EquationOfState eos) {
+                Components components) {
             super(name);
-
-            double p = config.getDouble("Pressure");
-            double T = config.getDouble("Temperature");
-            Composition N = new Composition(config, components);
-
-            double volume = config.getDouble("Volume");
-
-            PhaseData<EquationOfStateData> eosData = new PhaseData<EquationOfStateData>();
-            for (Phase phase : Phase.all())
-                eosData.set(phase, new EquationOfStateData(components, phase));
-
-            double difference = 1;
-
-            // Adjust the mole numbers to hit the volume target
-            while (difference > Tolerances.smallEps) {
-                eos.calculatePhaseState(p, N, T, eosData);
-
-                double newVolume = 0;
-                for (Phase phase : Phase.all())
-                    newVolume += eosData.get(phase).getVolume();
-
-                difference = volume - newVolume;
-
-                double dVdN = 0;
-                for (Phase phase : Phase.all())
-                    for (Component nu : components.all())
-                        dVdN += eosData.get(phase).getdVdN(nu);
-
-                double dN = difference * dVdN;
-            }
 
             q = new double[components.numComponents()];
 
@@ -209,7 +178,7 @@ public abstract class Source implements Serializable {
          * Gets the mass source rate
          * 
          * @param nu
-         *                Component
+         *            Component
          * @return [mol/s]
          */
         public double getMassSource(Component nu) {
@@ -285,11 +254,11 @@ public abstract class Source implements Serializable {
          * Gets the mass source rate
          * 
          * @param el
-         *                Element this outlets belong to
+         *            Element this outlets belong to
          * @param phase
-         *                Phase
+         *            Phase
          * @param nu
-         *                Component
+         *            Component
          * @return [mol/s]
          */
         public double getMassSource(Element el, Phase phase, Component nu) {
@@ -309,9 +278,9 @@ public abstract class Source implements Serializable {
          * Updates the outlet source
          * 
          * @param cv
-         *                Control volumes in the field
+         *            Control volumes in the field
          * @param mesh
-         *                Computational mesh
+         *            Computational mesh
          */
         void update(CV[] cv, Mesh mesh) {
             PhaseDataDouble lambda = new PhaseDataDouble();

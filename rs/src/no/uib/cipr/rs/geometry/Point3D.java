@@ -41,7 +41,7 @@ public class Point3D implements Serializable, Comparable<Point3D> {
     public Point3D(Point3D p, Vector3D v) {
         this(p.x + v.x(), p.y + v.y(), p.z + v.z());
     }
-    
+
     /**
      * Convenience method that let us write vector application as a pipe instead
      * of nested construction statements, i.e. instead of:
@@ -62,42 +62,40 @@ public class Point3D implements Serializable, Comparable<Point3D> {
     public Point3D plus(Point3D p) {
         return new Point3D(x + p.x, y + p.y, z + p.z);
     }
-    
+
     /**
      * Calculate the barycenter of a "cloud" of points.
      * 
      * @param points
-     *  Array containing points that should be summed/found the center for.
-     *  This array is represented as a varargs list since in most cases we have
-     *  a predefined, fixed number of points to add.
-     * @return
-     *  Center of all the points passed, or null if no points was passed.
+     *            Array containing points that should be summed/found the center
+     *            for. This array is represented as a varargs list since in most
+     *            cases we have a predefined, fixed number of points to add.
+     * @return Center of all the points passed, or null if no points was passed.
      */
     public static Point3D center(Point3D... points) {
         if (points.length == 0) {
             return null;
-        }
-        else {
+        } else {
             // start out with a point containing "nothing"
             double x = 0, y = 0, z = 0;
-            
+
             // add the mass for each of the points in the array
-            for(Point3D p : points) {
+            for (Point3D p : points) {
                 x += p.x;
                 y += p.y;
                 z += p.z;
             }
-            
+
             // divide the mass on the count, to get the "average"
             x /= points.length;
             y /= points.length;
             z /= points.length;
-            
+
             // return this point to the caller
             return new Point3D(x, y, z);
         }
     }
-    
+
     /**
      * Scales this point
      */
@@ -116,7 +114,7 @@ public class Point3D implements Serializable, Comparable<Point3D> {
     public double z() {
         return z;
     }
-    
+
     /**
      * Number of dimensions stored in this point. Usable as upper bound for
      * loops that enumerates all the components in the point.
@@ -128,21 +126,21 @@ public class Point3D implements Serializable, Comparable<Point3D> {
      * usable when scaling points in loops.
      * 
      * @param index
-     *  Ordinal for the coordinate axis; which component of the point tuple.
-     * @return
-     *  Value for the coordinate along the specified dimension.
+     *            Ordinal for the coordinate axis; which component of the point
+     *            tuple.
+     * @return Value for the coordinate along the specified dimension.
      */
     public double get(int index) {
-        switch(index) {
-            case 0:
-                return x;
-            case 1:
-                return y;
-            case 2:
-                return z;
-            default:
-                throw new IndexOutOfBoundsException(String.format(
-                        "Expected index in range 0..2, but got %d", index));
+        switch (index) {
+        case 0:
+            return x;
+        case 1:
+            return y;
+        case 2:
+            return z;
+        default:
+            throw new IndexOutOfBoundsException(String.format(
+                    "Expected index in range 0..2, but got %d", index));
         }
     }
 
@@ -232,7 +230,6 @@ public class Point3D implements Serializable, Comparable<Point3D> {
      *         points may be used interchangably), false if not.
      */
     @Override
-    @SuppressWarnings("unchecked")
     public boolean equals(Object theOther) {
         // existentiality test; since this is an instance method, then
         // we cannot be the null reference. by doing this first we

@@ -1,0 +1,78 @@
+% Water PVT properties, from Handbook of Chemistry & Physics
+
+% Note: viscosity is currently only temperature dependent
+
+begin WaterMolarDensity
+	type		LookupTable
+	dimension	2
+
+	% Pressure, in Pascal
+	array coord1
+		1e+5 1e+6 1e+7 1e+8
+	end
+
+	% Temperature, in Kelvin
+	array coord2
+		300 325 350 375 400 450 500 550 600
+	end
+
+	% Molar density, in mol/m^3
+	array data
+	 % p=1e+5,  1e+6,   1e+7,   1e+8
+		55317.5 55339.7 55563.9 57573.3 % T=300
+		54797.4 54819   55034.4 56985   % T=325
+		54050.2 54072.4 54292.2 56263.3 % T=350
+		32.5574 53145.4 53378   55430.2 % T=375
+		30.397  52059.7 52312.3 54499.3 % T=400
+		26.8983 49424.2 49744.4 52372.8 % T=450
+		24.1539 251.581 46517.2 49913.7 % T=500
+		21.9297 225.259 42287.4 47114.4 % T=550
+		20.0857 204.665 2762.82 43934.4 % T=600
+	end
+end
+
+begin WaterViscosity
+	type		EvenLookupTable
+	dimension	2
+
+	xMin 1e+6	xMax	1e+8	nx	2	% Pressure
+	yMin 273.15	yMax	373.15	ny	5	% Temperature
+
+	array data
+		% Same viscosity for all pressures, only temperature variation
+		1.793e-3 1.793e-3
+		0.890e-3 0.890e-3
+		0.547e-3 0.547e-3
+		0.378e-3 0.378e-3
+		0.282e-3 0.282e-3
+	end
+end
+
+begin WaterMolarEnthalpy
+	type		LookupTable
+	dimension	2
+
+	% Pressure, in Pascal
+	array coord1
+		1e+5 1e+6 1e+7 1e+8
+	end
+
+	% Temperature, in Kelvin
+	array coord2
+		300 325 350 375 400 450 500 550 600
+	end
+
+	% Molar enthalpy, in J/mol
+	array data
+	 % p=1e+5,  1e+6,   1e+7,   1e+8
+		2029.42 2044.37 2192.46 3628.28 % T=300
+		3912.05 3926.07 4064.25 5428    % T=325
+		5798.04 5811.01 5939.64 7236.74 % T=350
+		48273.7 7704.05 7825.84 9054.48 % T=375
+		49188.9 9610.61 9721.05 10875.8 % T=400
+		50977.8 13497   13581.7 14552.7 % T=450
+		52759.5 52085.8 17602.7 18285.5 % T=500
+		54552.1 54078.3 21942.6 22122.8 % T=550
+		56366.2 56009.5 50803.1 26086.1 % T=600
+	end
+end

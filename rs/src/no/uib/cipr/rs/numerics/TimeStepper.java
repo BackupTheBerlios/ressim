@@ -63,7 +63,7 @@ class TimeStepper {
             // Adjust stepsize down to meet the next report time
             dt = adjustDtForReporting(dt, endTime);
 
-            reportTime(endTime, dt);
+            reportTime(dt);
 
             // Advance a single time step, halving the timestep on failure
             while (true) {
@@ -90,7 +90,7 @@ class TimeStepper {
                             .throughputFactor());
                     dt = Math.min(Math.max(dt * factor, dtMin), dtMax);
 
-                    reportTime(endTime, dt);
+                    reportTime(dt);
                 }
             }
 
@@ -104,7 +104,7 @@ class TimeStepper {
     /**
      * Reports the time and timestep size
      */
-    private void reportTime(double endTime, double dt) {
+    private void reportTime(double dt) {
         double t = toTimeUnit(field.getTime());
 
         System.out.format("\nt =%13e, dt =%13e\n", t, toTimeUnit(dt));

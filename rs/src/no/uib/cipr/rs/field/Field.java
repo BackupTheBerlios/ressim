@@ -299,9 +299,9 @@ public class Field implements Serializable, Comparable<Field> {
      * later by the volume balance
      * 
      * @param init
-     *                Initial values as a function of depth
+     *            Initial values as a function of depth
      * @param el
-     *                Pertinent element
+     *            Pertinent element
      * @return Component mass fractions
      */
     private double[] setInitialState(InitialValues init, Element el) {
@@ -347,13 +347,13 @@ public class Field implements Serializable, Comparable<Field> {
      * grid blocks. This is to be adjusted later by the volume balance
      * 
      * @param init
-     *                Initial values as a function of depth
+     *            Initial values as a function of depth
      * @param C
-     *                Normalised mass fractions
+     *            Normalised mass fractions
      * @param fixed
-     *                The fixed source
+     *            The fixed source
      * @param el
-     *                Pertinent element
+     *            Pertinent element
      */
     private void setInitialSourceState(InitialValues init, double[] C,
             FixedSource fixed, Element el) {
@@ -381,11 +381,11 @@ public class Field implements Serializable, Comparable<Field> {
      * pressure distribution
      * 
      * @param init
-     *                Initial values
+     *            Initial values
      * @param C
-     *                Total composition fractions, normalised
+     *            Total composition fractions, normalised
      * @param el
-     *                Pertinent element
+     *            Pertinent element
      */
     private void volumeBalance(InitialValues init, double[] C, Element el) {
         // The number of iterations which must be done
@@ -513,7 +513,7 @@ public class Field implements Serializable, Comparable<Field> {
      * Changes the field time
      * 
      * @param dt
-     *                Time increment [s]
+     *            Time increment [s]
      */
     public void changeTime(double dt) {
         t += dt;
@@ -524,13 +524,13 @@ public class Field implements Serializable, Comparable<Field> {
      * secondary variables
      * 
      * @param t
-     *                Time [s]
+     *            Time [s]
      * @param p
-     *                Oil pressure [Pa]
+     *            Oil pressure [Pa]
      * @param T
-     *                Temperature [K]
+     *            Temperature [K]
      * @param N
-     *                Molar masses [mol]
+     *            Molar masses [mol]
      */
     public void retract(double t, double[] p, double[] T, Composition[] N) {
         this.t = t;

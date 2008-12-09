@@ -183,7 +183,6 @@ public class GMVExport {
     /**
      * Performs the GMV export of a <code>Mesh</code>
      */
-    @SuppressWarnings("unused")
     protected void output() throws IOException, ClassNotFoundException {
         File meshFile = new File(gmv, "mesh");
         writeGMV(meshFile);
